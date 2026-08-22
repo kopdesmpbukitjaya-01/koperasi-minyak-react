@@ -1,0 +1,43 @@
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+
+import Login from "./pages/Login";
+import Dashboard from "./pages/Dashboard";
+import Warga from "./pages/Warga";
+import Periode from "./pages/Periode";
+import Transaksi from "./pages/Transaksi";
+import Laporan from "./pages/Laporan";
+
+export default function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Login />} />
+
+        <Route
+          path="/dashboard"
+          element={<Dashboard />}
+        />
+
+        <Route
+          path="/warga"
+          element={<Warga />}
+        />
+
+        <Route
+          path="/periode"
+          element={<Periode />}
+        />
+
+        <Route
+          path="/transaksi"
+          element={<Transaksi />}
+        />
+
+        <Route
+          path="/laporan"
+          element={<Laporan />}
+        />
+      </Routes>
+    </BrowserRouter>
+  );
+}
