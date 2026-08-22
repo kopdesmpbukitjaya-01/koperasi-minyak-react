@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
-import { FaSignInAlt } from "react-icons/fa";
 import logo from "../assets/logo_crop.png";
+
+console.log(logo);
 export default function Login() {
   const navigate = useNavigate();
 
@@ -29,13 +30,12 @@ export default function Login() {
       <div className="w-full max-w-md bg-white rounded-3xl shadow-2xl p-8">
 
         <div className="text-center mb-8">
-
-  <img
-    src={logo}
-    alt="Logo Pertashop KDMP Bukit Jaya"
-    className="w-28 h-28 object-contain mx-auto mb-4"
-  />
-
+<img
+  src={logo}
+  alt="Logo Pertashop KDMP Bukit Jaya"
+  className="w-28 h-28 object-contain mx-auto mb-4"
+/>
+ 
   <h1 className="text-3xl font-bold text-gray-800">
     Pertashop KDMP Bukit Jaya
   </h1>
