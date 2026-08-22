@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import { FaSignInAlt } from "react-icons/fa";
-
+import logo from "../assets/logo_crop.png";
 export default function Login() {
   const navigate = useNavigate();
 
@@ -29,18 +29,22 @@ export default function Login() {
       <div className="w-full max-w-md bg-white rounded-3xl shadow-2xl p-8">
 
         <div className="text-center mb-8">
-          <div className="w-20 h-20 bg-red-600 rounded-full flex items-center justify-center text-white text-3xl mx-auto mb-4">
-            🛢️
-          </div>
 
-          <h1 className="text-3xl font-bold text-gray-800">
-            KDMP Bukit Jaya
-          </h1>
+  <img
+    src={logo}
+    alt="Logo Pertashop KDMP Bukit Jaya"
+    className="w-28 h-28 object-contain mx-auto mb-4"
+  />
 
-          <p className="text-gray-500 mt-2">
-            Koperasi Desa Merah Putih
-          </p>
-        </div>
+  <h1 className="text-3xl font-bold text-gray-800">
+    Pertashop KDMP Bukit Jaya
+  </h1>
+
+  <p className="text-gray-500 mt-2">
+    Koperasi Desa Merah Putih Bukit Jaya
+  </p>
+
+</div>
 
         <div className="space-y-5">
 
@@ -73,12 +77,11 @@ export default function Login() {
           </div>
 
           <button
-            onClick={login}
-            className="w-full bg-red-600 hover:bg-red-700 transition text-white font-semibold py-3 rounded-xl flex justify-center items-center gap-2"
-          >
-            <FaSignInAlt />
-            Login
-          </button>
+  onClick={login}
+  className="w-full bg-red-600 hover:bg-red-700 transition text-white font-semibold py-3 rounded-xl"
+>
+  Login
+</button>
 
         </div>
 
