@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
+import { FaSignInAlt } from "react-icons/fa";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -23,48 +24,66 @@ export default function Login() {
   };
 
   return (
-    <div
-      style={{
-        maxWidth: 400,
-        margin: "100px auto",
-        textAlign: "center",
-      }}
-    >
-      <h2>KDMP Bukit Jaya</h2>
+    <div className="min-h-screen bg-gradient-to-br from-red-600 via-red-500 to-red-700 flex items-center justify-center p-6">
 
-      <input
-        type="email"
-        placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        style={{
-          width: "100%",
-          padding: 10,
-          marginBottom: 10,
-        }}
-      />
+      <div className="w-full max-w-md bg-white rounded-3xl shadow-2xl p-8">
 
-      <input
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        style={{
-          width: "100%",
-          padding: 10,
-          marginBottom: 10,
-        }}
-      />
+        <div className="text-center mb-8">
+          <div className="w-20 h-20 bg-red-600 rounded-full flex items-center justify-center text-white text-3xl mx-auto mb-4">
+            🛢️
+          </div>
 
-      <button
-        onClick={login}
-        style={{
-          width: "100%",
-          padding: 10,
-        }}
-      >
-        Login
-      </button>
+          <h1 className="text-3xl font-bold text-gray-800">
+            KDMP Bukit Jaya
+          </h1>
+
+          <p className="text-gray-500 mt-2">
+            Koperasi Desa Merah Putih
+          </p>
+        </div>
+
+        <div className="space-y-5">
+
+          <div>
+            <label className="block text-gray-700 font-medium mb-2">
+              Email
+            </label>
+
+            <input
+              type="email"
+              placeholder="Masukkan Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-red-500"
+            />
+          </div>
+
+          <div>
+            <label className="block text-gray-700 font-medium mb-2">
+              Password
+            </label>
+
+            <input
+              type="password"
+              placeholder="Masukkan Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-red-500"
+            />
+          </div>
+
+          <button
+            onClick={login}
+            className="w-full bg-red-600 hover:bg-red-700 transition text-white font-semibold py-3 rounded-xl flex justify-center items-center gap-2"
+          >
+            <FaSignInAlt />
+            Login
+          </button>
+
+        </div>
+
+      </div>
+
     </div>
   );
 }
