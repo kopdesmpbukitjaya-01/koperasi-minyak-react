@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
+import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Warga from "./pages/Warga";
@@ -11,32 +12,19 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Login />} />
+        <Route path="/" element={<Home />} />
 
-        <Route
-          path="/dashboard"
-          element={<Dashboard />}
-        />
+        <Route path="/login" element={<Login />} />
 
-        <Route
-          path="/warga"
-          element={<Warga />}
-        />
+        <Route path="/dashboard" element={<Dashboard />} />
 
-        <Route
-          path="/periode"
-          element={<Periode />}
-        />
+        <Route path="/warga" element={<Warga />} />
 
-        <Route
-          path="/transaksi"
-          element={<Transaksi />}
-        />
+        <Route path="/periode" element={<Periode />} />
 
-        <Route
-          path="/laporan"
-          element={<Laporan />}
-        />
+        <Route path="/transaksi" element={<Transaksi />} />
+
+        <Route path="/laporan" element={<Laporan />} />
       </Routes>
     </BrowserRouter>
   );
