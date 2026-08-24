@@ -105,14 +105,16 @@ export default function Warga() {
           </h2>
 
           <div className="grid md:grid-cols-2 gap-6">
+
             <div>
+              {/* DIUBAH */}
               <label className="block text-sm font-semibold text-gray-700 mb-2">
-                NIK
+                Nomor KK
               </label>
 
               <input
                 type="text"
-                placeholder="Masukkan NIK"
+                placeholder="Masukkan Nomor KK"
                 value={nik}
                 onChange={(e) => setNik(e.target.value)}
                 className="w-full rounded-xl border border-gray-300 bg-gray-50 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-red-600"
@@ -203,7 +205,8 @@ export default function Warga() {
             <table className="w-full">
               <thead className="bg-red-700 text-white">
                 <tr>
-                  <th className="px-4 py-3 text-left">NIK</th>
+                  {/* DIUBAH */}
+                  <th className="px-4 py-3 text-left">Nomor KK</th>
                   <th className="px-4 py-3 text-left">Nama</th>
                   <th className="px-4 py-3 text-left">Alamat</th>
                   <th className="px-4 py-3 text-left">No HP</th>
@@ -212,7 +215,8 @@ export default function Warga() {
               </thead>
 
               <tbody>
-                                {list.map((w) => (
+
+                {list.map((w) => (
                   <tr
                     key={w.id}
                     className="border-b hover:bg-red-50 transition"
@@ -232,7 +236,6 @@ export default function Warga() {
                     </td>
 
                     <td className="px-4 py-4">
-
                       <div className="flex justify-center gap-3">
 
                         <button
@@ -250,7 +253,6 @@ export default function Warga() {
                         </button>
 
                       </div>
-
                     </td>
                   </tr>
                 ))}
@@ -275,7 +277,6 @@ export default function Warga() {
         </div>
 
       </div>
-
     </Layout>
   );
 }
