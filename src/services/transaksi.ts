@@ -1,6 +1,6 @@
 import { supabase } from "../lib/supabase";
 
-const HARGA_PER_LITER = 15700;
+const HARGA_PER_LITER = 14000;
 
 export async function getTransaksi() {
   const { data, error } = await supabase

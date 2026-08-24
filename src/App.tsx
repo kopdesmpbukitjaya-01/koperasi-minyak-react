@@ -7,6 +7,7 @@ import Warga from "./pages/Warga";
 import Periode from "./pages/Periode";
 import Transaksi from "./pages/Transaksi";
 import Laporan from "./pages/Laporan";
+import PrintLaporan from "./pages/PrintLaporan";
 
 export default function App() {
   return (
@@ -25,6 +26,7 @@ export default function App() {
         <Route path="/transaksi" element={<Transaksi />} />
 
         <Route path="/laporan" element={<Laporan />} />
+        <Route path="/print-laporan" element={<PrintLaporan />} />
       </Routes>
     </BrowserRouter>
   );

@@ -101,7 +101,7 @@ export default function Warga() {
         <div className="bg-white rounded-3xl shadow-xl p-8">
 
           <h2 className="text-2xl font-bold text-red-700 mb-8">
-            {editId === null ? "Tambah Warga" : "Edit Warga"}
+            {editId === null ? "Tambah Data Warga" : "Edit Warga"}
           </h2>
 
           <div className="grid md:grid-cols-2 gap-6">
@@ -109,8 +109,8 @@ export default function Warga() {
             <div>
               {/* DIUBAH */}
               <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Nomor KK
-              </label>
+  Nomor KK
+</label>
 
               <input
                 type="text"
@@ -206,7 +206,7 @@ export default function Warga() {
               <thead className="bg-red-700 text-white">
                 <tr>
                   {/* DIUBAH */}
-                  <th className="px-4 py-3 text-left">Nomor KK</th>
+                 <th className="px-4 py-3 text-left">Nomor KK</th>
                   <th className="px-4 py-3 text-left">Nama</th>
                   <th className="px-4 py-3 text-left">Alamat</th>
                   <th className="px-4 py-3 text-left">No HP</th>

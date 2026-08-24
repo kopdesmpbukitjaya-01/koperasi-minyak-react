@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { jsPDF } from "jspdf";
-import autoTable from "jspdf-autotable";
 
 import { getPeriode } from "../services/periode";
 import { getLaporan } from "../services/laporan";
@@ -19,264 +17,183 @@ export default function Laporan() {
   }, []);
 
   async function loadPeriode() {
-    const p = await getPeriode();
-    setPeriode(p);
+    try {
+      const hasil = await getPeriode();
+      setPeriode(hasil);
+    } catch (err) {
+      console.error(err);
+      alert("Gagal memuat data periode.");
+    }
   }
 
   async function tampilkan() {
     if (!periodeId) {
-      alert("Pilih periode");
+      alert("Silakan pilih periode.");
       return;
     }
 
-    const hasil = await getLaporan(Number(periodeId));
-    setData(hasil);
+    try {
+      const hasil = await getLaporan(Number(periodeId));
+      setData(hasil);
+
+      if (hasil.length === 0) {
+        alert("Tidak ada data pada periode ini.");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Gagal mengambil data laporan.");
+    }
   }
 
-  function downloadPDF() {
-    if (data.length === 0) {
-      alert("Data masih kosong");
-      return;
-    }
-
-    const doc = new jsPDF();
-
-    doc.setFontSize(16);
-doc.text("KOPERASI DESA MERAH PUTIH", 14, 15);
-
-doc.setFontSize(12);
-doc.text("PERTASHOP BUKIT JAYA", 14, 22);
-
-doc.setFontSize(13);
-doc.text("LAPORAN PENGAMBILAN MINYAK", 14, 30);
-
-doc.setFontSize(10);
-doc.text(
-  "Periode : " + data[0].periode.nama_periode,
-  14,
-  38
-);
-
-    doc.setFontSize(10);
-    doc.text(
-      "Periode : " + data[0].periode.nama_periode,
-      14,
-      32
-    );
-
-    let totalLiter = 0;
-    let totalRupiah = 0;
-
-    const rows = data.map((t, index) => {
-      totalLiter += Number(t.liter);
-      totalRupiah += Number(t.total);
-
-      return [
-        index + 1,
-        t.warga.nama,
-        t.tanggal,
-        t.liter,
-        Number(t.harga).toLocaleString("id-ID"),
-        Number(t.total).toLocaleString("id-ID"),
-      ];
-    });
-
-    autoTable(doc, {
-      startY: 45,
-      head: [[
-        "No",
-        "Nama",
-        "Tanggal",
-        "Liter",
-        "Harga",
-        "Total"
-      ]],
-      body: rows,
-    });
-
-    const akhir = (doc as any).lastAutoTable.finalY + 10;
-
-    doc.text(
-      "Total Liter : " + totalLiter,
-      14,
-      akhir
-    );
-    doc.text(
-  "Jumlah KK Mengambil : " + data.length,
-  14,
-  akhir + 8
-);
-
-doc.text(
-  "Total Rupiah : Rp " +
-  totalRupiah.toLocaleString("id-ID"),
-  14,
-  akhir + 16
-);
-
-   doc.text(
-  "Total Rupiah : Rp " +
-  totalRupiah.toLocaleString("id-ID"),
-  14,
-  akhir + 8
-);
-
-
-const tanggalCetak = new Date().toLocaleDateString("id-ID", {
-  day: "numeric",
-  month: "long",
-  year: "numeric",
-});
-
-doc.setFontSize(10);
-
-doc.text(
-  "Bukit Jaya, " + tanggalCetak,
-  120,
-  akhir + 20
-);
-
-doc.setFontSize(11);
-
-doc.text(
-  "Mengetahui,",
-  14,
-  akhir + 32
-);
-
-doc.text(
-  "Ketua KDMP Bukit Jaya",
-  14,
-  akhir + 42
-);
-
-doc.text(
-  "Kecamatan Bulik Timur",
-  14,
-  akhir + 49
-);
-
-doc.text(
-  "Petugas Pencatat",
-  130,
-  akhir + 42
-);
-
-doc.text(
-  "(_____________________)",
-  14,
-  akhir + 72
-);
-
-doc.text(
-  "(_____________________)",
-  130,
-  akhir + 72
-);
-
-doc.text(
-  "Nama :",
-  14,
-  akhir + 82
-);
-
-doc.text(
-  "Nama : " + (petugas || "........................."),
-  130,
-  akhir + 82
-);
-
-doc.save(
-  "laporan-" +
-  data[0].periode.nama_periode +
-  ".pdf"
-);
-}
   return (
     <div style={{ padding: 20 }}>
-      <h1>📄 Laporan Pengambilan</h1>
+      <h1>📄 Laporan Pengambilan Minyak</h1>
 
-      <button onClick={() => navigate("/dashboard")}>
+      <button
+        onClick={() => navigate("/dashboard")}
+        style={{
+          padding: "8px 16px",
+          marginBottom: 15,
+          cursor: "pointer",
+        }}
+      >
         ← Kembali
       </button>
 
       <hr />
 
-      <select
-        value={periodeId}
-        onChange={(e) => setPeriodeId(e.target.value)}
+      <div
+        style={{
+          display: "flex",
+          gap: 10,
+          alignItems: "center",
+          marginTop: 15,
+          marginBottom: 15,
+          flexWrap: "wrap",
+        }}
       >
-        <option value="">Pilih Periode</option>
+        <select
+          value={periodeId}
+          onChange={(e) => setPeriodeId(e.target.value)}
+          style={{
+            padding: 8,
+            minWidth: 220,
+          }}
+        >
+          <option value="">Pilih Periode</option>
 
-        {periode.map((p) => (
-          <option key={p.id} value={p.id}>
-            {p.nama_periode}
-          </option>
-        ))}
-      </select>
+          {periode.map((p) => (
+            <option key={p.id} value={p.id}>
+              {p.nama_periode}
+            </option>
+          ))}
+        </select>
 
-      <button
-        onClick={tampilkan}
-        style={{ marginLeft: 10 }}
+        <button
+          onClick={tampilkan}
+          style={{
+            padding: "8px 15px",
+            cursor: "pointer",
+          }}
+        >
+          Tampilkan
+        </button>
+
+        <button
+          onClick={() => navigate("/print-laporan")}
+          style={{
+            padding: "8px 15px",
+            cursor: "pointer",
+          }}
+        >
+          🖨️ Cetak Laporan
+        </button>
+      </div>
+
+      <div
+        style={{
+          marginBottom: 20,
+        }}
       >
-        Tampilkan
-      </button>
+        <label>
+          <b>Petugas Pencatat</b>
+        </label>
 
-      <button
-        onClick={downloadPDF}
-        style={{ marginLeft: 10 }}
+        <br />
+
+        <input
+          type="text"
+          value={petugas}
+          placeholder="Masukkan nama petugas"
+          onChange={(e) => setPetugas(e.target.value)}
+          style={{
+            marginTop: 8,
+            padding: 8,
+            width: 300,
+          }}
+        />
+      </div>
+
+      <table
+        border={1}
+        cellPadding={8}
+        style={{
+          width: "100%",
+          borderCollapse: "collapse",
+        }}
       >
-        Download PDF
-      </button>
-
-     <hr />
-
-<div style={{ marginTop: 15, marginBottom: 15 }}>
-  <label>
-    <b>Petugas Pencatat :</b>
-  </label>
-
-  <br />
-
-  <input
-    type="text"
-    placeholder="Masukkan nama petugas"
-    value={petugas}
-    onChange={(e) => setPetugas(e.target.value)}
-    style={{
-      marginTop: 8,
-      padding: 8,
-      width: 300,
-    }}
-  />
-</div>
-
-
-      <table border={1} cellPadding={8}>
-        <thead>
+        <thead
+          style={{
+            background: "#c62828",
+            color: "white",
+          }}
+        >
           <tr>
+            <th>No</th>
             <th>Nama</th>
             <th>Tanggal</th>
             <th>Liter</th>
-            <th>Harga</th>
+            <th>Harga/Liter</th>
             <th>Total</th>
           </tr>
         </thead>
 
         <tbody>
-          {data.map((t) => (
-            <tr key={t.id}>
-              <td>{t.warga.nama}</td>
-              <td>{t.tanggal}</td>
-              <td>{t.liter}</td>
-              <td>
-                Rp {Number(t.harga).toLocaleString("id-ID")}
-              </td>
-              <td>
-                Rp {Number(t.total).toLocaleString("id-ID")}
+          {data.length > 0 ? (
+            data.map((t, index) => (
+              <tr key={t.id}>
+                <td align="center">{index + 1}</td>
+
+                <td>{t.warga.nama}</td>
+
+                <td>{t.tanggal}</td>
+
+                <td align="center">
+                  {t.liter} L
+                </td>
+
+                <td align="right">
+                  Rp {Number(t.harga).toLocaleString("id-ID")}
+                </td>
+
+                <td align="right">
+                  Rp {Number(t.total).toLocaleString("id-ID")}
+                </td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td
+                colSpan={6}
+                align="center"
+                style={{
+                  padding: 20,
+                }}
+              >
+                Belum ada data.
               </td>
             </tr>
-          ))}
+          )}
         </tbody>
       </table>
     </div>
