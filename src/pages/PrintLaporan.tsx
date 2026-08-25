@@ -48,23 +48,54 @@ export default function PrintLaporan() {
         fontFamily: "Arial",
       }}
     >
-      <h2 style={{ textAlign: "center", margin: 0 }}>
-        KOPERASI DESA MERAH PUTIH
-      </h2>
+      <div
+  style={{
+    textAlign: "center",
+    marginBottom: 20,
+  }}
+>
+  <h2
+    style={{
+      margin: 0,
+      fontSize: 26,
+    }}
+  >
+    KOPERASI DESA MERAH PUTIH
+  </h2>
 
-      <h3 style={{ textAlign: "center", margin: 0 }}>
-        PERTASHOP BUKIT JAYA
-      </h3>
+  <h3
+    style={{
+      margin: "6px 0",
+      fontWeight: "normal",
+    }}
+  >
+    PERTASHOP BUKIT JAYA
+  </h3>
 
-      <h3 style={{ textAlign: "center" }}>
-        LAPORAN PENGAMBILAN MINYAK
-      </h3>
+  <h2
+    style={{
+      margin: "12px 0 8px",
+    }}
+  >
+    LAPORAN PENGAMBILAN MINYAK
+  </h2>
 
-      <hr />
+  <hr
+    style={{
+      border: "1px solid black",
+      marginTop: 10,
+    }}
+  />
+</div>
 
-      <p>
-        <b>Periode :</b> {data[0].periode.nama_periode}
-      </p>
+<div
+  style={{
+    marginBottom: 20,
+    fontSize: 16,
+  }}
+>
+  <b>Periode :</b> {data[0].periode.nama_periode}
+</div>
 
       <table
         border={1}

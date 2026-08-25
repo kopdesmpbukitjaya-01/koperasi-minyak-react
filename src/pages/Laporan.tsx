@@ -100,14 +100,17 @@ export default function Laporan() {
         </button>
 
         <button
-          onClick={() => navigate("/print-laporan")}
-          style={{
-            padding: "8px 15px",
-            cursor: "pointer",
-          }}
-        >
-          🖨️ Cetak Laporan
-        </button>
+  onClick={() =>
+    window.open(
+      `/print-laporan?periode=${periodeId}&petugas=${encodeURIComponent(
+        petugas
+      )}`,
+      "_blank"
+    )
+  }
+>
+  🖨️ Cetak
+</button>
       </div>
 
       <div
