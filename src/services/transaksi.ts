@@ -1,7 +1,5 @@
 import { supabase } from "../lib/supabase";
 
-const HARGA_PER_LITER = 14000;
-
 export async function getTransaksi() {
   const { data, error } = await supabase
     .from("transaksi")
@@ -14,6 +12,11 @@ export async function getTransaksi() {
       periode (
         id,
         nama_periode
+      ),
+      jenis_bbm (
+        id,
+        nama,
+        harga
       )
     `)
     .order("tanggal", { ascending: false });
@@ -26,10 +29,20 @@ export async function getTransaksi() {
 export async function addTransaksi(
   warga_id: number,
   periode_id: number,
+  jenis_bbm_id: number,
   tanggal: string,
   liter: number
 ) {
-  const harga = HARGA_PER_LITER;
+  // Ambil harga dari tabel jenis_bbm
+  const { data: bbm, error: errBBM } = await supabase
+    .from("jenis_bbm")
+    .select("harga")
+    .eq("id", jenis_bbm_id)
+    .single();
+
+  if (errBBM) throw errBBM;
+
+  const harga = Number(bbm.harga);
   const total = harga * liter;
 
   const { error } = await supabase
@@ -38,6 +51,7 @@ export async function addTransaksi(
       {
         warga_id,
         periode_id,
+        jenis_bbm_id,
         tanggal,
         liter,
         harga,
@@ -52,10 +66,19 @@ export async function updateTransaksi(
   id: number,
   warga_id: number,
   periode_id: number,
+  jenis_bbm_id: number,
   tanggal: string,
   liter: number
 ) {
-  const harga = HARGA_PER_LITER;
+  const { data: bbm, error: errBBM } = await supabase
+    .from("jenis_bbm")
+    .select("harga")
+    .eq("id", jenis_bbm_id)
+    .single();
+
+  if (errBBM) throw errBBM;
+
+  const harga = Number(bbm.harga);
   const total = harga * liter;
 
   const { error } = await supabase
@@ -63,6 +86,7 @@ export async function updateTransaksi(
     .update({
       warga_id,
       periode_id,
+      jenis_bbm_id,
       tanggal,
       liter,
       harga,

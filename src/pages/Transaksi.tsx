@@ -4,7 +4,7 @@ import Layout from "../components/Layout";
 
 import { getWarga } from "../services/warga";
 import { getPeriode } from "../services/periode";
-
+import { getJenisBBM } from "../services/jenis_bbm";
 import {
   getTransaksi,
   addTransaksi,
@@ -18,7 +18,8 @@ export default function Transaksi() {
   const [list, setList] = useState<any[]>([]);
   const [warga, setWarga] = useState<any[]>([]);
   const [periode, setPeriode] = useState<any[]>([]);
-
+const [jenisBBM, setJenisBBM] = useState<any[]>([]);
+const [jenisBBMId, setJenisBBMId] = useState("");
   const [wargaId, setWargaId] = useState("");
   const [periodeId, setPeriodeId] = useState("");
   const [tanggal, setTanggal] = useState("");
@@ -32,37 +33,40 @@ export default function Transaksi() {
   }, []);
 
   async function loadData() {
-    setList(await getTransaksi());
-    setWarga(await getWarga());
-    setPeriode(await getPeriode());
-  }
+  setList(await getTransaksi());
+  setWarga(await getWarga());
+  setPeriode(await getPeriode());
+  setJenisBBM(await getJenisBBM());
+}
 
   async function simpan() {
     try {
       if (editId === null) {
         await addTransaksi(
-          Number(wargaId),
-          Number(periodeId),
-          tanggal,
-          Number(liter)
-        );
+  Number(wargaId),
+  Number(periodeId),
+  Number(jenisBBMId),
+  tanggal,
+  Number(liter)
+);
 
         alert("Transaksi berhasil ditambahkan");
       } else {
         await updateTransaksi(
-          editId,
-          Number(wargaId),
-          Number(periodeId),
-          tanggal,
-          Number(liter)
-        );
-
+  editId,
+  Number(wargaId),
+  Number(periodeId),
+  Number(jenisBBMId),
+  tanggal,
+  Number(liter)
+);
         alert("Transaksi berhasil diupdate");
       }
 
       setEditId(null);
       setWargaId("");
       setPeriodeId("");
+      setJenisBBMId("");
       setTanggal(new Date().toISOString().substring(0, 10));
       setLiter("");
 
@@ -76,6 +80,7 @@ export default function Transaksi() {
     setEditId(item.id);
     setWargaId(item.warga_id.toString());
     setPeriodeId(item.periode_id.toString());
+    setJenisBBMId(item.jenis_bbm_id.toString());
     setTanggal(item.tanggal);
     setLiter(item.liter.toString());
   }
@@ -147,7 +152,25 @@ export default function Transaksi() {
                 ))}
               </select>
             </div>
+<div>
+  <label className="block text-sm font-semibold text-gray-700 mb-2">
+    Jenis BBM
+  </label>
 
+  <select
+    value={jenisBBMId}
+    onChange={(e) => setJenisBBMId(e.target.value)}
+    className="w-full rounded-xl border border-gray-300 bg-gray-50 px-4 py-3"
+  >
+    <option value="">-- Pilih BBM --</option>
+
+    {jenisBBM.map((j) => (
+      <option key={j.id} value={j.id}>
+        {j.nama} - Rp {Number(j.harga).toLocaleString("id-ID")}
+      </option>
+    ))}
+  </select>
+</div>
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
                 Periode
@@ -236,18 +259,21 @@ export default function Transaksi() {
             <table className="w-full">
 
               <thead className="bg-red-700 text-white">
+  <tr>
+    <th className="px-4 py-3 text-left">Nama</th>
 
-                <tr>
-                  <th className="px-4 py-3 text-left">Nama</th>
-                  <th className="px-4 py-3 text-left">Periode</th>
-                  <th className="px-4 py-3 text-left">Tanggal</th>
-                  <th className="px-4 py-3 text-center">Liter</th>
-                  <th className="px-4 py-3 text-right">Harga/Liter</th>
-                  <th className="px-4 py-3 text-right">Total</th>
-                  <th className="px-4 py-3 text-center">Aksi</th>
-                </tr>
+    <th className="px-4 py-3 text-left">
+      Jenis BBM
+    </th>
 
-              </thead>
+    <th className="px-4 py-3 text-left">Periode</th>
+    <th className="px-4 py-3 text-left">Tanggal</th>
+    <th className="px-4 py-3 text-center">Liter</th>
+    <th className="px-4 py-3 text-right">Harga/Liter</th>
+    <th className="px-4 py-3 text-right">Total</th>
+    <th className="px-4 py-3 text-center">Aksi</th>
+  </tr>
+</thead>
 
               <tbody>
                               {list.map((t) => (
@@ -258,6 +284,9 @@ export default function Transaksi() {
                   <td className="px-4 py-4">
                     {t.warga?.nama}
                   </td>
+                  <td className="px-4 py-4">
+  {t.jenis_bbm?.nama}
+</td>
 
                   <td className="px-4 py-4">
                     {t.periode?.nama_periode}
