@@ -33,10 +33,18 @@ const [jenisBBMId, setJenisBBMId] = useState("");
   }, []);
 
   async function loadData() {
-  setList(await getTransaksi());
-  setWarga(await getWarga());
-  setPeriode(await getPeriode());
-  setJenisBBM(await getJenisBBM());
+  const transaksi = await getTransaksi();
+  const warga = await getWarga();
+  const periode = await getPeriode();
+  const bbm = await getJenisBBM();
+
+  console.log("BBM:", bbm);
+
+  setList(transaksi);
+  setWarga(warga);
+  setPeriode(periode);
+  setJenisBBM(bbm);
+
 }
 
   async function simpan() {
