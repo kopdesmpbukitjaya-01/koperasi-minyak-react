@@ -16,10 +16,11 @@ export default function Transaksi() {
   const navigate = useNavigate();
 
   const [list, setList] = useState<any[]>([]);
+  const [jenisBBM, setJenisBBM] = useState<any[]>([]);
+const [jenisBBMId, setJenisBBMId] = useState("");
   const [warga, setWarga] = useState<any[]>([]);
   const [periode, setPeriode] = useState<any[]>([]);
-const [jenisBBM, setJenisBBM] = useState<any[]>([]);
-const [jenisBBMId, setJenisBBMId] = useState("");
+
   const [wargaId, setWargaId] = useState("");
   const [periodeId, setPeriodeId] = useState("");
   const [tanggal, setTanggal] = useState("");
@@ -33,18 +34,14 @@ const [jenisBBMId, setJenisBBMId] = useState("");
   }, []);
 
   async function loadData() {
-  const transaksi = await getTransaksi();
-  const warga = await getWarga();
-  const periode = await getPeriode();
+  setList(await getTransaksi());
+  setWarga(await getWarga());
+  setPeriode(await getPeriode());
+
   const bbm = await getJenisBBM();
+  console.log("BBM =", bbm);
 
-  console.log("BBM:", bbm);
-
-  setList(transaksi);
-  setWarga(warga);
-  setPeriode(periode);
   setJenisBBM(bbm);
-
 }
 
   async function simpan() {
@@ -134,10 +131,8 @@ const [jenisBBMId, setJenisBBMId] = useState("");
         <div className="bg-white rounded-3xl shadow-xl p-8">
 
           <h2 className="text-2xl font-bold text-red-700 mb-8">
-            {editId === null
-              ? "Tambah Pengambilan"
-              : "Edit Pengambilan"}
-          </h2>
+  TEST JENIS BBM
+</h2>
 
           <div className="grid md:grid-cols-2 gap-6">
 
@@ -154,10 +149,10 @@ const [jenisBBMId, setJenisBBMId] = useState("");
                 <option value="">-- Pilih Warga --</option>
 
                 {warga.map((w) => (
-                  <option key={w.id} value={w.id}>
-                    {w.nama}
-                  </option>
-                ))}
+  <option key={w.id} value={w.id}>
+    {w.nama} - KK: {w.no_kk} {w.status === "Anggota" ? "🟢" : "⚪"}
+  </option>
+))}
               </select>
             </div>
 <div>

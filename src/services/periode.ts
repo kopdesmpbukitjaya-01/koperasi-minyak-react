@@ -3,7 +3,13 @@ import { supabase } from "../lib/supabase";
 export async function getPeriode() {
   const { data, error } = await supabase
     .from("periode")
-    .select("*")
+    .select(`
+      *,
+      jenis_bbm (
+        id,
+        nama
+      )
+    `)
     .order("id", { ascending: false });
 
   if (error) throw error;
@@ -12,6 +18,7 @@ export async function getPeriode() {
 
 export async function addPeriode(
   nama_periode: string,
+  jenis_bbm_id: number,
   kuota_liter: number,
   aktif: boolean
 ) {
@@ -20,6 +27,7 @@ export async function addPeriode(
     .insert([
       {
         nama_periode,
+        jenis_bbm_id,
         kuota_liter,
         aktif,
       },
@@ -31,6 +39,7 @@ export async function addPeriode(
 export async function updatePeriode(
   id: number,
   nama_periode: string,
+  jenis_bbm_id: number,
   kuota_liter: number,
   aktif: boolean
 ) {
@@ -38,6 +47,7 @@ export async function updatePeriode(
     .from("periode")
     .update({
       nama_periode,
+      jenis_bbm_id,
       kuota_liter,
       aktif,
     })

@@ -11,8 +11,9 @@ export async function getWarga() {
 }
 
 export async function addWarga(
-  nik: string,
+  no_kk: string,
   nama: string,
+  status: string,
   alamat: string,
   no_hp: string
 ) {
@@ -20,8 +21,9 @@ export async function addWarga(
     .from("warga")
     .insert([
       {
-        nik,
+        no_kk,
         nama,
+        status,
         alamat,
         no_hp,
       },
@@ -32,16 +34,18 @@ export async function addWarga(
 
 export async function updateWarga(
   id: number,
-  nik: string,
+  no_kk: string,
   nama: string,
+  status: string,
   alamat: string,
   no_hp: string
 ) {
   const { error } = await supabase
     .from("warga")
     .update({
-      nik,
+      no_kk,
       nama,
+      status,
       alamat,
       no_hp,
     })

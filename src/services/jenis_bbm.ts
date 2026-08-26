@@ -4,7 +4,10 @@ export async function getJenisBBM() {
   const { data, error } = await supabase
     .from("jenis_bbm")
     .select("*")
-    .order("nama");
+    .order("id");
+
+  console.log("DATA JENIS BBM =", data);
+  console.log("ERROR JENIS BBM =", error);
 
   if (error) throw error;
 

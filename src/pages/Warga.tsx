@@ -12,9 +12,9 @@ export default function Warga() {
   const navigate = useNavigate();
 
   const [list, setList] = useState<any[]>([]);
-
-  const [nik, setNik] = useState("");
   const [nama, setNama] = useState("");
+  const [noKK, setNoKK] = useState("");
+const [status, setStatus] = useState("Anggota");
   const [alamat, setAlamat] = useState("");
   const [noHp, setNoHp] = useState("");
 
@@ -30,12 +30,15 @@ export default function Warga() {
   }
 
   function edit(w: any) {
-    setEditId(w.id);
-    setNik(w.nik);
-    setNama(w.nama);
-    setAlamat(w.alamat);
-    setNoHp(w.no_hp);
-  }
+  setEditId(w.id);
+
+
+  setNoKK(w.no_kk);       // tampilkan Nomor KK
+  setNama(w.nama);
+  setStatus(w.status);    // tampilkan Status
+  setAlamat(w.alamat);
+  setNoHp(w.no_hp);
+}
 
   async function hapus(id: number) {
     if (!confirm("Yakin ingin menghapus data ini?")) return;
@@ -52,19 +55,26 @@ export default function Warga() {
   async function simpan() {
     try {
       if (editId === null) {
-        await addWarga(nik, nama, alamat, noHp);
+       await addWarga(noKK, nama, status, alamat, noHp);
         alert("Data berhasil ditambahkan");
       } else {
-        await updateWarga(editId, nik, nama, alamat, noHp);
+        await updateWarga(
+  editId,
+  noKK,
+  nama,
+  status,
+  alamat,
+  noHp
+);
         alert("Data berhasil diupdate");
         setEditId(null);
       }
 
-      setNik("");
-      setNama("");
-      setAlamat("");
-      setNoHp("");
-
+      setNoKK("");
+setNama("");
+setStatus("Anggota");
+setAlamat("");
+setNoHp("");
       loadData();
     } catch (err: any) {
       alert(err.message);
@@ -113,12 +123,12 @@ export default function Warga() {
 </label>
 
               <input
-                type="text"
-                placeholder="Masukkan Nomor KK"
-                value={nik}
-                onChange={(e) => setNik(e.target.value)}
-                className="w-full rounded-xl border border-gray-300 bg-gray-50 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-red-600"
-              />
+  type="text"
+  placeholder="Masukkan Nomor KK"
+  value={noKK}
+  onChange={(e) => setNoKK(e.target.value)}
+  className="w-full rounded-xl border border-gray-300 bg-gray-50 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-red-600"
+/>
             </div>
 
             <div>
@@ -134,6 +144,20 @@ export default function Warga() {
                 className="w-full rounded-xl border border-gray-300 bg-gray-50 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-red-600"
               />
             </div>
+            <div>
+  <label className="block text-sm font-semibold text-gray-700 mb-2">
+    Status
+  </label>
+
+  <select
+    value={status}
+    onChange={(e) => setStatus(e.target.value)}
+    className="w-full rounded-xl border border-gray-300 bg-gray-50 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-red-600"
+  >
+    <option value="Anggota">🟢 Anggota</option>
+    <option value="Non-Anggota">⚪ Non-Anggota</option>
+  </select>
+</div>
 
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
@@ -162,10 +186,24 @@ export default function Warga() {
                 className="w-full rounded-xl border border-gray-300 bg-gray-50 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-red-600"
               />
             </div>
+       
+  <div>
+  <label className="block text-sm font-semibold text-gray-700 mb-2">
+    Nomor HP
+  </label>
 
-          </div>
+  <input
+    type="text"
+    placeholder="08xxxxxxxxxx"
+    value={noHp}
+    onChange={(e) => setNoHp(e.target.value)}
+    className="w-full rounded-xl border border-gray-300 bg-gray-50 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-red-600"
+  />
+</div>
 
-          <div className="flex gap-4 mt-8">
+</div>
+
+<div className="flex gap-4 mt-8">
 
             <button
               onClick={simpan}
@@ -178,7 +216,7 @@ export default function Warga() {
               <button
                 onClick={() => {
                   setEditId(null);
-                  setNik("");
+                  setNoKK("");
                   setNama("");
                   setAlamat("");
                   setNoHp("");
@@ -207,9 +245,10 @@ export default function Warga() {
                 <tr>
                   {/* DIUBAH */}
                  <th className="px-4 py-3 text-left">Nomor KK</th>
-                  <th className="px-4 py-3 text-left">Nama</th>
-                  <th className="px-4 py-3 text-left">Alamat</th>
-                  <th className="px-4 py-3 text-left">No HP</th>
+<th className="px-4 py-3 text-left">Nama</th>
+<th className="px-4 py-3 text-center">Status</th>
+<th className="px-4 py-3 text-left">Alamat</th>
+<th className="px-4 py-3 text-left">No HP</th>
                   <th className="px-4 py-3 text-center">Aksi</th>
                 </tr>
               </thead>
@@ -221,19 +260,31 @@ export default function Warga() {
                     key={w.id}
                     className="border-b hover:bg-red-50 transition"
                   >
-                    <td className="px-4 py-4">{w.nik}</td>
+                    <td className="px-4 py-4">{w.no_kk}</td>
 
                     <td className="px-4 py-4 font-semibold">
                       {w.nama}
                     </td>
 
-                    <td className="px-4 py-4">
-                      {w.alamat}
-                    </td>
+                    <td className="px-4 py-4 font-semibold">
+  {w.nama}
+</td>
 
-                    <td className="px-4 py-4">
-                      {w.no_hp}
-                    </td>
+<td className="px-4 py-4 text-center">
+  <span
+    className={
+      w.status === "Anggota"
+        ? "bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-semibold"
+        : "bg-gray-200 text-gray-700 px-3 py-1 rounded-full text-sm font-semibold"
+    }
+  >
+    {w.status}
+  </span>
+</td>
+
+<td className="px-4 py-4">
+  {w.alamat}
+</td>
 
                     <td className="px-4 py-4">
                       <div className="flex justify-center gap-3">
