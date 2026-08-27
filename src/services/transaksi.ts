@@ -105,3 +105,17 @@ export async function deleteTransaksi(id: number) {
 
   if (error) throw error;
 }
+export async function cekTransaksiWarga(
+  warga_id: number,
+  periode_id: number
+) {
+  const { data, error } = await supabase
+    .from("transaksi")
+    .select("id")
+    .eq("warga_id", warga_id)
+    .eq("periode_id", periode_id);
+
+  if (error) throw error;
+
+  return data.length > 0;
+}

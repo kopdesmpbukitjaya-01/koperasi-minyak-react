@@ -8,8 +8,8 @@ import { getJenisBBM } from "../services/jenis_bbm";
 import {
   getTransaksi,
   addTransaksi,
-  updateTransaksi,
   deleteTransaksi,
+  cekTransaksiWarga,
 } from "../services/transaksi";
 
 export default function Transaksi() {
@@ -45,26 +45,31 @@ const [jenisBBMId, setJenisBBMId] = useState("");
 }
 
   async function simpan() {
-    try {
-      if (editId === null) {
-        await addTransaksi(
-  Number(wargaId),
-  Number(periodeId),
-  Number(jenisBBMId),
-  tanggal,
-  Number(liter)
-);
+  try {
 
-        alert("Transaksi berhasil ditambahkan");
-      } else {
-        await updateTransaksi(
-  editId,
-  Number(wargaId),
-  Number(periodeId),
-  Number(jenisBBMId),
-  tanggal,
-  Number(liter)
-);
+    if (editId === null) {
+      const sudahAda = await cekTransaksiWarga(
+        Number(wargaId),
+        Number(periodeId)
+      );
+
+      if (sudahAda) {
+        alert(
+          "⚠️ KK ini sudah melakukan pengambilan BBM pada periode ini."
+        );
+        return;
+      }
+    }
+
+
+    if (editId === null) {
+      await addTransaksi(
+        Number(wargaId),
+        Number(periodeId),
+        Number(jenisBBMId),
+        tanggal,
+        Number(liter)
+      );
         alert("Transaksi berhasil diupdate");
       }
 
@@ -209,7 +214,7 @@ const [jenisBBMId, setJenisBBMId] = useState("");
 
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Jumlah Liter
+                b.liter
               </label>
 
               <input

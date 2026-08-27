@@ -10,6 +10,7 @@ import background from "../assets/background.png";
 
 
 export default function Dashboard() {
+ 
 
 
   const [periodeAktif, setPeriodeAktif] = useState<any>(null);
@@ -19,34 +20,34 @@ export default function Dashboard() {
 
 
   useEffect(() => {
+  console.log("Dashboard dibuka");
 
-    loadDataBBM();
+  loadDataBBM();
 
-    loadDashboard();
-
-  }, []);
+  loadDashboard();
+}, []);
 
 
 
 
   async function loadDataBBM() {
+  alert("loadDataBBM dipanggil");
 
-    try {
+  try {
+    const data = await getDashboardBBM();
 
-      const data = await getDashboardBBM();
+    alert("Jumlah data: " + data.length);
 
-      console.log("DATA DASHBOARD =", data);
-
-      setDataBBM(data);
-
-
-    } catch(err:any) {
-
-      console.log(err.message);
-
-    }
-
-  }
+    setDataBBM(data);
+  } catch (err: any) {
+  alert(
+    "Message: " + err.message +
+    "\nCode: " + err.code +
+    "\nDetails: " + err.details +
+    "\nHint: " + err.hint
+  );
+}
+}
 
 
 

@@ -7,23 +7,19 @@ export async function getDashboardBBM() {
       liter,
       warga_id,
       periode (
-        id,
         nama_periode
       ),
       jenis_bbm (
-        id,
         nama
       )
     `);
 
-  if (error) {
-    throw error;
-  }
+  if (error) throw error;
 
   const hasil: any = {};
 
   data.forEach((t: any) => {
-    const key = `${t.periode.id}-${t.jenis_bbm.id}`;
+    const key = `${t.periode.nama_periode}-${t.jenis_bbm.nama}`;
 
     if (!hasil[key]) {
       hasil[key] = {
@@ -34,7 +30,7 @@ export async function getDashboardBBM() {
       };
     }
 
-    hasil[key].jumlah_kk += 1;
+    hasil[key].jumlah_kk++;
     hasil[key].liter += Number(t.liter);
   });
 
