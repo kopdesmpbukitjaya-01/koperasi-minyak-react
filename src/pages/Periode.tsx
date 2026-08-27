@@ -23,24 +23,36 @@ export default function Periode() {
 
   const [editId, setEditId] = useState<number | null>(null);
 
-
-  useEffect(() => {
-    loadData();
-  }, []);
-
-
-  async function loadData() {
-    try {
-      const data = await getPeriode();
-      setList(data);
-
-      const bbm = await getJenisBBM();
-      setJenisBBM(bbm);
-
-    } catch (err: any) {
-      alert(err.message);
-    }
+useEffect(() => {
+  console.log("LOAD JENIS BBM");
+  loadData();
+  loadJenisBBM();
+}, []);
+async function loadData() {
+  try {
+    const data = await getPeriode();
+    setList(data);
+  } catch (err: any) {
+    alert(err.message);
   }
+}
+
+async function loadJenisBBM() {
+  try {
+    const data = await getJenisBBM();
+
+    console.log("DATA =", data);
+
+    setJenisBBM(data);
+
+    if (data.length > 0) {
+      setJenisBBMId(String(data[0].id));
+    }
+  } catch (err: any) {
+    console.error(err);
+    alert(err.message);
+  }
+}
 
 
   function resetForm() {
@@ -192,7 +204,7 @@ export default function Periode() {
 
 
           <div className="grid md:grid-cols-2 gap-6">
-
+          
 
 
             <div>
@@ -224,35 +236,18 @@ export default function Periode() {
 
 
               <select
+  value={jenisBBMId}
+  onChange={(e) => setJenisBBMId(e.target.value)}
+  className="w-full rounded-xl border border-gray-300 bg-gray-50 px-4 py-3"
+>
+  <option value="">-- Pilih Jenis BBM --</option>
 
-                value={jenisBBMId}
-
-                onChange={(e)=>setJenisBBMId(e.target.value)}
-
-                className="w-full rounded-xl border border-gray-300 bg-gray-50 px-4 py-3"
-
-              >
-
-                <option value="">
-                  -- Pilih Jenis BBM --
-                </option>
-
-
-                {jenisBBM.map((bbm)=> (
-
-                  <option
-                    key={bbm.id}
-                    value={bbm.id}
-                  >
-
-                    {bbm.nama_bbm}
-
-                  </option>
-
-                ))}
-
-
-              </select>
+  {jenisBBM.map((bbm) => (
+    <option key={bbm.id} value={bbm.id}>
+      {bbm.nama}
+    </option>
+  ))}
+</select>
 
 
             </div>
@@ -439,7 +434,7 @@ export default function Periode() {
 
                   <td className="px-4 py-4 text-center">
 
-                    {p.jenis_bbm?.nama_bbm || "-"}
+                    {p.jenis_bbm?.nama || "-"}
 
                   </td>
 

@@ -20,14 +20,14 @@ export async function addWarga(
   const { error } = await supabase
     .from("warga")
     .insert([
-      {
-        no_kk,
-        nama,
-        status,
-        alamat,
-        no_hp,
-      },
-    ]);
+  {
+    no_kk,
+    nama,
+    status,
+    alamat,
+    no_hp,
+  },
+])
 
   if (error) throw error;
 }
@@ -43,12 +43,12 @@ export async function updateWarga(
   const { error } = await supabase
     .from("warga")
     .update({
-      no_kk,
-      nama,
-      status,
-      alamat,
-      no_hp,
-    })
+  no_kk,
+  nama,
+  status,
+  alamat,
+  no_hp,
+})
     .eq("id", id);
 
   if (error) throw error;

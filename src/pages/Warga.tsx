@@ -12,6 +12,7 @@ export default function Warga() {
   const navigate = useNavigate();
 
   const [list, setList] = useState<any[]>([]);
+  const [search, setSearch] = useState("");
   const [nama, setNama] = useState("");
   const [noKK, setNoKK] = useState("");
 const [status, setStatus] = useState("Anggota");
@@ -187,19 +188,7 @@ setNoHp("");
               />
             </div>
        
-  <div>
-  <label className="block text-sm font-semibold text-gray-700 mb-2">
-    Nomor HP
-  </label>
-
-  <input
-    type="text"
-    placeholder="08xxxxxxxxxx"
-    value={noHp}
-    onChange={(e) => setNoHp(e.target.value)}
-    className="w-full rounded-xl border border-gray-300 bg-gray-50 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-red-600"
-  />
-</div>
+  
 
 </div>
 
@@ -237,6 +226,15 @@ setNoHp("");
           <h2 className="text-2xl font-bold text-red-700 mb-6">
             Daftar Warga
           </h2>
+          <div className="mb-6">
+  <input
+    type="text"
+    placeholder="🔍 Cari nama warga..."
+    value={search}
+    onChange={(e) => setSearch(e.target.value)}
+    className="w-full md:w-96 rounded-xl border border-gray-300 bg-gray-50 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-red-600"
+  />
+</div>
 
           <div className="overflow-x-auto">
 
@@ -254,72 +252,61 @@ setNoHp("");
               </thead>
 
               <tbody>
+ {list
+  .filter((w) =>
+    w.nama.toLowerCase().includes(search.toLowerCase())
+  )
+  .map((w) => (
+    <tr
+      key={w.id}
+      className="border-b hover:bg-red-50 transition"
+    >
+      <td className="px-4 py-4">{w.no_kk}</td>
 
-                {list.map((w) => (
-                  <tr
-                    key={w.id}
-                    className="border-b hover:bg-red-50 transition"
-                  >
-                    <td className="px-4 py-4">{w.no_kk}</td>
+      <td className="px-4 py-4 font-semibold">
+        {w.nama}
+      </td>
 
-                    <td className="px-4 py-4 font-semibold">
-                      {w.nama}
-                    </td>
+      <td className="px-4 py-4 text-center">
+        <span
+          className={
+            w.status === "Anggota"
+              ? "bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-semibold"
+              : "bg-gray-200 text-gray-700 px-3 py-1 rounded-full text-sm font-semibold"
+          }
+        >
+          {w.status}
+        </span>
+      </td>
 
-                    <td className="px-4 py-4 font-semibold">
-  {w.nama}
-</td>
+      <td className="px-4 py-4">
+        {w.alamat}
+      </td>
 
-<td className="px-4 py-4 text-center">
-  <span
-    className={
-      w.status === "Anggota"
-        ? "bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-semibold"
-        : "bg-gray-200 text-gray-700 px-3 py-1 rounded-full text-sm font-semibold"
-    }
-  >
-    {w.status}
-  </span>
-</td>
+      <td className="px-4 py-4">
+        {w.no_hp}
+      </td>
 
-<td className="px-4 py-4">
-  {w.alamat}
-</td>
+      <td className="px-4 py-4">
+        <div className="flex justify-center gap-3">
+          <button
+            onClick={() => edit(w)}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow transition"
+          >
+            ✏️ Edit
+          </button>
 
-                    <td className="px-4 py-4">
-                      <div className="flex justify-center gap-3">
-
-                        <button
-                          onClick={() => edit(w)}
-                          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow transition"
-                        >
-                          ✏️ Edit
-                        </button>
-
-                        <button
-                          onClick={() => hapus(w.id)}
-                          className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg shadow transition"
-                        >
-                          🗑️ Hapus
-                        </button>
-
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-
-                {list.length === 0 && (
-                  <tr>
-                    <td
-                      colSpan={5}
-                      className="text-center py-10 text-gray-500"
-                    >
-                      Belum ada data warga.
-                    </td>
-                  </tr>
-                )}
-
-              </tbody>
+          <button
+            onClick={() => hapus(w.id)}
+            className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg shadow transition"
+          >
+            🗑️ Hapus
+          </button>
+        </div>
+      </td>
+    </tr>
+  ))}
+</tbody>
 
             </table>
 

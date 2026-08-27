@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Layout from "../components/Layout";
 
+import { getDashboardBBM } from "../services/dashboard";
 import { getPeriode } from "../services/periode";
 
 import logo from "../assets/logo.png";
@@ -13,13 +14,40 @@ export default function Dashboard() {
 
   const [periodeAktif, setPeriodeAktif] = useState<any>(null);
 
+  const [dataBBM, setDataBBM] = useState<any[]>([]);
+
 
 
   useEffect(() => {
 
+    loadDataBBM();
+
     loadDashboard();
 
   }, []);
+
+
+
+
+  async function loadDataBBM() {
+
+    try {
+
+      const data = await getDashboardBBM();
+
+      console.log("DATA DASHBOARD =", data);
+
+      setDataBBM(data);
+
+
+    } catch(err:any) {
+
+      console.log(err.message);
+
+    }
+
+  }
+
 
 
 
@@ -31,7 +59,7 @@ export default function Dashboard() {
 
 
       const aktif = data.find(
-        (p:any) => p.aktif === true
+        (p:any)=>p.aktif === true
       );
 
 
@@ -72,8 +100,6 @@ export default function Dashboard() {
 
 
 
-
-
           <div className="rounded-3xl overflow-hidden shadow-2xl mb-8">
 
 
@@ -89,8 +115,6 @@ export default function Dashboard() {
 
 
           </div>
-
-
 
 
 
@@ -140,12 +164,7 @@ export default function Dashboard() {
 
 
             </div>
-
-
-
-
-
-            <div className="bg-red-700 text-white rounded-2xl shadow-xl px-8 py-6">
+                        <div className="bg-red-700 text-white rounded-2xl shadow-xl px-8 py-6">
 
 
               <h2 className="text-xl font-bold">
@@ -161,12 +180,7 @@ export default function Dashboard() {
             </div>
 
 
-
           </div>
-
-
-
-
 
 
 
@@ -176,44 +190,12 @@ export default function Dashboard() {
 
 
 
-
-
-            {/* Warga */}
-
-            <div className="bg-white rounded-3xl shadow-xl p-7">
-
-
-              <p className="text-gray-500 uppercase text-sm">
-                Data Warga
-              </p>
-
-
-              <h2 className="text-5xl font-bold text-red-600 mt-3">
-                0
-              </h2>
-
-
-              <div className="text-5xl mt-4">
-                👥
-              </div>
-
-
-            </div>
-
-
-
-
-
-
-            {/* Periode Aktif */}
-
             <div className="bg-white rounded-3xl shadow-xl p-7">
 
 
               <p className="text-gray-500 uppercase text-sm">
                 Periode Aktif
               </p>
-
 
 
               <h2 className="text-3xl font-bold text-blue-600 mt-3">
@@ -223,13 +205,11 @@ export default function Dashboard() {
               </h2>
 
 
-
               <p className="text-gray-600 mt-3">
 
                 {periodeAktif?.jenis_bbm?.nama || "-"}
 
               </p>
-
 
 
               <div className="text-5xl mt-4">
@@ -243,18 +223,12 @@ export default function Dashboard() {
 
 
 
-
-
-
-            {/* Kuota */}
-
             <div className="bg-white rounded-3xl shadow-xl p-7">
 
 
               <p className="text-gray-500 uppercase text-sm">
                 Kuota Liter
               </p>
-
 
 
               <h2 className="text-5xl font-bold text-orange-600 mt-3">
@@ -264,11 +238,9 @@ export default function Dashboard() {
               </h2>
 
 
-
               <p className="text-gray-600">
                 Liter
               </p>
-
 
 
               <div className="text-5xl mt-4">
@@ -282,28 +254,57 @@ export default function Dashboard() {
 
 
 
+            <div className="bg-white rounded-3xl shadow-xl p-7">
+
+
+              <p className="text-gray-500 uppercase text-sm">
+                Jenis BBM
+              </p>
+
+
+              <h2 className="text-4xl font-bold text-green-600 mt-3">
+
+                {dataBBM.length}
+
+              </h2>
+
+
+              <p className="text-gray-600 mt-2">
+                Rekap Penyaluran
+              </p>
+
+
+              <div className="text-5xl mt-4">
+                ⛽
+              </div>
+
+
+            </div>
 
 
 
-            {/* Laporan */}
+
 
             <div className="bg-white rounded-3xl shadow-xl p-7">
 
 
               <p className="text-gray-500 uppercase text-sm">
-                Laporan
+                Status
               </p>
 
 
-
-              <h2 className="text-5xl font-bold text-green-600 mt-3">
-                PDF
+              <h2 className="text-4xl font-bold text-red-600 mt-3">
+                Aktif
               </h2>
 
 
+              <p className="text-gray-600 mt-2">
+                Sistem berjalan
+              </p>
+
 
               <div className="text-5xl mt-4">
-                📄
+                ✅
               </div>
 
 
@@ -312,10 +313,128 @@ export default function Dashboard() {
 
 
           </div>
+                    <div className="mt-12 bg-white rounded-3xl shadow-xl p-8">
+
+
+            <h2 className="text-3xl font-bold text-red-700 mb-8">
+              Rekap Penyaluran BBM
+            </h2>
+
+
+
+            <div className="overflow-x-auto">
+
+
+              <table className="w-full">
+
+
+                <thead className="bg-red-700 text-white">
+
+
+                  <tr>
+
+                    <th className="px-4 py-3 text-left">
+                      Periode
+                    </th>
+
+
+                    <th className="px-4 py-3 text-left">
+                      Jenis BBM
+                    </th>
+
+
+                    <th className="px-4 py-3 text-center">
+                      Jumlah KK
+                    </th>
+
+
+                    <th className="px-4 py-3 text-center">
+                      Liter
+                    </th>
+
+
+                  </tr>
+
+
+                </thead>
+
+
+
+                <tbody>
+
+
+                  {dataBBM.map((item:any,index:number)=>(
+
+
+                    <tr
+                      key={index}
+                      className="border-b hover:bg-red-50"
+                    >
+
+
+                      <td className="px-4 py-4">
+                        {item.periode}
+                      </td>
+
+
+
+                      <td className="px-4 py-4 font-semibold">
+                        {item.jenis_bbm}
+                      </td>
+
+
+
+                      <td className="px-4 py-4 text-center">
+                        {item.jumlah_kk} KK
+                      </td>
+
+
+
+                      <td className="px-4 py-4 text-center font-bold text-blue-600">
+                        {item.liter} Liter
+                      </td>
+
+
+
+                    </tr>
+
+
+                  ))}
 
 
 
 
+                  {dataBBM.length === 0 && (
+
+
+                    <tr>
+
+                      <td
+                        colSpan={4}
+                        className="text-center py-10 text-gray-500"
+                      >
+
+                        Belum ada data transaksi BBM
+
+                      </td>
+
+
+                    </tr>
+
+
+                  )}
+
+
+                </tbody>
+
+
+              </table>
+
+
+            </div>
+
+
+          </div>
 
 
 
@@ -330,13 +449,10 @@ export default function Dashboard() {
 
 
 
-
-
             <table className="w-full">
 
 
               <tbody>
-
 
 
                 <tr className="border-b">
@@ -347,9 +463,7 @@ export default function Dashboard() {
 
 
                   <td>
-
                     {periodeAktif?.nama_periode || "-"}
-
                   </td>
 
 
@@ -358,8 +472,8 @@ export default function Dashboard() {
 
 
 
-
                 <tr className="border-b">
+
 
                   <td className="py-4 font-semibold">
                     Jenis BBM
@@ -367,34 +481,29 @@ export default function Dashboard() {
 
 
                   <td>
-
                     {periodeAktif?.jenis_bbm?.nama || "-"}
-
                   </td>
 
 
                 </tr>
-
 
 
 
 
                 <tr>
 
+
                   <td className="py-4 font-semibold">
-                    Kuota
+                    Total Data BBM
                   </td>
 
 
                   <td>
-
-                    {periodeAktif?.kuota_liter || 0} Liter
-
+                    {dataBBM.length} Rekap
                   </td>
 
 
                 </tr>
-
 
 
               </tbody>
@@ -403,12 +512,7 @@ export default function Dashboard() {
             </table>
 
 
-
           </div>
-
-
-
-
 
 
 
@@ -418,29 +522,21 @@ export default function Dashboard() {
 
 
             <h2 className="text-xl font-bold text-red-700">
-
               PERTASHOP KOPERASI DESA MERAH PUTIH
-
             </h2>
 
 
             <p className="text-gray-600 mt-2">
-
               Bukit Jaya • Kecamatan Bulik Timur
-
             </p>
 
 
             <p className="text-gray-400 text-sm mt-4">
-
               © 2026 Sistem Informasi Pertashop KDMP Bukit Jaya
-
             </p>
 
 
           </div>
-
-
 
 
 

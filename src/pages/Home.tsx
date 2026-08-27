@@ -20,15 +20,15 @@ export default function Home() {
     setTotalKK(kk ?? 0);
 
     // Sudah Mengambil
-    const { count: ambil } = await supabase
-      .from("pengambilan")
-      .select("*", { count: "exact", head: true });
+const { count: ambil } = await supabase
+  .from("transaksi")
+  .select("*", { count: "exact", head: true });
 
-    setSudahAmbil(ambil ?? 0);
+setSudahAmbil(ambil ?? 0);
 
     // Total Liter
     const { data } = await supabase
-      .from("pengambilan")
+      .from("transaksi")
       .select("jumlah_liter");
 
     const total =
