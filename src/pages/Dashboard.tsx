@@ -20,7 +20,7 @@ export default function Dashboard() {
 
 
   useEffect(() => {
-  console.log("Dashboard dibuka");
+
 
   loadDataBBM();
 
@@ -31,12 +31,11 @@ export default function Dashboard() {
 
 
   async function loadDataBBM() {
-  alert("loadDataBBM dipanggil");
-
+  
   try {
     const data = await getDashboardBBM();
 
-    alert("Jumlah data: " + data.length);
+
 
     setDataBBM(data);
   } catch (err: any) {
