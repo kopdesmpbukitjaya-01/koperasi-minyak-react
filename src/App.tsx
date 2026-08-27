@@ -9,6 +9,7 @@ import Transaksi from "./pages/Transaksi";
 import Laporan from "./pages/Laporan";
 import PrintLaporan from "./pages/PrintLaporan";
 
+
 export default function App() {
   return (
     <BrowserRouter>
@@ -24,9 +25,10 @@ export default function App() {
         <Route path="/periode" element={<Periode />} />
 
         <Route path="/transaksi" element={<Transaksi />} />
-
+         
         <Route path="/laporan" element={<Laporan />} />
         <Route path="/print-laporan" element={<PrintLaporan />} />
+       
       </Routes>
     </BrowserRouter>
   );
