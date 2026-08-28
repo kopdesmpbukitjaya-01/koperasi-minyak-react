@@ -11,31 +11,88 @@ export default function Home() {
     loadData();
   }, []);
 
-  async function loadData() {
-    // Total KK
-    const { count: kk } = await supabase
-      .from("warga")
-      .select("*", { count: "exact", head: true });
 
-    setTotalKK(kk ?? 0);
+async function loadData() {
+  // =========================
+  // 1. AMBIL PERIODE AKTIF
+  // =========================
+  const { data: periodeAktif, error: periodeError } = await supabase
+    .from("periode")
+    .select("id, nama_periode, kuota_liter, jenis_bbm_id")
+    .eq("aktif", true)
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
 
-    // Sudah Mengambil
-const { count: ambil } = await supabase
-  .from("transaksi")
-  .select("*", { count: "exact", head: true });
-
-setSudahAmbil(ambil ?? 0);
-
-    // Total Liter
-    const { data } = await supabase
-      .from("transaksi")
-      .select("jumlah_liter");
-
-    const total =
-      data?.reduce((a, b) => a + Number(b.jumlah_liter), 0) ?? 0;
-
-    setTotalLiter(total);
+  if (periodeError) {
+    console.error("Gagal mengambil periode aktif:", periodeError);
+    return;
   }
+
+  if (!periodeAktif) {
+    console.warn("Tidak ada periode aktif.");
+
+    setTotalKK(0);
+    setSudahAmbil(0);
+    setTotalLiter(0);
+
+    return;
+  }
+
+  const periodeId = periodeAktif.id;
+
+  console.log("Periode aktif:", periodeAktif);
+
+  // =========================
+  // 2. TOTAL PELANGGAN
+  // =========================
+  const { count: kk, error: kkError } = await supabase
+    .from("warga")
+    .select("*", {
+      count: "exact",
+      head: true,
+    });
+
+  if (kkError) {
+    console.error("Gagal mengambil total pelanggan:", kkError);
+    return;
+  }
+
+  setTotalKK(kk ?? 0);
+
+  // =========================
+  // 3. AMBIL TRANSAKSI PERIODE AKTIF
+  // =========================
+  const { data: transaksi, error: transaksiError } = await supabase
+    .from("transaksi")
+    .select("warga_id, liter")
+    .eq("periode_id", periodeId);
+
+  if (transaksiError) {
+    console.error("Gagal mengambil transaksi:", transaksiError);
+    return;
+  }
+
+  // =========================
+  // 4. HITUNG PELANGGAN UNIK
+  // =========================
+  const wargaSudahAmbil = new Set(
+    transaksi?.map((item) => item.warga_id)
+  );
+
+  setSudahAmbil(wargaSudahAmbil.size);
+
+  // =========================
+  // 5. HITUNG TOTAL LITER
+  // =========================
+  const total = transaksi?.reduce(
+    (total, item) => total + Number(item.liter || 0),
+    0
+  ) ?? 0;
+
+  setTotalLiter(total);
+}
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-red-600 via-red-500 to-red-700">
