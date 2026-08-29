@@ -204,12 +204,13 @@ setNoHp("");
             {editId !== null && (
               <button
                 onClick={() => {
-                  setEditId(null);
-                  setNoKK("");
-                  setNama("");
-                  setAlamat("");
-                  setNoHp("");
-                }}
+  setEditId(null);
+  setNoKK("");
+  setNama("");
+  setStatus("Anggota");
+  setAlamat("");
+  setNoHp("");
+}}
                 className="bg-gray-500 hover:bg-gray-600 text-white px-8 py-3 rounded-xl shadow-lg transition font-semibold"
               >
                 Batal
@@ -252,60 +253,100 @@ setNoHp("");
               </thead>
 
               <tbody>
- {list
-  .filter((w) =>
-    w.nama.toLowerCase().includes(search.toLowerCase())
-  )
-  .map((w) => (
-    <tr
-      key={w.id}
-      className="border-b hover:bg-red-50 transition"
-    >
-      <td className="px-4 py-4">{w.no_kk}</td>
+  {[...list]
+    .filter((w) =>
+      String(w.nama ?? "")
+        .toLowerCase()
+        .includes(search.toLowerCase())
+    )
+    .sort((a, b) => {
+      const statusA = String(a.status ?? "")
+        .trim()
+        .toLowerCase();
 
-      <td className="px-4 py-4 font-semibold">
-        {w.nama}
-      </td>
+      const statusB = String(b.status ?? "")
+        .trim()
+        .toLowerCase();
 
-      <td className="px-4 py-4 text-center">
-        <span
-          className={
-            w.status === "Anggota"
-              ? "bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-semibold"
-              : "bg-gray-200 text-gray-700 px-3 py-1 rounded-full text-sm font-semibold"
-          }
-        >
-          {w.status}
-        </span>
-      </td>
+      // =========================
+      // ANGGOTA SELALU PALING ATAS
+      // =========================
+      if (statusA === "anggota" && statusB !== "anggota") {
+        return -1;
+      }
 
-      <td className="px-4 py-4">
-        {w.alamat}
-      </td>
+      if (statusA !== "anggota" && statusB === "anggota") {
+        return 1;
+      }
 
-      <td className="px-4 py-4">
-        {w.no_hp}
-      </td>
+      // =========================
+      // JIKA STATUS SAMA
+      // URUTKAN BERDASARKAN NAMA
+      // =========================
+      return String(a.nama ?? "").localeCompare(
+        String(b.nama ?? ""),
+        "id",
+        {
+          sensitivity: "base",
+        }
+      );
+    })
+    .map((w) => (
+      <tr
+        key={w.id}
+        className="border-b hover:bg-red-50 transition"
+      >
+        <td className="px-4 py-4">
+          {w.no_kk}
+        </td>
 
-      <td className="px-4 py-4">
-        <div className="flex justify-center gap-3">
-          <button
-            onClick={() => edit(w)}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow transition"
+        <td className="px-4 py-4 font-semibold">
+          {w.nama}
+        </td>
+
+        <td className="px-4 py-4 text-center">
+          <span
+            className={
+              String(w.status ?? "")
+                .trim()
+                .toLowerCase() === "anggota"
+                ? "bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-semibold"
+                : "bg-gray-200 text-gray-700 px-3 py-1 rounded-full text-sm font-semibold"
+            }
           >
-            ✏️ Edit
-          </button>
+            {w.status}
+          </span>
+        </td>
 
-          <button
-            onClick={() => hapus(w.id)}
-            className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg shadow transition"
-          >
-            🗑️ Hapus
-          </button>
-        </div>
-      </td>
-    </tr>
-  ))}
+        <td className="px-4 py-4">
+          {w.alamat}
+        </td>
+
+        <td className="px-4 py-4">
+          {w.no_hp}
+        </td>
+
+        <td className="px-4 py-4">
+          <div className="flex justify-center gap-3">
+
+            <button
+              onClick={() => edit(w)}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow transition"
+            >
+              ✏️ Edit
+            </button>
+
+            <button
+              onClick={() => hapus(w.id)}
+              className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg shadow transition"
+            >
+              🗑️ Hapus
+            </button>
+
+          </div>
+        </td>
+      </tr>
+    ))}
 </tbody>
 
             </table>

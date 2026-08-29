@@ -1,13 +1,36 @@
 import { supabase } from "../lib/supabase";
 
+
 export async function getWarga() {
   const { data, error } = await supabase
     .from("warga")
-    .select("*")
-    .order("nama");
+    .select("*");
 
   if (error) throw error;
-  return data;
+
+  return (data ?? []).sort((a, b) => {
+    const statusA = String(a.status ?? "").trim().toLowerCase();
+    const statusB = String(b.status ?? "").trim().toLowerCase();
+
+    const isAnggotaA = statusA === "anggota";
+    const isAnggotaB = statusB === "anggota";
+
+    // Anggota selalu di atas
+    if (isAnggotaA && !isAnggotaB) {
+      return -1;
+    }
+
+    if (!isAnggotaA && isAnggotaB) {
+      return 1;
+    }
+
+    // Dalam kelompok yang sama, urut berdasarkan nama
+    return String(a.nama ?? "").localeCompare(
+      String(b.nama ?? ""),
+      "id",
+      { sensitivity: "base" }
+    );
+  });
 }
 
 export async function addWarga(
