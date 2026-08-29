@@ -1,5 +1,7 @@
+import logo from "../assets/logo_crop.png";
 interface IdCardProps {
   nama: string;
+  noKK: string;
   kodeWarga: string;
   status: string;
   onClose: () => void;
@@ -7,6 +9,7 @@ interface IdCardProps {
 
 export default function IdCard({
   nama,
+  noKK,
   kodeWarga,
   status,
   onClose,
@@ -31,14 +34,28 @@ export default function IdCard({
           </div>
 
           {/* Isi */}
-          <div className="flex flex-1 flex-col items-center justify-center px-3">
-            <div className="mb-1 text-[9px] font-medium text-gray-500">
+<div className="flex flex-1 flex-col items-center justify-center px-3">
+
+  <img
+    src={logo}
+    alt="Logo Koperasi"
+    className="mb-2 h-12 w-12 object-contain"
+  />
+
+  <div className="mb-1 text-[9px] font-medium text-gray-500">
               NAMA WARGA
             </div>
 
             <div className="mb-3 text-center text-[15px] font-bold uppercase text-gray-800">
               {nama}
             </div>
+            <div className="mt-1 text-[8px] text-gray-500">
+  NOMOR KK
+</div>
+
+<div className="mb-3 text-[10px] font-semibold text-gray-800">
+  {noKK}
+</div>
 
             <div className="rounded-md border-2 border-red-700 px-4 py-1">
               <div className="text-center text-[16px] font-bold tracking-wider text-red-700">
@@ -48,7 +65,7 @@ export default function IdCard({
 
             <div className="mt-3 rounded-full bg-gray-100 px-4 py-1">
               <div className="text-[9px] font-bold uppercase text-gray-700">
-                {status}
+                {status === "Anggota" ? "ANGGOTA" : "NON ANGGOTA"}
               </div>
             </div>
           </div>
