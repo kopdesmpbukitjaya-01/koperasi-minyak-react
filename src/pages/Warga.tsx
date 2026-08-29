@@ -495,16 +495,17 @@ const [selectedWarga, setSelectedWarga] = useState<any | null>(null);
 
       </div>
       
-```tsx
+
 {selectedWarga && (
   <IdCard
-    nama={selectedWarga.nama}
-    kodeWarga={selectedWarga.kode_warga}
-    status={selectedWarga.status}
-    onClose={() => setSelectedWarga(null)}
-  />
+  nama={selectedWarga.nama}
+  noKK={selectedWarga.no_kk}
+  kodeWarga={selectedWarga.kode_warga}
+  status={selectedWarga.status}
+  onClose={() => setSelectedWarga(null)}
+/>
 )}
-```
+
 
     </Layout>
   );
