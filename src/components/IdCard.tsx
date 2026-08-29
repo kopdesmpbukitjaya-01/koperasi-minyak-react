@@ -1,3 +1,4 @@
+// Deploy trigger
 import logo from "../assets/logo_crop.png";
 interface IdCardProps {
   nama: string;
