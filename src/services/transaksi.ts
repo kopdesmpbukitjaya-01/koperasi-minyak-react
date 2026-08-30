@@ -33,7 +33,25 @@ export async function addTransaksi(
   tanggal: string,
   liter: number
 ) {
-  // Ambil harga dari tabel jenis_bbm
+  // =====================================================
+  // CEK TRANSAKSI YANG SUDAH ADA
+  // =====================================================
+
+  const sudahAda = await cekTransaksiWarga(
+    warga_id,
+    periode_id
+  );
+
+  if (sudahAda) {
+    throw new Error(
+      "Warga ini sudah melakukan pengambilan BBM pada periode tersebut."
+    );
+  }
+
+  // =====================================================
+  // AMBIL HARGA BBM
+  // =====================================================
+
   const { data: bbm, error: errBBM } = await supabase
     .from("jenis_bbm")
     .select("harga")
@@ -44,6 +62,10 @@ export async function addTransaksi(
 
   const harga = Number(bbm.harga);
   const total = harga * liter;
+
+  // =====================================================
+  // SIMPAN TRANSAKSI
+  // =====================================================
 
   const { error } = await supabase
     .from("transaksi")
@@ -59,7 +81,20 @@ export async function addTransaksi(
       },
     ]);
 
-  if (error) throw error;
+  // =====================================================
+  // DATABASE MENOLAK DUPLIKAT
+  // UNIQUE (warga_id, periode_id)
+  // =====================================================
+
+  if (error) {
+    if (error.code === "23505") {
+      throw new Error(
+        "Warga ini sudah melakukan pengambilan BBM pada periode tersebut."
+      );
+    }
+
+    throw error;
+  }
 }
 
 export async function updateTransaksi(
@@ -113,9 +148,10 @@ export async function cekTransaksiWarga(
     .from("transaksi")
     .select("id")
     .eq("warga_id", warga_id)
-    .eq("periode_id", periode_id);
+    .eq("periode_id", periode_id)
+    .limit(1);
 
   if (error) throw error;
 
-  return data.length > 0;
+  return (data?.length ?? 0) > 0;
 }

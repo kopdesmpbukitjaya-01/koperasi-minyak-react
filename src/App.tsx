@@ -8,17 +8,41 @@ import Periode from "./pages/Periode";
 import Transaksi from "./pages/Transaksi";
 import Laporan from "./pages/Laporan";
 import PrintLaporan from "./pages/PrintLaporan";
+import PrintIdCard from "./pages/PrintIdCard";
+
 import ProtectedRoute from "./components/ProtectedRoute";
 
+
 export default function App() {
+
   return (
     <BrowserRouter>
-      <Routes>
-        {/* Halaman umum */}
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
 
-        {/* Halaman admin */}
+      <Routes>
+
+
+        {/* =========================
+            HALAMAN UMUM
+        ========================== */}
+
+        <Route
+          path="/"
+          element={<Home />}
+        />
+
+
+        <Route
+          path="/login"
+          element={<Login />}
+        />
+
+
+
+        {/* =========================
+            HALAMAN ADMIN
+        ========================== */}
+
+
         <Route
           path="/dashboard"
           element={
@@ -27,6 +51,7 @@ export default function App() {
             </ProtectedRoute>
           }
         />
+
 
         <Route
           path="/warga"
@@ -37,6 +62,7 @@ export default function App() {
           }
         />
 
+
         <Route
           path="/periode"
           element={
@@ -45,6 +71,7 @@ export default function App() {
             </ProtectedRoute>
           }
         />
+
 
         <Route
           path="/transaksi"
@@ -55,6 +82,7 @@ export default function App() {
           }
         />
 
+
         <Route
           path="/laporan"
           element={
@@ -64,6 +92,7 @@ export default function App() {
           }
         />
 
+
         <Route
           path="/print-laporan"
           element={
@@ -72,7 +101,23 @@ export default function App() {
             </ProtectedRoute>
           }
         />
+
+
+        {/* CETAK ID CARD WARGA */}
+
+        <Route
+          path="/print-id-card"
+          element={
+            <ProtectedRoute>
+              <PrintIdCard />
+            </ProtectedRoute>
+          }
+        />
+
+
       </Routes>
+
+
     </BrowserRouter>
   );
 }

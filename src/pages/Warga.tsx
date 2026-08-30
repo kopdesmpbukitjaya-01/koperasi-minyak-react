@@ -318,9 +318,21 @@ const [selectedWarga, setSelectedWarga] = useState<any | null>(null);
 
         <div className="bg-white rounded-3xl shadow-xl p-8">
 
-          <h2 className="text-2xl font-bold text-red-700 mb-6">
-            Daftar Warga
-          </h2>
+          <div className="mb-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+
+  <h2 className="text-2xl font-bold text-red-700">
+    Daftar Warga
+  </h2>
+
+  <button
+    type="button"
+    onClick={() => navigate("/print-id-card")}
+    className="bg-red-700 hover:bg-red-800 text-white px-6 py-3 rounded-xl shadow-lg transition font-semibold"
+  >
+    📄 Download Semua ID Card
+  </button>
+
+</div>
 
           {/* PENCARIAN */}
 
@@ -497,13 +509,29 @@ const [selectedWarga, setSelectedWarga] = useState<any | null>(null);
       
 
 {selectedWarga && (
-  <IdCard
-  nama={selectedWarga.nama}
-  noKK={selectedWarga.no_kk}
-  kodeWarga={selectedWarga.kode_warga}
-  status={selectedWarga.status}
-  onClose={() => setSelectedWarga(null)}
-/>
+  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+
+    <div className="relative">
+
+      <IdCard
+        nama={selectedWarga.nama}
+        noKK={selectedWarga.no_kk}
+        kodeWarga={selectedWarga.kode_warga}
+        status={selectedWarga.status}
+      />
+
+
+      <button
+        type="button"
+        onClick={() => setSelectedWarga(null)}
+        className="absolute -right-3 -top-3 flex h-8 w-8 items-center justify-center rounded-full bg-gray-800 text-lg text-white shadow-lg hover:bg-gray-700"
+      >
+        ×
+      </button>
+
+    </div>
+
+  </div>
 )}
 
 

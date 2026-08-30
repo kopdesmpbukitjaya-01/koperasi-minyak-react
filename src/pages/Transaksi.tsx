@@ -8,6 +8,7 @@ import { getJenisBBM } from "../services/jenis_bbm";
 import {
   getTransaksi,
   addTransaksi,
+  updateTransaksi,
   deleteTransaksi,
   cekTransaksiWarga,
 } from "../services/transaksi";
@@ -20,7 +21,8 @@ export default function Transaksi() {
 const [jenisBBMId, setJenisBBMId] = useState("");
   const [warga, setWarga] = useState<any[]>([]);
   const [periode, setPeriode] = useState<any[]>([]);
-
+  const [filterPeriodeId, setFilterPeriodeId] = useState("");
+const [saving, setSaving] = useState(false);
   const [wargaId, setWargaId] = useState("");
   const [periodeId, setPeriodeId] = useState("");
   const [tanggal, setTanggal] = useState("");
@@ -36,31 +38,69 @@ const [jenisBBMId, setJenisBBMId] = useState("");
   async function loadData() {
   setList(await getTransaksi());
   setWarga(await getWarga());
-  setPeriode(await getPeriode());
+
+  const dataPeriode = await getPeriode();
+
+  setPeriode(dataPeriode);
+
+  // Cari periode yang aktif
+  const periodeAktif = dataPeriode.find(
+    (p: any) =>
+      p.status === "Aktif" ||
+      p.aktif === true
+  );
+
+  if (periodeAktif) {
+    setFilterPeriodeId(
+      periodeAktif.id.toString()
+    );
+  }
 
   const bbm = await getJenisBBM();
+
   console.log("BBM =", bbm);
 
   setJenisBBM(bbm);
 }
 
   async function simpan() {
+  if (saving) return;
+
+  setSaving(true);
+
   try {
+    // =====================================================
+    // VALIDASI
+    // =====================================================
 
-    if (editId === null) {
-      const sudahAda = await cekTransaksiWarga(
-        Number(wargaId),
-        Number(periodeId)
-      );
-
-      if (sudahAda) {
-        alert(
-          "⚠️ KK ini sudah melakukan pengambilan BBM pada periode ini."
-        );
-        return;
-      }
+    if (!wargaId) {
+      alert("⚠️ Silakan pilih warga.");
+      return;
     }
 
+    if (!jenisBBMId) {
+      alert("⚠️ Silakan pilih jenis BBM.");
+      return;
+    }
+
+    if (!periodeId) {
+      alert("⚠️ Silakan pilih periode.");
+      return;
+    }
+
+    if (!tanggal) {
+      alert("⚠️ Silakan pilih tanggal pengambilan.");
+      return;
+    }
+
+    if (!liter || Number(liter) <= 0) {
+      alert("⚠️ Jumlah liter harus lebih dari 0.");
+      return;
+    }
+
+    // =====================================================
+    // TAMBAH TRANSAKSI BARU
+    // =====================================================
 
     if (editId === null) {
       await addTransaksi(
@@ -70,21 +110,108 @@ const [jenisBBMId, setJenisBBMId] = useState("");
         tanggal,
         Number(liter)
       );
-        alert("Transaksi berhasil diupdate");
+
+      alert("✅ Transaksi berhasil disimpan.");
+    }
+
+    // =====================================================
+    // UPDATE TRANSAKSI
+    // =====================================================
+
+    else {
+      const transaksiLama = list.find(
+        (t) => t.id === editId
+      );
+
+      if (!transaksiLama) {
+        alert("❌ Data transaksi tidak ditemukan.");
+        return;
       }
 
-      setEditId(null);
-      setWargaId("");
-      setPeriodeId("");
-      setJenisBBMId("");
-      setTanggal(new Date().toISOString().substring(0, 10));
-      setLiter("");
+      const wargaBerubah =
+        Number(transaksiLama.warga_id) !==
+        Number(wargaId);
 
-      loadData();
-    } catch (err: any) {
-      alert(err.message);
+      const periodeBerubah =
+        Number(transaksiLama.periode_id) !==
+        Number(periodeId);
+
+      // Hanya cek duplikat jika warga
+      // atau periode memang berubah
+      if (wargaBerubah || periodeBerubah) {
+        const sudahAda =
+          await cekTransaksiWarga(
+            Number(wargaId),
+            Number(periodeId)
+          );
+
+        if (sudahAda) {
+          alert(
+            "⚠️ Warga ini sudah melakukan pengambilan BBM pada periode tersebut."
+          );
+
+          return;
+        }
+      }
+
+      await updateTransaksi(
+        editId,
+        Number(wargaId),
+        Number(periodeId),
+        Number(jenisBBMId),
+        tanggal,
+        Number(liter)
+      );
+
+      alert("✅ Transaksi berhasil diperbarui.");
     }
+
+    // =====================================================
+    // RESET FORM
+    // =====================================================
+
+    setEditId(null);
+    setWargaId("");
+    setPeriodeId("");
+    setJenisBBMId("");
+
+    setTanggal(
+      new Date()
+        .toISOString()
+        .substring(0, 10)
+    );
+
+    setLiter("");
+
+    // =====================================================
+    // REFRESH DATA
+    // =====================================================
+
+    await loadData();
+
+  } catch (err: any) {
+    console.error(
+      "Gagal menyimpan transaksi:",
+      err
+    );
+
+    // PostgreSQL duplicate constraint
+    if (err?.code === "23505") {
+      alert(
+        "⚠️ Warga ini sudah melakukan pengambilan BBM pada periode tersebut."
+      );
+    } else {
+      alert(
+        err?.message ||
+        "❌ Gagal menyimpan transaksi."
+      );
+    }
+
+  } finally {
+    // Tombol Simpan aktif kembali
+    setSaving(false);
   }
+}
 
   function edit(item: any) {
     setEditId(item.id);
@@ -136,7 +263,7 @@ const [jenisBBMId, setJenisBBMId] = useState("");
         <div className="bg-white rounded-3xl shadow-xl p-8">
 
           <h2 className="text-2xl font-bold text-red-700 mb-8">
-  TEST JENIS BBM
+  Form Pengambilan BBM
 </h2>
 
           <div className="grid md:grid-cols-2 gap-6">
@@ -231,11 +358,21 @@ const [jenisBBMId, setJenisBBMId] = useState("");
           <div className="flex gap-4 mt-8">
 
             <button
-              onClick={simpan}
-              className="bg-red-700 hover:bg-red-800 text-white px-8 py-3 rounded-xl shadow-lg transition font-semibold"
-            >
-              {editId === null ? "💾 Simpan" : "✏️ Update"}
-            </button>
+  type="button"
+  onClick={simpan}
+  disabled={saving}
+  className={`px-8 py-3 rounded-xl shadow-lg transition font-semibold text-white ${
+    saving
+      ? "bg-gray-400 cursor-not-allowed"
+      : "bg-red-700 hover:bg-red-800"
+  }`}
+>
+  {saving
+    ? "⏳ Menyimpan..."
+    : editId === null
+    ? "💾 Simpan"
+    : "✏️ Update"}
+</button>
 
             {editId !== null && (
               <button
@@ -245,6 +382,7 @@ const [jenisBBMId, setJenisBBMId] = useState("");
                   setPeriodeId("");
                   setTanggal(new Date().toISOString().substring(0, 10));
                   setLiter("");
+                  setJenisBBMId("");
                 }}
                 className="bg-gray-500 hover:bg-gray-600 text-white px-8 py-3 rounded-xl shadow-lg transition"
               >
@@ -258,11 +396,44 @@ const [jenisBBMId, setJenisBBMId] = useState("");
 
         <div className="bg-white rounded-3xl shadow-xl p-8">
 
-          <h2 className="text-2xl font-bold text-red-700 mb-6">
-            Daftar Pengambilan
-          </h2>
+  <div className="flex items-center justify-between mb-6">
 
-          <div className="overflow-x-auto">
+    <h2 className="text-2xl font-bold text-red-700">
+      Daftar Pengambilan
+    </h2>
+
+    <div className="flex items-center gap-3">
+
+      <label className="font-semibold text-gray-700">
+        Tampilkan Periode:
+      </label>
+
+      <select
+        value={filterPeriodeId}
+        onChange={(e) =>
+          setFilterPeriodeId(e.target.value)
+        }
+        className="rounded-xl border border-gray-300 bg-gray-50 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-red-600"
+      >
+        <option value="">
+          Semua Periode
+        </option>
+
+        {periode.map((p) => (
+          <option
+            key={p.id}
+            value={p.id}
+          >
+            {p.nama_periode}
+          </option>
+        ))}
+      </select>
+
+    </div>
+
+  </div>
+
+  <div className="overflow-x-auto">
 
             <table className="w-full">
 
@@ -284,7 +455,16 @@ const [jenisBBMId, setJenisBBMId] = useState("");
 </thead>
 
               <tbody>
-                              {list.map((t) => (
+  {list
+    .filter((t) => {
+      if (!filterPeriodeId) return true;
+
+      return (
+        Number(t.periode_id) ===
+        Number(filterPeriodeId)
+      );
+    })
+    .map((t) => (
                 <tr
                   key={t.id}
                   className="border-b hover:bg-red-50 transition"
@@ -338,10 +518,17 @@ const [jenisBBMId, setJenisBBMId] = useState("");
                 </tr>
               ))}
 
-              {list.length === 0 && (
+             {list.filter((t) => {
+  if (!filterPeriodeId) return true;
+
+  return (
+    Number(t.periode_id) ===
+    Number(filterPeriodeId)
+  );
+}).length === 0 && (
                 <tr>
                   <td
-                    colSpan={7}
+                    colSpan={8}
                     className="py-10 text-center text-gray-500"
                   >
                     Belum ada data pengambilan.

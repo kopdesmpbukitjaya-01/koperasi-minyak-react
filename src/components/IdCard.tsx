@@ -1,11 +1,66 @@
-// Deploy trigger
+import { useEffect, useState } from "react";
+import QRCode from "qrcode";
+import "./IdCard.css";
+
 import logo from "../assets/logo_crop.png";
+import background from "../assets/idcard-bg.png";
+
 interface IdCardProps {
   nama: string;
   noKK: string;
   kodeWarga: string;
   status: string;
-  onClose: () => void;
+}
+
+function UserIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="id-icon" fill="currentColor">
+      <circle cx="12" cy="7" r="4" />
+      <path d="M4 21c0-4.2 3.6-7 8-7s8 2.8 8 7H4z" />
+    </svg>
+  );
+}
+
+function CardIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="id-icon" fill="currentColor">
+      <rect x="3" y="5" width="18" height="14" rx="2" />
+      <circle cx="8" cy="10" r="2" fill="white" />
+      <path
+        d="M5.5 15c.7-1.3 1.5-2 2.5-2s1.8.7 2.5 2"
+        fill="white"
+      />
+      <rect x="13" y="9" width="6" height="1.5" rx=".75" fill="white" />
+      <rect x="13" y="12" width="6" height="1.5" rx=".75" fill="white" />
+    </svg>
+  );
+}
+
+function ShieldIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="id-icon" fill="currentColor">
+      <path d="M12 2l8 3v6c0 5.3-3.4 9.5-8 11-4.6-1.5-8-5.7-8-11V5l8-3z" />
+      <path
+        d="M9 12l2 2 4-5"
+        fill="none"
+        stroke="white"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function UsersIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="status-icon" fill="currentColor">
+      <circle cx="9" cy="8" r="3" />
+      <circle cx="16.5" cy="9" r="2.5" />
+      <path d="M3 20c0-3.7 2.7-6 6-6s6 2.3 6 6H3z" />
+      <path d="M14 14c3.2-.7 6 1.5 6 5h-4c0-2.1-.7-3.8-2-5z" />
+    </svg>
+  );
 }
 
 export default function IdCard({
@@ -13,100 +68,158 @@ export default function IdCard({
   noKK,
   kodeWarga,
   status,
-  onClose,
 }: IdCardProps) {
+  const [qr, setQr] = useState("");
+
+  useEffect(() => {
+    if (!kodeWarga) {
+      setQr("");
+      return;
+    }
+
+    QRCode.toDataURL(kodeWarga, {
+      errorCorrectionLevel: "H",
+      margin: 1,
+      width: 500,
+      color: {
+        dark: "#000000",
+        light: "#FFFFFF",
+      },
+    }).then(setQr);
+  }, [kodeWarga]);
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-      <div className="relative">
-        {/* ID CARD 8,5 x 5,4 cm */}
-        <div
-  id="id-card"
-  className="relative h-[8.6cm] w-[5.4cm] overflow-hidden rounded-2xl bg-white shadow-2xl"
+    <div className="id-card">
+      {/* BACKGROUND */}
+      <img
+        src={background}
+        className="id-background"
+        alt=""
+        draggable={false}
+      />
 
->{/* Background */}
-
-{/* Ornamen atas */}
-<div className="absolute top-0 left-0 w-full h-32 overflow-hidden z-0">
-  <div className="absolute -top-20 left-1/2 -translate-x-1/2 w-[160%] h-44 rounded-b-[100%] bg-red-700"></div>
-
-  <div className="absolute -top-16 left-1/2 -translate-x-1/2 w-[150%] h-40 rounded-b-[100%] border-b-[6px] border-yellow-400"></div>
-</div>
-
-
-          {/* Background Header */}
-
-
-<div className="absolute top-4 z-20 w-full text-center text-white">
-  <h1 className="text-[11px] font-bold tracking-wide">
-    KOPERASI DESA MERAH PUTIH
-  </h1>
-
-  <p className="text-[9px]">
-    BUKIT JAYA
-  </p>
-</div>
-
-
-          {/* Isi */}
-<div
-  className="relative z-10 flex h-full flex-col items-center px-5 pt-24 pb-12"
->
-
+      {/* LOGO */}
+      <div className="logo-frame">
   <img
     src={logo}
+    className="id-logo"
     alt="Logo Koperasi"
-  className="mb-3 h-16 w-16 object-contain"
+    draggable={false}
   />
-
-  <div className="mb-1 text-[9px] font-medium text-gray-500">
-              NAMA WARGA
-            </div>
-
-           <div className="mb-3 text-center text-[15px] font-bold uppercase text-gray-800">
-              {nama}
-            </div>
-            <div className="mt-1 text-[8px] text-white/80">
-  NOMOR KK
 </div>
 
-<div className="mb-3 text-[10px] font-semibold text-gray-700">
-  {noKK}
-</div>
+      {/* HEADER */}
+      <div className="id-title-small">
+        KOPERASI DESA
+      </div>
 
-            <div className="mt-2 rounded-lg bg-white px-5 py-2 shadow-lg">
-              <div className="text-center text-[16px] font-bold tracking-wider text-red-600">
-                {kodeWarga}
-              </div>
-            </div>
+      <div className="id-title-main">
+        MERAH PUTIH
+      </div>
 
-            <div className="mt-3 rounded-full bg-white px-4 py-1">
-  <div className="text-[9px] font-bold uppercase text-red-700">
-                {status === "Anggota" ? "ANGGOTA" : "NON ANGGOTA"}
-              </div>
-            </div>
-          </div>
-{/* Ornamen bawah */}
-<div className="absolute bottom-0 left-0 w-full h-24 overflow-hidden z-0">
-  <div className="absolute bottom-[-70px] left-1/2 -translate-x-1/2 w-[160%] h-36 rounded-t-[100%] bg-red-700"></div>
+      <div className="id-title-village">
+        <span className="title-line" />
+        <span>BUKIT JAYA</span>
+        <span className="title-line" />
+      </div>
 
-  <div className="absolute bottom-[-62px] left-1/2 -translate-x-1/2 w-[150%] h-32 rounded-t-[100%] border-t-[6px] border-yellow-400"></div>
-</div>
-          {/* Footer */}
-          <div className="absolute bottom-3 w-full text-center z-20">
-            <div className="text-[8px] font-semibold text-white">
-  KARTU IDENTITAS WARGA
-</div>
-          </div>
+      <div className="title-dot" />
+
+      {/* NAMA */}
+      <div className="data-row row-name">
+        <div className="icon-wrapper">
+          <UserIcon />
         </div>
 
-        {/* Tombol tutup */}
-        <button
-          type="button"
-          onClick={onClose}
-          className="absolute -right-3 -top-3 flex h-8 w-8 items-center justify-center rounded-full bg-gray-800 text-lg text-white shadow-lg hover:bg-gray-700"
-        >
-          ×
-        </button>
+        <div className="data-content">
+          <div className="data-label">
+            NAMA
+          </div>
+
+          <div className="data-value name-value">
+            {nama || "-"}
+          </div>
+        </div>
+      </div>
+
+      <div className="separator separator-name" />
+
+      {/* NOMOR KK */}
+      <div className="data-row row-kk">
+        <div className="icon-wrapper">
+          <CardIcon />
+        </div>
+
+        <div className="data-content">
+          <div className="data-label">
+            NOMOR KK
+          </div>
+
+          <div className="data-value kk-value">
+            {noKK || "-"}
+          </div>
+        </div>
+      </div>
+
+      <div className="separator separator-kk" />
+
+      {/* KODE WARGA */}
+      <div className="data-row row-code">
+        <div className="icon-wrapper">
+          <ShieldIcon />
+        </div>
+
+        <div className="data-content">
+          <div className="data-label">
+            KODE WARGA
+          </div>
+        </div>
+      </div>
+
+      <div className="code-box">
+        {kodeWarga || "-"}
+      </div>
+
+      <div className="separator separator-code" />
+
+      {/* QR */}
+      <div className="qr-frame">
+        {qr && (
+          <img
+            src={qr}
+            className="qr-image"
+            alt="QR Code"
+            draggable={false}
+          />
+        )}
+      </div>
+
+      {/* STATUS */}
+      <div className="membership">
+        <div className="membership-title">
+          STATUS KEANGGOTAAN
+        </div>
+
+        <div className="membership-badge">
+          <UsersIcon />
+
+          <span>
+            {status || "ANGGOTA"}
+          </span>
+        </div>
+
+        
+      </div>
+
+            {/* FOOTER */}
+      <div className="footer-title">
+        <span className="footer-line" />
+
+        <div className="footer-pill">
+  Kartu Pelanggan KDMP
+</div>
+
+        <span className="footer-line" />
       </div>
     </div>
   );

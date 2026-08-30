@@ -1,0 +1,615 @@
+/* =====================================================
+   ID CARD
+===================================================== */
+
+.id-card {
+  position: relative;
+
+  width: 55mm;
+  height: 85mm;
+
+  overflow: hidden;
+
+  background: white;
+
+  border-radius: 2mm;
+
+  box-sizing: border-box;
+
+  flex-shrink: 0;
+
+  font-family: Arial, Helvetica, sans-serif;
+
+  color: #111;
+
+  isolation: isolate;
+}
+
+
+/* =====================================================
+   BACKGROUND
+===================================================== */
+
+.id-background {
+  position: absolute;
+
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+
+  z-index: 0;
+
+  pointer-events: none;
+
+  user-select: none;
+}
+
+/* =====================================================
+   LOGO HEADER
+===================================================== */
+
+.logo-frame {
+  position: absolute;
+
+  z-index: 2;
+
+  width: 15.5mm;
+  height: 15.5mm;
+
+  left: 50%;
+  top: 2.8mm;
+
+  transform: translateX(-50%);
+
+  border: 0.7mm solid #d4af37;
+
+  border-radius: 50%;
+
+  background: white;
+
+  box-sizing: border-box;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  overflow: hidden;
+}
+
+
+.id-logo {
+  width: 12.8mm;
+  height: 12.8mm;
+
+  object-fit: contain;
+
+  display: block;
+
+  border-radius: 50%;
+}
+/* =====================================================
+   HEADER
+===================================================== */
+
+.id-title-small {
+  position: absolute;
+  z-index: 3;
+
+  top: 19.5mm;
+
+  left: 0;
+  right: 0;
+
+  text-align: center;
+
+  font-size: 2.7mm;
+  line-height: 1;
+
+  font-weight: 700;
+
+  color: #59616a;
+
+  letter-spacing: 0.15mm;
+}
+
+
+.id-title-main {
+  position: absolute;
+  z-index: 3;
+
+  top: 22.5mm;
+
+  left: 0;
+  right: 0;
+
+  text-align: center;
+
+  font-size: 5.2mm;
+  line-height: 1;
+
+  font-weight: 900;
+
+  color: #bd151c;
+
+  letter-spacing: 0.15mm;
+}
+
+
+/* =====================================================
+   JUDUL DESA
+===================================================== */
+
+.id-title-village {
+  position: absolute;
+
+  z-index: 3;
+
+  top: 27.5mm;
+
+  left: 8mm;
+  right: 8mm;
+
+  height: 4mm;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 3.2mm;
+
+  font-size: 3.0mm;
+
+  line-height: 1;
+
+  font-weight: 800;
+
+  color: #111;
+
+  white-space: nowrap;
+}
+
+
+.title-line {
+  width: 7mm;
+
+  height: 0.28mm;
+
+  flex: 0 0 7mm;
+
+  background: #bd151c;
+}
+
+/* =====================================================
+   DATA WARGA
+===================================================== */
+
+.data-row {
+  position: absolute;
+
+  z-index: 3;
+
+  left: 7mm;
+  right: 7mm;
+
+  height: 5.5mm;
+
+  display: flex;
+
+  align-items: center;
+}
+
+
+.row-name {
+  top: 33.2mm;
+}
+
+
+.row-kk {
+  top: 40.0mm;
+}
+
+
+.row-code {
+  top: 46.7mm;
+}
+
+
+.icon-wrapper {
+  width: 5.5mm;
+
+  min-width: 5.5mm;
+
+  height: 5.5mm;
+
+  display: flex;
+
+  justify-content: center;
+
+  align-items: center;
+
+  color: #bd151c;
+}
+
+
+.id-icon {
+  width: 4.7mm;
+
+  height: 4.7mm;
+
+  display: block;
+}
+
+
+.data-content {
+  margin-left: 2.2mm;
+
+  min-width: 0;
+
+  flex: 1;
+
+  display: flex;
+
+  flex-direction: column;
+
+  justify-content: center;
+}
+
+
+.data-label {
+  font-size: 2.15mm;
+
+  line-height: 1;
+
+  font-weight: 700;
+
+  color: #59616a;
+
+  margin: 0 0 0.9mm 0;
+}
+
+
+.data-value {
+  color: #111;
+
+  font-weight: 800;
+
+  white-space: nowrap;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+
+  line-height: 1;
+}
+
+
+.name-value {
+  font-size: 3.75mm;
+}
+
+
+.kk-value {
+  font-size: 3.05mm;
+}
+
+
+/* =====================================================
+   GARIS
+===================================================== */
+
+.separator {
+  position: absolute;
+
+  z-index: 3;
+
+  left: 7mm;
+  right: 7mm;
+
+  height: 0.18mm;
+
+  background: rgba(120, 120, 120, 0.35);
+}
+
+
+.separator-name {
+  top: 38.7mm;
+}
+
+
+.separator-kk {
+  top: 45.2mm;
+}
+
+
+.separator-code {
+  top: 58.7mm;
+}
+
+/* =====================================================
+   KODE WARGA / NOMOR PELANGGAN
+===================================================== */
+
+.code-box {
+  position: absolute;
+
+  z-index: 3;
+
+  left: 9.5mm;
+  right: 9.5mm;
+
+  top: 51.0mm;
+
+  height: 8.0mm;
+
+  box-sizing: border-box;
+
+  padding: 0 3mm;
+
+  border: 0.45mm solid #b7191f;
+
+  border-radius: 2mm;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  color: #b7191f;
+
+  font-size: 4.8mm;
+
+  line-height: 1;
+
+  font-weight: 900;
+
+  letter-spacing: 0.05mm;
+
+  white-space: nowrap;
+
+  background: rgba(255, 255, 255, 0.92);
+}
+/* =====================================================
+   QR CODE
+===================================================== */
+
+.qr-frame {
+  position: absolute;
+
+  z-index: 3;
+
+  left: 7.5mm;
+
+  top: 61.0mm;
+
+  width: 18mm;
+  height: 18mm;
+
+  box-sizing: border-box;
+
+  padding: 1mm;
+
+  background: white;
+
+  border: 0.3mm solid #d7d7d7;
+
+  border-radius: 1.6mm;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+}
+
+
+.qr-image {
+  width: 100%;
+  height: 100%;
+
+  object-fit: contain;
+
+  display: block;
+}
+
+/* =====================================================
+   STATUS KEANGGOTAAN
+===================================================== */
+
+.membership {
+  position: absolute;
+
+  z-index: 3;
+
+  left: 27.5mm;
+  right: 4.5mm;
+
+  top: 61.0mm;
+
+  box-sizing: border-box;
+}
+
+
+.membership-title {
+  width: 100%;
+
+  text-align: center;
+
+  font-size: 1.9mm;
+
+  line-height: 1.1;
+
+  font-weight: 800;
+
+  color: #59616a;
+
+  white-space: nowrap;
+
+  margin-bottom: 1.6mm;
+
+  box-sizing: border-box;
+}
+
+/* =====================================================
+   BADGE STATUS
+===================================================== */
+
+.membership-badge {
+  width: 100%;
+
+  min-width: 27mm;
+
+  height: 7.2mm;
+
+  padding: 0 3.5mm;
+
+  box-sizing: border-box;
+
+  border-radius: 4mm;
+
+  background: #159447;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 1.2mm;
+
+  color: white;
+
+  font-size: 2.9mm;
+
+  line-height: 1;
+
+  font-weight: 900;
+
+  white-space: nowrap;
+}
+
+
+.status-icon {
+  width: 3.5mm;
+
+  height: 3.5mm;
+
+  flex-shrink: 0;
+}
+
+
+.membership-description {
+  margin-top: 1.7mm;
+
+  font-size: 1.9mm;
+
+  line-height: 1.3;
+
+  font-weight: 500;
+
+  color: #222;
+
+  text-align: left;
+}
+
+
+
+
+.footer-line {
+  height: 0.35mm;
+
+  width: 4mm;
+
+  background: white;
+
+  flex-shrink: 0;
+}
+/* =====================================================
+   FOOTER — KARTU PELANGGAN KDMP
+===================================================== */
+
+.footer-title {
+  position: absolute;
+
+  z-index: 5;
+
+  left: 7.2mm;
+  right: 7.2mm;
+
+  bottom: 2.0mm;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 1.5mm;
+
+  box-sizing: border-box;
+}
+
+
+.footer-line {
+  height: 0.4mm;
+
+  width: 3.5mm;
+
+  background: white;
+
+  flex-shrink: 0;
+}
+
+
+.footer-pill {
+  height: 5.8mm;
+
+  min-width: 36mm;
+
+  padding: 0 3mm;
+
+  box-sizing: border-box;
+
+  border-radius: 4mm;
+
+  background: white;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  white-space: nowrap;
+
+  font-size: 2.5mm;
+
+  line-height: 1;
+
+  font-weight: 900;
+
+  color: #111;
+
+  flex-shrink: 0;
+}
+
+/* =====================================================
+   PRINT
+===================================================== */
+
+@media print {
+  .id-card {
+    break-inside: avoid;
+
+    page-break-inside: avoid;
+
+    box-shadow: none;
+  }
+}
