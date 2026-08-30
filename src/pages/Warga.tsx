@@ -97,7 +97,23 @@ const [selectedWarga, setSelectedWarga] = useState<any | null>(null);
   // =====================================
   // FILTER DAN URUTKAN DATA WARGA
   // =====================================
+  // =====================================
+  // JUMLAH ANGGOTA DAN NON-ANGGOTA
+  // =====================================
 
+  const jumlahAnggota = list.filter(
+    (w) =>
+      String(w.status ?? "")
+        .trim()
+        .toLowerCase() === "anggota"
+  ).length;
+
+  const jumlahNonAnggota = list.filter(
+    (w) =>
+      String(w.status ?? "")
+        .trim()
+        .toLowerCase() === "non-anggota"
+  ).length;
   const filteredList = [...list]
     .filter((w) =>
       String(w.nama ?? "")
@@ -323,7 +339,39 @@ const [selectedWarga, setSelectedWarga] = useState<any | null>(null);
   <h2 className="text-2xl font-bold text-red-700">
     Daftar Warga
   </h2>
+<div className="flex gap-4">
 
+  {/* JUMLAH ANGGOTA */}
+  <div className="bg-green-100 border border-green-200 rounded-2xl px-6 py-4 min-w-[150px]">
+    <p className="text-sm font-semibold text-green-700">
+      🟢 Anggota
+    </p>
+
+    <p className="text-3xl font-bold text-green-800">
+      {jumlahAnggota}
+    </p>
+
+    <p className="text-sm text-green-600">
+      orang
+    </p>
+  </div>
+
+  {/* JUMLAH NON ANGGOTA */}
+  <div className="bg-gray-100 border border-gray-200 rounded-2xl px-6 py-4 min-w-[150px]">
+    <p className="text-sm font-semibold text-gray-700">
+      ⚪ Non-Anggota
+    </p>
+
+    <p className="text-3xl font-bold text-gray-800">
+      {jumlahNonAnggota}
+    </p>
+
+    <p className="text-sm text-gray-600">
+      orang
+    </p>
+  </div>
+
+</div>
   <button
     type="button"
     onClick={() => navigate("/print-id-card")}
