@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Html5Qrcode } from "html5-qrcode";
 import Layout from "../components/Layout";
 
 import { getWarga } from "../services/warga";
@@ -28,14 +29,45 @@ const [saving, setSaving] = useState(false);
   const [periodeId, setPeriodeId] = useState("");
   const [tanggal, setTanggal] = useState("");
   const [liter, setLiter] = useState("");
-
+const [scannerOpen, setScannerOpen] = useState(false);
+const [scanResult, setScanResult] = useState("");
   const [editId, setEditId] = useState<number | null>(null);
 
   useEffect(() => {
     loadData();
     setTanggal(new Date().toISOString().substring(0, 10));
   }, []);
+useEffect(() => {
+  if (!scannerOpen) return;
 
+  const scanner = new Html5Qrcode("reader");
+
+  scanner.start(
+    { facingMode: "environment" },
+    {
+      fps: 10,
+      qrbox: { width: 250, height: 250 },
+    },
+    (decodedText) => {
+      console.log("QR TERBACA:", decodedText);
+      setScanResult(decodedText);
+    },
+  () => {
+  // Abaikan error pembacaan selama kamera aktif
+}
+  ).catch((err) => {
+    console.error("Gagal membuka kamera:", err);
+  });
+
+  return () => {
+    scanner
+      .stop()
+      .then(() => {
+        scanner.clear();
+      })
+      .catch(() => {});
+  };
+}, [scannerOpen]);
   async function loadData() {
   setList(await getTransaksi());
   setWarga(await getWarga());
@@ -273,7 +305,48 @@ const [saving, setSaving] = useState(false);
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+{/* SCANNER BARCODE */}
+<div className="md:col-span-2 lg:col-span-3">
+  <button
+    type="button"
+    onClick={() => {
+      setScanResult("");
+      setScannerOpen(true);
+    }}
+    className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl shadow-lg font-semibold"
+  >
+    📷 Scan Barcode / QR Warga
+  </button>
 
+  {scannerOpen && (
+    <div className="mt-4 max-w-md">
+      <div
+        id="reader"
+        className="w-full rounded-xl overflow-hidden border"
+      />
+
+      {scanResult && (
+        <div className="mt-3 p-3 bg-green-50 border border-green-300 rounded-xl">
+          <span className="font-semibold">
+            QR Terbaca:
+          </span>{" "}
+          {scanResult}
+        </div>
+      )}
+
+      <button
+        type="button"
+        onClick={() => {
+          setScannerOpen(false);
+          setScanResult("");
+        }}
+        className="mt-3 bg-gray-600 hover:bg-gray-700 text-white px-5 py-2 rounded-lg"
+      >
+        ✖️ Tutup Scanner
+      </button>
+    </div>
+  )}
+</div>
             {/* WARGA */}
             <div>
               <label className="block font-semibold text-gray-700 mb-2">

@@ -44,13 +44,14 @@ export default function PrintIdCard() {
   async function loadWarga() {
     const { data, error } = await supabase
       .from("warga")
-      .select(`
-        id,
-        nama,
-        no_kk,
-        kode_warga,
-        status
-      `)
+     .select(`
+  id,
+  nama,
+  nik,
+  no_kk,
+  kode_warga,
+  status
+`)
       .order("id", {
         ascending: true,
       });
