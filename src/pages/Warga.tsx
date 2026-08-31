@@ -19,7 +19,7 @@ export default function Warga() {
   const [status, setStatus] = useState("Anggota");
   const [alamat, setAlamat] = useState("");
   const [noHp, setNoHp] = useState("");
-
+const [saving, setSaving] = useState(false);
   const [editId, setEditId] = useState<number | null>(null);
 const [selectedWarga, setSelectedWarga] = useState<any | null>(null);
 
@@ -56,43 +56,49 @@ const [selectedWarga, setSelectedWarga] = useState<any | null>(null);
     }
   }
 
-  async function simpan() {
-    try {
-      if (editId === null) {
-        await addWarga(
-          noKK,
-          nama,
-          status,
-          alamat,
-          noHp
-        );
+ async function simpan() {
+  if (saving) return;
 
-        alert("Data berhasil ditambahkan");
-      } else {
-        await updateWarga(
-          editId,
-          noKK,
-          nama,
-          status,
-          alamat,
-          noHp
-        );
+  setSaving(true);
 
-        alert("Data berhasil diupdate");
-        setEditId(null);
-      }
+  try {
+    if (editId === null) {
+      await addWarga(
+        noKK,
+        nama,
+        status,
+        alamat,
+        noHp
+      );
 
-      setNoKK("");
-      setNama("");
-      setStatus("Anggota");
-      setAlamat("");
-      setNoHp("");
+      alert("Data berhasil ditambahkan");
+    } else {
+      await updateWarga(
+        editId,
+        noKK,
+        nama,
+        status,
+        alamat,
+        noHp
+      );
 
-      await loadData();
-    } catch (err: any) {
-      alert(err.message);
+      alert("Data berhasil diupdate");
+      setEditId(null);
     }
+
+    setNoKK("");
+    setNama("");
+    setStatus("Anggota");
+    setAlamat("");
+    setNoHp("");
+
+    await loadData();
+  } catch (err: any) {
+    alert(err.message);
+  } finally {
+    setSaving(false);
   }
+}
 
   // =====================================
   // FILTER DAN URUTKAN DATA WARGA
@@ -300,13 +306,21 @@ const [selectedWarga, setSelectedWarga] = useState<any | null>(null);
           <div className="flex gap-4 mt-8">
 
             <button
-              onClick={simpan}
-              className="bg-red-700 hover:bg-red-800 text-white px-8 py-3 rounded-xl shadow-lg transition font-semibold"
-            >
-              {editId === null
-                ? "💾 Simpan"
-                : "✏️ Update"}
-            </button>
+  type="button"
+  onClick={simpan}
+  disabled={saving}
+  className={`px-8 py-3 rounded-xl shadow-lg transition font-semibold text-white ${
+    saving
+      ? "bg-gray-400 cursor-not-allowed"
+      : "bg-red-700 hover:bg-red-800"
+  }`}
+>
+  {saving
+    ? "⏳ Menyimpan..."
+    : editId === null
+      ? "💾 Simpan"
+      : "✏️ Update"}
+</button>
 
             {editId !== null && (
               <button

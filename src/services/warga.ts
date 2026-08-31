@@ -1,6 +1,5 @@
 import { supabase } from "../lib/supabase";
 
-
 export async function getWarga() {
   const { data, error } = await supabase
     .from("warga")
@@ -40,17 +39,38 @@ export async function addWarga(
   alamat: string,
   no_hp: string
 ) {
+  const namaNormal = nama.trim().toLowerCase();
+  const noKKNormal = no_kk.trim();
+
+  // Cek apakah warga dengan Nama + No. KK yang sama sudah ada
+  const { data: wargaSudahAda, error: cekError } = await supabase
+    .from("warga")
+    .select("id, kode_warga, nama, no_kk")
+    .ilike("nama", namaNormal)
+    .eq("no_kk", noKKNormal)
+    .limit(1);
+
+  if (cekError) throw cekError;
+
+  // Jika sudah ada, jangan membuat record baru
+  if (wargaSudahAda && wargaSudahAda.length > 0) {
+    throw new Error(
+      `Warga sudah terdaftar dengan kode ${wargaSudahAda[0].kode_warga}.`
+    );
+  }
+
+  // Jika belum ada, simpan warga baru
   const { error } = await supabase
     .from("warga")
     .insert([
-  {
-    no_kk,
-    nama,
-    status,
-    alamat,
-    no_hp,
-  },
-])
+      {
+        no_kk: noKKNormal,
+        nama: nama.trim(),
+        status,
+        alamat,
+        no_hp,
+      },
+    ]);
 
   if (error) throw error;
 }
@@ -63,15 +83,36 @@ export async function updateWarga(
   alamat: string,
   no_hp: string
 ) {
+  const namaNormal = nama.trim().toLowerCase();
+  const noKKNormal = no_kk.trim();
+
+  // Cek apakah Nama + No. KK sudah dimiliki warga lain
+  const { data: wargaSudahAda, error: cekError } = await supabase
+    .from("warga")
+    .select("id, kode_warga, nama, no_kk")
+    .ilike("nama", namaNormal)
+    .eq("no_kk", noKKNormal)
+    .neq("id", id)
+    .limit(1);
+
+  if (cekError) throw cekError;
+
+  // Jangan izinkan edit yang menghasilkan duplikat
+  if (wargaSudahAda && wargaSudahAda.length > 0) {
+    throw new Error(
+      `Data tidak dapat diupdate. Nama dan No. KK tersebut sudah digunakan oleh ${wargaSudahAda[0].kode_warga}.`
+    );
+  }
+
   const { error } = await supabase
     .from("warga")
     .update({
-  no_kk,
-  nama,
-  status,
-  alamat,
-  no_hp,
-})
+      no_kk: noKKNormal,
+      nama: nama.trim(),
+      status,
+      alamat,
+      no_hp,
+    })
     .eq("id", id);
 
   if (error) throw error;
