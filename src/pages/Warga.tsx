@@ -20,6 +20,7 @@ export default function Warga() {
   const [alamat, setAlamat] = useState("Bukit Jaya");
   const [noHp, setNoHp] = useState("");
   const [saving, setSaving] = useState(false);
+  const [rapikanLoading, setRapikanLoading] = useState(false);
   const [editId, setEditId] = useState<number | null>(null);
   const [selectedWarga, setSelectedWarga] = useState<any | null>(null);
 
@@ -32,6 +33,32 @@ export default function Warga() {
     setList(data);
   }
 
+  // =====================================
+  // FORMAT NAMA OTOMATIS
+  // =====================================
+
+  function formatNama(namaInput: string, statusInput: string) {
+    const namaBersih = namaInput
+      .trim()
+      .replace(/\s+/g, " ");
+
+    if (statusInput.trim().toLowerCase() === "anggota") {
+      return namaBersih.toUpperCase();
+    }
+
+    return namaBersih
+      .toLowerCase()
+      .split(" ")
+      .map((kata) =>
+        kata.charAt(0).toUpperCase() + kata.slice(1)
+      )
+      .join(" ");
+  }
+
+  // =====================================
+  // EDIT WARGA
+  // =====================================
+
   function edit(w: any) {
     setEditId(w.id);
 
@@ -41,6 +68,10 @@ export default function Warga() {
     setAlamat(w.alamat);
     setNoHp(w.no_hp);
   }
+
+  // =====================================
+  // HAPUS WARGA
+  // =====================================
 
   async function hapus(id: number) {
     if (!confirm("Yakin ingin menghapus data ini?")) return;
@@ -54,16 +85,27 @@ export default function Warga() {
     }
   }
 
+  // =====================================
+  // SIMPAN / UPDATE
+  // =====================================
+
   async function simpan() {
     if (saving) return;
+
+    if (!nama.trim()) {
+      alert("Nama warga wajib diisi");
+      return;
+    }
 
     setSaving(true);
 
     try {
+      const namaFormatted = formatNama(nama, status);
+
       if (editId === null) {
         await addWarga(
           noKK,
-          nama,
+          namaFormatted,
           status,
           alamat,
           noHp
@@ -74,7 +116,7 @@ export default function Warga() {
         await updateWarga(
           editId,
           noKK,
-          nama,
+          namaFormatted,
           status,
           alamat,
           noHp
@@ -95,6 +137,66 @@ export default function Warga() {
       alert(err.message);
     } finally {
       setSaving(false);
+    }
+  }
+
+  // =====================================
+  // RAPIKAN SEMUA NAMA LAMA
+  // =====================================
+
+  async function rapikanSemuaNama() {
+    if (rapikanLoading) return;
+
+    if (list.length === 0) {
+      alert("Belum ada data warga.");
+      return;
+    }
+
+    const konfirmasi = confirm(
+      `Rapikan semua nama warga?\n\n` +
+      `Anggota → HURUF KAPITAL SEMUA\n` +
+      `Non-Anggota → Huruf Awal Kapital\n\n` +
+      `Jumlah data: ${list.length} warga\n\n` +
+      `Data KK, alamat, nomor HP, dan kode warga tidak akan diubah.`
+    );
+
+    if (!konfirmasi) return;
+
+    setRapikanLoading(true);
+
+    try {
+      let berhasil = 0;
+
+      for (const w of list) {
+        const namaFormatted = formatNama(
+          String(w.nama ?? ""),
+          String(w.status ?? "")
+        );
+
+        await updateWarga(
+          w.id,
+          w.no_kk,
+          namaFormatted,
+          w.status,
+          w.alamat,
+          w.no_hp
+        );
+
+        berhasil++;
+      }
+
+      await loadData();
+
+      alert(
+        `Berhasil merapikan ${berhasil} nama warga.`
+      );
+    } catch (err: any) {
+      alert(
+        "Terjadi kesalahan saat merapikan nama:\n" +
+        err.message
+      );
+    } finally {
+      setRapikanLoading(false);
     }
   }
 
@@ -135,7 +237,6 @@ export default function Warga() {
         .trim()
         .toLowerCase();
 
-      // Anggota selalu paling atas
       if (
         statusA === "anggota" &&
         statusB !== "anggota"
@@ -150,7 +251,6 @@ export default function Warga() {
         return 1;
       }
 
-      // Jika status sama, urutkan berdasarkan nama
       return String(a.nama ?? "").localeCompare(
         String(b.nama ?? ""),
         "id",
@@ -354,7 +454,7 @@ export default function Warga() {
               Daftar Warga
             </h2>
 
-            <div className="flex gap-4">
+            <div className="flex flex-wrap gap-4">
 
               {/* JUMLAH ANGGOTA */}
 
@@ -388,15 +488,34 @@ export default function Warga() {
                 </p>
               </div>
 
-            </div>
+              {/* RAPIKAN NAMA */}
 
-            <button
-              type="button"
-              onClick={() => navigate("/print-id-card")}
-              className="bg-red-700 hover:bg-red-800 text-white px-6 py-3 rounded-xl shadow-lg transition font-semibold"
-            >
-              📄 Download Semua ID Card
-            </button>
+              <button
+                type="button"
+                onClick={rapikanSemuaNama}
+                disabled={rapikanLoading}
+                className={`px-6 py-3 rounded-xl shadow-lg transition font-semibold text-white ${
+                  rapikanLoading
+                    ? "bg-gray-400 cursor-not-allowed"
+                    : "bg-blue-600 hover:bg-blue-700"
+                }`}
+              >
+                {rapikanLoading
+                  ? "⏳ Sedang Merapikan..."
+                  : "🔄 Rapikan Semua Nama"}
+              </button>
+
+              {/* DOWNLOAD ID CARD */}
+
+              <button
+                type="button"
+                onClick={() => navigate("/print-id-card")}
+                className="bg-red-700 hover:bg-red-800 text-white px-6 py-3 rounded-xl shadow-lg transition font-semibold"
+              >
+                📄 Download Semua ID Card
+              </button>
+
+            </div>
 
           </div>
 
@@ -468,11 +587,9 @@ export default function Warga() {
                     {/* KODE WARGA */}
 
                     <td className="px-4 py-4">
-
                       <span className="font-bold text-red-700">
                         {w.kode_warga}
                       </span>
-
                     </td>
 
                     {/* NOMOR KK */}
@@ -483,7 +600,15 @@ export default function Warga() {
 
                     {/* NAMA */}
 
-                    <td className="px-4 py-4 font-semibold">
+                    <td
+                      className={`px-4 py-4 ${
+                        String(w.status ?? "")
+                          .trim()
+                          .toLowerCase() === "anggota"
+                          ? "font-bold"
+                          : "font-medium"
+                      }`}
+                    >
                       {w.nama}
                     </td>
 
@@ -536,7 +661,9 @@ export default function Warga() {
 
                         <button
                           type="button"
-                          onClick={() => setSelectedWarga(w)}
+                          onClick={() =>
+                            setSelectedWarga(w)
+                          }
                           className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg shadow transition"
                         >
                           🪪 ID Card
@@ -568,6 +695,10 @@ export default function Warga() {
         </div>
 
       </div>
+
+      {/* =====================================
+          PREVIEW ID CARD
+      ====================================== */}
 
       {selectedWarga && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
