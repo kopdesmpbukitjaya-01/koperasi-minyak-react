@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import IdCard from "../components/IdCard";
 import { useNavigate } from "react-router-dom";
@@ -17,13 +18,11 @@ export default function Warga() {
   const [nama, setNama] = useState("");
   const [noKK, setNoKK] = useState("");
   const [status, setStatus] = useState("Anggota");
-  const [alamat, setAlamat] = useState("");
+  const [alamat, setAlamat] = useState("Bukit Jaya");
   const [noHp, setNoHp] = useState("");
-const [saving, setSaving] = useState(false);
+  const [saving, setSaving] = useState(false);
   const [editId, setEditId] = useState<number | null>(null);
-const [selectedWarga, setSelectedWarga] = useState<any | null>(null);
-
-
+  const [selectedWarga, setSelectedWarga] = useState<any | null>(null);
 
   useEffect(() => {
     loadData();
@@ -56,53 +55,50 @@ const [selectedWarga, setSelectedWarga] = useState<any | null>(null);
     }
   }
 
- async function simpan() {
-  if (saving) return;
+  async function simpan() {
+    if (saving) return;
 
-  setSaving(true);
+    setSaving(true);
 
-  try {
-    if (editId === null) {
-      await addWarga(
-        noKK,
-        nama,
-        status,
-        alamat,
-        noHp
-      );
+    try {
+      if (editId === null) {
+        await addWarga(
+          noKK,
+          nama,
+          status,
+          alamat,
+          noHp
+        );
 
-      alert("Data berhasil ditambahkan");
-    } else {
-      await updateWarga(
-        editId,
-        noKK,
-        nama,
-        status,
-        alamat,
-        noHp
-      );
+        alert("Data berhasil ditambahkan");
+      } else {
+        await updateWarga(
+          editId,
+          noKK,
+          nama,
+          status,
+          alamat,
+          noHp
+        );
 
-      alert("Data berhasil diupdate");
-      setEditId(null);
+        alert("Data berhasil diupdate");
+        setEditId(null);
+      }
+
+      setNoKK("");
+      setNama("");
+      setStatus("Anggota");
+      setAlamat("Bukit Jaya");
+      setNoHp("");
+
+      await loadData();
+    } catch (err: any) {
+      alert(err.message);
+    } finally {
+      setSaving(false);
     }
-
-    setNoKK("");
-    setNama("");
-    setStatus("Anggota");
-    setAlamat("");
-    setNoHp("");
-
-    await loadData();
-  } catch (err: any) {
-    alert(err.message);
-  } finally {
-    setSaving(false);
   }
-}
 
-  // =====================================
-  // FILTER DAN URUTKAN DATA WARGA
-  // =====================================
   // =====================================
   // JUMLAH ANGGOTA DAN NON-ANGGOTA
   // =====================================
@@ -120,6 +116,11 @@ const [selectedWarga, setSelectedWarga] = useState<any | null>(null);
         .trim()
         .toLowerCase() === "non-anggota"
   ).length;
+
+  // =====================================
+  // FILTER DAN URUTKAN DATA WARGA
+  // =====================================
+
   const filteredList = [...list]
     .filter((w) =>
       String(w.nama ?? "")
@@ -306,21 +307,21 @@ const [selectedWarga, setSelectedWarga] = useState<any | null>(null);
           <div className="flex gap-4 mt-8">
 
             <button
-  type="button"
-  onClick={simpan}
-  disabled={saving}
-  className={`px-8 py-3 rounded-xl shadow-lg transition font-semibold text-white ${
-    saving
-      ? "bg-gray-400 cursor-not-allowed"
-      : "bg-red-700 hover:bg-red-800"
-  }`}
->
-  {saving
-    ? "⏳ Menyimpan..."
-    : editId === null
-      ? "💾 Simpan"
-      : "✏️ Update"}
-</button>
+              type="button"
+              onClick={simpan}
+              disabled={saving}
+              className={`px-8 py-3 rounded-xl shadow-lg transition font-semibold text-white ${
+                saving
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-red-700 hover:bg-red-800"
+              }`}
+            >
+              {saving
+                ? "⏳ Menyimpan..."
+                : editId === null
+                  ? "💾 Simpan"
+                  : "✏️ Update"}
+            </button>
 
             {editId !== null && (
               <button
@@ -329,7 +330,7 @@ const [selectedWarga, setSelectedWarga] = useState<any | null>(null);
                   setNoKK("");
                   setNama("");
                   setStatus("Anggota");
-                  setAlamat("");
+                  setAlamat("Bukit Jaya");
                   setNoHp("");
                 }}
                 className="bg-gray-500 hover:bg-gray-600 text-white px-8 py-3 rounded-xl shadow-lg transition font-semibold"
@@ -350,51 +351,55 @@ const [selectedWarga, setSelectedWarga] = useState<any | null>(null);
 
           <div className="mb-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
 
-  <h2 className="text-2xl font-bold text-red-700">
-    Daftar Warga
-  </h2>
-<div className="flex gap-4">
+            <h2 className="text-2xl font-bold text-red-700">
+              Daftar Warga
+            </h2>
 
-  {/* JUMLAH ANGGOTA */}
-  <div className="bg-green-100 border border-green-200 rounded-2xl px-6 py-4 min-w-[150px]">
-    <p className="text-sm font-semibold text-green-700">
-      🟢 Anggota
-    </p>
+            <div className="flex gap-4">
 
-    <p className="text-3xl font-bold text-green-800">
-      {jumlahAnggota}
-    </p>
+              {/* JUMLAH ANGGOTA */}
 
-    <p className="text-sm text-green-600">
-      orang
-    </p>
-  </div>
+              <div className="bg-green-100 border border-green-200 rounded-2xl px-6 py-4 min-w-[150px]">
+                <p className="text-sm font-semibold text-green-700">
+                  🟢 Anggota
+                </p>
 
-  {/* JUMLAH NON ANGGOTA */}
-  <div className="bg-gray-100 border border-gray-200 rounded-2xl px-6 py-4 min-w-[150px]">
-    <p className="text-sm font-semibold text-gray-700">
-      ⚪ Non-Anggota
-    </p>
+                <p className="text-3xl font-bold text-green-800">
+                  {jumlahAnggota}
+                </p>
 
-    <p className="text-3xl font-bold text-gray-800">
-      {jumlahNonAnggota}
-    </p>
+                <p className="text-sm text-green-600">
+                  orang
+                </p>
+              </div>
 
-    <p className="text-sm text-gray-600">
-      orang
-    </p>
-  </div>
+              {/* JUMLAH NON ANGGOTA */}
 
-</div>
-  <button
-    type="button"
-    onClick={() => navigate("/print-id-card")}
-    className="bg-red-700 hover:bg-red-800 text-white px-6 py-3 rounded-xl shadow-lg transition font-semibold"
-  >
-    📄 Download Semua ID Card
-  </button>
+              <div className="bg-gray-100 border border-gray-200 rounded-2xl px-6 py-4 min-w-[150px]">
+                <p className="text-sm font-semibold text-gray-700">
+                  ⚪ Non-Anggota
+                </p>
 
-</div>
+                <p className="text-3xl font-bold text-gray-800">
+                  {jumlahNonAnggota}
+                </p>
+
+                <p className="text-sm text-gray-600">
+                  orang
+                </p>
+              </div>
+
+            </div>
+
+            <button
+              type="button"
+              onClick={() => navigate("/print-id-card")}
+              className="bg-red-700 hover:bg-red-800 text-white px-6 py-3 rounded-xl shadow-lg transition font-semibold"
+            >
+              📄 Download Semua ID Card
+            </button>
+
+          </div>
 
           {/* PENCARIAN */}
 
@@ -530,17 +535,13 @@ const [selectedWarga, setSelectedWarga] = useState<any | null>(null);
 
                         {/* ID CARD */}
 
-                       
-
-<button
-  type="button"
-  onClick={() => setSelectedWarga(w)}
-  className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg shadow transition"
->
-  🪪 ID Card
-</button>
-
-
+                        <button
+                          type="button"
+                          onClick={() => setSelectedWarga(w)}
+                          className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg shadow transition"
+                        >
+                          🪪 ID Card
+                        </button>
 
                         {/* HAPUS */}
 
@@ -568,34 +569,31 @@ const [selectedWarga, setSelectedWarga] = useState<any | null>(null);
         </div>
 
       </div>
-      
 
-{selectedWarga && (
-  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+      {selectedWarga && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
 
-    <div className="relative">
+          <div className="relative">
 
-      <IdCard
-        nama={selectedWarga.nama}
-        noKK={selectedWarga.no_kk}
-        kodeWarga={selectedWarga.kode_warga}
-        status={selectedWarga.status}
-      />
+            <IdCard
+              nama={selectedWarga.nama}
+              noKK={selectedWarga.no_kk}
+              kodeWarga={selectedWarga.kode_warga}
+              status={selectedWarga.status}
+            />
 
+            <button
+              type="button"
+              onClick={() => setSelectedWarga(null)}
+              className="absolute -right-3 -top-3 flex h-8 w-8 items-center justify-center rounded-full bg-gray-800 text-lg text-white shadow-lg hover:bg-gray-700"
+            >
+              ×
+            </button>
 
-      <button
-        type="button"
-        onClick={() => setSelectedWarga(null)}
-        className="absolute -right-3 -top-3 flex h-8 w-8 items-center justify-center rounded-full bg-gray-800 text-lg text-white shadow-lg hover:bg-gray-700"
-      >
-        ×
-      </button>
+          </div>
 
-    </div>
-
-  </div>
-)}
-
+        </div>
+      )}
 
     </Layout>
   );
