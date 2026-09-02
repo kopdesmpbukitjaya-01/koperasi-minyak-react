@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import IdCard from "../components/IdCard";
 import { useNavigate } from "react-router-dom";
