@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { getLaporan } from "../services/laporan";
-
+import logo from "../assets/logo_crop.png";
 export default function PrintLaporan() {
   const [searchParams] = useSearchParams();
 
@@ -9,205 +9,605 @@ export default function PrintLaporan() {
   const petugas = searchParams.get("petugas") || "";
 
   const [data, setData] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function load() {
-      const hasil = await getLaporan(periodeId);
-      setData(hasil);
-
-      setTimeout(() => {
-        window.print();
-      }, 500);
+      try {
+        const hasil = await getLaporan(periodeId);
+        setData(hasil);
+      } catch (err) {
+        console.error("Gagal memuat laporan:", err);
+      } finally {
+        setLoading(false);
+      }
     }
 
     load();
-  }, []);
+  }, [periodeId]);
+
+  // ==========================================
+  // CETAK SETELAH DATA SELESAI DIMUAT
+  // ==========================================
+  useEffect(() => {
+    if (!loading && data.length > 0) {
+      const timer = setTimeout(() => {
+        window.print();
+      }, 500);
+
+      return () => clearTimeout(timer);
+    }
+  }, [loading, data]);
+
+  if (loading) {
+    return (
+      <div
+        style={{
+          padding: 40,
+          textAlign: "center",
+          fontFamily: "Arial, sans-serif",
+        }}
+      >
+        Memuat laporan...
+      </div>
+    );
+  }
+
+  if (data.length === 0) {
+    return (
+      <div
+        style={{
+          padding: 40,
+          textAlign: "center",
+          fontFamily: "Arial, sans-serif",
+        }}
+      >
+        Tidak ada data laporan.
+      </div>
+    );
+  }
+
+  // ==========================================
+  // PERHITUNGAN
+  // ==========================================
 
   let totalLiter = 0;
-let totalRupiah = 0;
+  let totalRupiah = 0;
 
-data.forEach((d: any) => {
-  totalLiter += Number(d.liter);
-  totalRupiah += Number(d.total);
-});
-
-const kuotaLiter = Number(data[0]?.periode?.kuota_liter || 0);
-const sisaKuota = kuotaLiter - totalLiter;
-
-  const tanggalCetak = new Date().toLocaleDateString("id-ID", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
+  data.forEach((d: any) => {
+    totalLiter += Number(d.liter) || 0;
+    totalRupiah += Number(d.total) || 0;
   });
 
-  if (data.length === 0) return <p>Memuat...</p>;
+  const kuotaLiter = Number(
+    data[0]?.periode?.kuota_liter || 0
+  );
+
+  const sisaKuota = kuotaLiter - totalLiter;
+
+  const namaPeriode =
+    data[0]?.periode?.nama_periode || "-";
+
+  const namaBBM =
+    data[0]?.periode?.jenis_bbm?.nama || "-";
+
+  const tanggalCetak = new Date().toLocaleDateString(
+    "id-ID",
+    {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    }
+  );
 
   return (
-    <div
-      style={{
-        width: "210mm",
-        margin: "auto",
-        padding: 30,
-        fontFamily: "Arial",
-      }}
-    >
-      <div
+    <>
+      {/* =====================================================
+          STYLE KHUSUS PRINT
+      ===================================================== */}
+      <style>
+        {`
+          @page {
+            size: A4 portrait;
+            margin: 12mm;
+          }
+
+          * {
+            box-sizing: border-box;
+          }
+
+          body {
+            margin: 0;
+            padding: 0;
+            background: #f1f1f1;
+            font-family: Arial, Helvetica, sans-serif;
+            color: #111;
+          }
+
+          .print-page {
+            width: 210mm;
+            min-height: 297mm;
+            margin: 20px auto;
+            background: white;
+            padding: 12mm;
+          }
+
+          .report-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11px;
+          }
+
+          .report-table th {
+  border: 1px solid #333;
+  padding: 7px 6px;
+  background: #b91c1c !important;
+  color: white !important;
+  font-weight: bold;
+  text-align: center;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+          .report-table td {
+            border: 1px solid #999;
+            padding: 6px;
+            vertical-align: middle;
+          }
+
+          .report-table tbody tr {
+            page-break-inside: avoid;
+          }
+
+          .summary-table {
+            width: 100%;
+            border-collapse: collapse;
+          }
+
+          .summary-table td {
+            border: 1px solid #999;
+            padding: 8px 10px;
+          }
+
+          .summary-label {
+            width: 55%;
+            font-weight: bold;
+          }
+
+          .summary-value {
+            width: 45%;
+            text-align: right;
+            font-weight: bold;
+          }
+
+          .signature-area {
+            page-break-inside: avoid;
+          }
+
+          @media print {
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  body {
+    background: white;
+  }
+
+  .print-page {
+              width: 100%;
+              min-height: auto;
+              margin: 0;
+              padding: 0;
+              box-shadow: none;
+            }
+          }
+        `}
+      </style>
+
+      {/* =====================================================
+          HALAMAN LAPORAN
+      ===================================================== */}
+      <div className="print-page">
+
+        {/* =================================================
+            HEADER
+        ================================================= */}
+        <div
+          style={{
+            textAlign: "center",
+            marginBottom: 14,
+          }}
+        >
+          <img
+  src={logo}
+  alt="Logo KDMP"
   style={{
-    textAlign: "center",
-    marginBottom: 20,
+    width: 65,
+    height: 65,
+    objectFit: "contain",
+    margin: "0 auto 8px",
+    display: "block",
   }}
->
-  <h2
-    style={{
-      margin: 0,
-      fontSize: 26,
-    }}
-  >
-    KOPERASI DESA MERAH PUTIH
-  </h2>
+/>
+          <div
+            style={{
+              fontSize: 24,
+              fontWeight: "bold",
+              letterSpacing: 0.5,
+            }}
+          >
+            KOPERASI DESA MERAH PUTIH
+          </div>
 
-  <h3
-    style={{
-      margin: "6px 0",
-      fontWeight: "normal",
-    }}
-  >
-    PERTASHOP BUKIT JAYA
-  </h3>
+          <div
+            style={{
+              fontSize: 17,
+              fontWeight: "bold",
+              marginTop: 4,
+            }}
+          >
+            BUKIT JAYA
+          </div>
 
-  <h2
-    style={{
-      margin: "12px 0 8px",
-    }}
-  >
-    LAPORAN PENGAMBILAN MINYAK
-  </h2>
+          <div
+            style={{
+              fontSize: 13,
+              marginTop: 4,
+            }}
+          >
+            PERTASHOP
+          </div>
 
-  <hr
-    style={{
-      border: "1px solid black",
-      marginTop: 10,
-    }}
-  />
-</div>
+          <div
+            style={{
+              fontSize: 19,
+              fontWeight: "bold",
+              marginTop: 14,
+            }}
+          >
+            LAPORAN PENGAMBILAN BBM
+          </div>
 
-<div
-  style={{
-    marginBottom: 20,
-    fontSize: 16,
-    border: "1px solid black",
-    padding: 12,
-  }}
->
-  <div style={{ marginBottom: 6 }}>
-    <b>Periode :</b> {data[0].periode.nama_periode}
-  </div>
+          <div
+            style={{
+              fontSize: 13,
+              marginTop: 5,
+            }}
+          >
+            Periode {namaPeriode}
+          </div>
 
-  <div style={{ marginBottom: 6 }}>
-    <b>Kuota :</b> {kuotaLiter} Liter
-  </div>
+          <div
+            style={{
+              borderBottom: "2px solid #111",
+              marginTop: 12,
+            }}
+          />
+        </div>
 
-  <div style={{ marginBottom: 6 }}>
-    <b>Terjual :</b> {totalLiter} Liter
-  </div>
+        {/* =================================================
+            INFORMASI PERIODE
+        ================================================= */}
+        <div
+          style={{
+            marginBottom: 16,
+          }}
+        >
+          <table className="summary-table">
+            <tbody>
 
-  <div>
-    <b>Sisa Kuota :</b> {sisaKuota} Liter
-  </div>
-</div>
+              <tr>
+                <td className="summary-label">
+                  Periode
+                </td>
 
-      <table
-        border={1}
-        cellPadding={6}
-        style={{
-          width: "100%",
-          borderCollapse: "collapse",
-        }}
-      >
-        <thead>
-          <tr>
-            <th>No</th>
-            <th>Nama</th>
-            <th>Tanggal</th>
-            <th>Liter</th>
-            <th>Harga</th>
-            <th>Total</th>
-          </tr>
-        </thead>
+                <td className="summary-value">
+                  {namaPeriode}
+                </td>
+              </tr>
 
-        <tbody>
-          {data.map((t: any, i: number) => (
-            <tr key={t.id}>
-              <td>{i + 1}</td>
-              <td>{t.warga.nama}</td>
-              <td>{t.tanggal}</td>
-              <td>{t.liter}</td>
-              <td>
-                Rp {Number(t.harga).toLocaleString("id-ID")}
-              </td>
-              <td>
-                Rp {Number(t.total).toLocaleString("id-ID")}
-              </td>
+              <tr>
+                <td className="summary-label">
+                  Jenis BBM
+                </td>
+
+                <td className="summary-value">
+                  {namaBBM}
+                </td>
+              </tr>
+
+              <tr>
+                <td className="summary-label">
+                  Kuota
+                </td>
+
+                <td className="summary-value">
+                  {kuotaLiter.toLocaleString("id-ID")} Liter
+                </td>
+              </tr>
+
+              <tr>
+                <td className="summary-label">
+                  Terjual
+                </td>
+
+                <td className="summary-value">
+                  {totalLiter.toLocaleString("id-ID")} Liter
+                </td>
+              </tr>
+
+              <tr>
+                <td
+                  className="summary-label"
+                  style={{
+                    fontSize: 13,
+                  }}
+                >
+                  Sisa Kuota
+                </td>
+
+                <td
+                  className="summary-value"
+                  style={{
+                    fontSize: 13,
+                  }}
+                >
+                  {sisaKuota.toLocaleString("id-ID")} Liter
+                </td>
+              </tr>
+
+            </tbody>
+          </table>
+        </div>
+
+        {/* =================================================
+            TABEL TRANSAKSI
+        ================================================= */}
+        <table className="report-table">
+
+          <thead>
+            <tr>
+              <th style={{ width: "6%" }}>
+                No
+              </th>
+
+              <th style={{ width: "32%" }}>
+                Nama Warga
+              </th>
+
+              <th style={{ width: "17%" }}>
+                Tanggal
+              </th>
+
+              <th style={{ width: "10%" }}>
+                Liter
+              </th>
+
+              <th style={{ width: "17%" }}>
+                Harga/Liter
+              </th>
+
+              <th style={{ width: "18%" }}>
+                Total
+              </th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
 
-      <br />
+          <tbody>
+            {data.map((t: any, i: number) => (
+              <tr key={t.id}>
 
-      <b>Total Liter : {totalLiter} Liter</b>
+                <td
+                  style={{
+                    textAlign: "center",
+                  }}
+                >
+                  {i + 1}
+                </td>
 
-      <br />
+                <td>
+                  {t.warga?.nama || "-"}
+                </td>
 
-      <b>
-        Total Rupiah :
-        Rp {totalRupiah.toLocaleString("id-ID")}
-      </b>
+                <td
+                  style={{
+                    textAlign: "center",
+                  }}
+                >
+                  {t.tanggal}
+                </td>
 
-      <br />
-      <br />
-      <br />
+                <td
+                  style={{
+                    textAlign: "center",
+                  }}
+                >
+                  {Number(t.liter).toLocaleString("id-ID")}
+                </td>
 
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-        }}
-      >
-        <div>
-          <p>Mengetahui,</p>
+                <td
+                  style={{
+                    textAlign: "right",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  Rp{" "}
+                  {Number(t.harga).toLocaleString("id-ID")}
+                </td>
 
-          <p>Ketua KDMP Bukit Jaya</p>
+                <td
+                  style={{
+                    textAlign: "right",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  Rp{" "}
+                  {Number(t.total).toLocaleString("id-ID")}
+                </td>
 
-          <p>Kecamatan Bulik Timur</p>
+              </tr>
+            ))}
+          </tbody>
 
-          <br />
-          <br />
-          <br />
+        </table>
 
-          _______________________
+        {/* =================================================
+            RINGKASAN TOTAL
+        ================================================= */}
+        <div
+          style={{
+            marginTop: 16,
+            marginLeft: "auto",
+            width: "55%",
+          }}
+        >
+          <table
+            className="summary-table"
+          >
+            <tbody>
 
-          <br />
+              <tr>
+                <td className="summary-label">
+                  TOTAL PENGAMBILAN
+                </td>
 
-          Nama :
+                <td className="summary-value">
+                  {totalLiter.toLocaleString("id-ID")} Liter
+                </td>
+              </tr>
+
+              <tr>
+                <td className="summary-label">
+                  TOTAL NILAI TRANSAKSI
+                </td>
+
+                <td className="summary-value">
+                  Rp{" "}
+                  {totalRupiah.toLocaleString("id-ID")}
+                </td>
+              </tr>
+
+            </tbody>
+          </table>
         </div>
 
-        <div style={{ textAlign: "center" }}>
-          <p>Bukit Jaya, {tanggalCetak}</p>
+        {/* =================================================
+            TANDA TANGAN
+        ================================================= */}
+        <div
+          className="signature-area"
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            marginTop: 45,
+            fontSize: 13,
+          }}
+        >
 
-          <p>Petugas Pencatat</p>
+          {/* KETUA */}
+          <div
+            style={{
+              width: "42%",
+              textAlign: "center",
+            }}
+          >
+            <div>
+              Mengetahui,
+            </div>
 
-          <br />
-          <br />
-          <br />
+            <div
+              style={{
+                marginTop: 5,
+                fontWeight: "bold",
+              }}
+            >
+              Ketua KDMP Bukit Jaya
+            </div>
 
-          _______________________
+            <div>
+              Kecamatan Bulik Timur
+            </div>
 
-          <br />
+            <div
+              style={{
+                height: 65,
+              }}
+            />
 
-          Nama : {petugas}
+            <div>
+              __________________________
+            </div>
+
+            <div
+              style={{
+                marginTop: 5,
+              }}
+            >
+              Nama : __________________
+            </div>
+          </div>
+
+          {/* PETUGAS */}
+          <div
+            style={{
+              width: "42%",
+              textAlign: "center",
+            }}
+          >
+            <div>
+              Bukit Jaya, {tanggalCetak}
+            </div>
+
+            <div
+              style={{
+                marginTop: 5,
+                fontWeight: "bold",
+              }}
+            >
+              Petugas Pencatat
+            </div>
+
+            <div
+              style={{
+                height: 65,
+              }}
+            />
+
+            <div>
+              __________________________
+            </div>
+
+            <div
+              style={{
+                marginTop: 5,
+              }}
+            >
+              Nama : {petugas || "__________________"}
+            </div>
+          </div>
+
         </div>
+
+        {/* =================================================
+            FOOTER
+        ================================================= */}
+        <div
+          style={{
+            textAlign: "center",
+            marginTop: 25,
+            paddingTop: 8,
+            borderTop: "1px solid #aaa",
+            fontSize: 9,
+            color: "#555",
+          }}
+        >
+          KOPERASI DESA MERAH PUTIH BUKIT JAYA
+          {" • "}
+          Dokumen Laporan Pengambilan BBM
+        </div>
+
       </div>
-    </div>
+    </>
   );
 }
