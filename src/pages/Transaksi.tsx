@@ -446,33 +446,54 @@ export default function Transaksi() {
   // FILTER TRANSAKSI
   // =====================================================
 
-  const filteredList =
-    list.filter((t) => {
-      if (
-        filterPeriodeId &&
-        Number(t.periode_id) !==
-          Number(filterPeriodeId)
-      ) {
-        return false;
-      }
+ const filteredList = list
+  .filter((t) => {
+    if (
+      filterPeriodeId &&
+      Number(t.periode_id) !==
+        Number(filterPeriodeId)
+    ) {
+      return false;
+    }
 
-      if (
-        filterNama &&
-        !String(
-          t.warga?.nama ??
-            t.warga?.nama_warga ??
-            ""
+    if (
+      filterNama &&
+      !String(
+        t.warga?.nama ??
+          t.warga?.nama_warga ??
+          ""
+      )
+        .toLowerCase()
+        .includes(
+          filterNama.toLowerCase()
         )
-          .toLowerCase()
-          .includes(
-            filterNama.toLowerCase()
-          )
-      ) {
-        return false;
-      }
+    ) {
+      return false;
+    }
 
-      return true;
-    });
+    return true;
+  })
+  .sort((a, b) => {
+    const namaA = String(
+      a.warga?.nama ??
+        a.warga?.nama_warga ??
+        ""
+    ).toLowerCase();
+
+    const namaB = String(
+      b.warga?.nama ??
+        b.warga?.nama_warga ??
+        ""
+    ).toLowerCase();
+
+    return namaA.localeCompare(
+      namaB,
+      "id",
+      {
+        sensitivity: "base",
+      }
+    );
+  });
 
   // =====================================================
   // RENDER
@@ -822,10 +843,14 @@ export default function Transaksi() {
               <table className="w-full">
 
                 <thead className="bg-red-700 text-white">
-                  <tr>
-                    <th className="px-4 py-3 text-left">
-                      Nama
-                    </th>
+  <tr>
+    <th className="px-4 py-3 text-center">
+      No.
+    </th>
+
+    <th className="px-4 py-3 text-left">
+      Nama
+    </th>
 
                     <th className="px-4 py-3 text-left">
                       Jenis BBM
@@ -860,11 +885,14 @@ export default function Transaksi() {
                 <tbody>
 
                   {filteredList.map(
-                    (t) => (
+  (t, index) => (
                       <tr
                         key={t.id}
                         className="border-b hover:bg-red-50 transition"
                       >
+                        <td className="px-4 py-4 text-center font-semibold">
+  {index + 1}
+</td>
 
                         <td className="px-4 py-4">
                           {getNamaWarga(
@@ -940,7 +968,7 @@ export default function Transaksi() {
                     0 && (
                     <tr>
                       <td
-                        colSpan={8}
+                        colSpan={9}
                         className="py-10 text-center text-gray-500"
                       >
                         Belum ada data pengambilan.
