@@ -9,7 +9,13 @@ export async function getLaporan(periodeId: number) {
         nama
       ),
       periode (
-        nama_periode
+        id,
+        nama_periode,
+        kuota_liter,
+        jenis_bbm (
+          nama,
+          harga
+        )
       )
     `)
     .eq("periode_id", periodeId)

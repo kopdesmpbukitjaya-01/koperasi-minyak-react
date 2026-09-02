@@ -24,12 +24,15 @@ export default function PrintLaporan() {
   }, []);
 
   let totalLiter = 0;
-  let totalRupiah = 0;
+let totalRupiah = 0;
 
-  data.forEach((d: any) => {
-    totalLiter += Number(d.liter);
-    totalRupiah += Number(d.total);
-  });
+data.forEach((d: any) => {
+  totalLiter += Number(d.liter);
+  totalRupiah += Number(d.total);
+});
+
+const kuotaLiter = Number(data[0]?.periode?.kuota_liter || 0);
+const sisaKuota = kuotaLiter - totalLiter;
 
   const tanggalCetak = new Date().toLocaleDateString("id-ID", {
     day: "numeric",
@@ -92,9 +95,25 @@ export default function PrintLaporan() {
   style={{
     marginBottom: 20,
     fontSize: 16,
+    border: "1px solid black",
+    padding: 12,
   }}
 >
-  <b>Periode :</b> {data[0].periode.nama_periode}
+  <div style={{ marginBottom: 6 }}>
+    <b>Periode :</b> {data[0].periode.nama_periode}
+  </div>
+
+  <div style={{ marginBottom: 6 }}>
+    <b>Kuota :</b> {kuotaLiter} Liter
+  </div>
+
+  <div style={{ marginBottom: 6 }}>
+    <b>Terjual :</b> {totalLiter} Liter
+  </div>
+
+  <div>
+    <b>Sisa Kuota :</b> {sisaKuota} Liter
+  </div>
 </div>
 
       <table

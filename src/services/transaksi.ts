@@ -155,3 +155,25 @@ export async function cekTransaksiWarga(
 
   return (data?.length ?? 0) > 0;
 }
+// =====================================================
+// REKAP TOTAL LITER PER PERIODE
+// =====================================================
+
+export async function getRekapLiterPeriode() {
+  const { data, error } = await supabase
+    .from("transaksi")
+    .select("periode_id, liter");
+
+  if (error) throw error;
+
+  const rekap: Record<number, number> = {};
+
+  (data ?? []).forEach((item) => {
+    const periodeId = Number(item.periode_id);
+    const liter = Number(item.liter) || 0;
+
+    rekap[periodeId] = (rekap[periodeId] || 0) + liter;
+  });
+
+  return rekap;
+}
