@@ -16,15 +16,20 @@ export default function Sidebar() {
       path: "/warga",
     },
     {
-      title: "Periode",
-      icon: "📅",
-      path: "/periode",
-    },
-    {
-      title: "Pengambilan",
-      icon: "🛢️",
-      path: "/transaksi",
-    },
+  title: "Periode",
+  icon: "📅",
+  path: "/periode",
+},
+{
+  title: "Pembelian BBM",
+  icon: "⛽",
+  path: "/pembelian-bbm",
+},
+{
+  title: "Pengambilan",
+  icon: "🛢️",
+  path: "/transaksi",
+},
     {
       title: "Laporan PDF",
       icon: "📄",
