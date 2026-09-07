@@ -60,16 +60,17 @@ export async function updatePembelianBBM(
   harga_modal_per_liter: number,
   keterangan: string
 ) {
-  const { error } = await supabase
-    .from("pembelian_bbm")
-    .update({
-      tanggal_pembelian,
-      jenis_bbm_id,
-      jumlah_liter,
-      harga_modal_per_liter,
-      keterangan,
-    })
-    .eq("id", id);
+  const { error } = await supabase.rpc(
+    "update_pembelian_bbm_dengan_periode",
+    {
+      p_id: id,
+      p_tanggal_pembelian: tanggal_pembelian,
+      p_jenis_bbm_id: jenis_bbm_id,
+      p_jumlah_liter: jumlah_liter,
+      p_harga_modal_per_liter: harga_modal_per_liter,
+      p_keterangan: keterangan,
+    }
+  );
 
   if (error) throw error;
 }
