@@ -80,10 +80,12 @@ export async function updatePembelianBBM(
 // =====================================================
 
 export async function deletePembelianBBM(id: number) {
-  const { error } = await supabase
-    .from("pembelian_bbm")
-    .delete()
-    .eq("id", id);
+  const { error } = await supabase.rpc(
+    "delete_pembelian_bbm_dengan_periode",
+    {
+      p_id: id,
+    }
+  );
 
   if (error) throw error;
 }

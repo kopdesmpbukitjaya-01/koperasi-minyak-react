@@ -143,22 +143,26 @@ setJenisBBM(jenis);
   }
 
   async function handleDelete(id: number) {
-    const yakin = window.confirm(
-      "Yakin ingin menghapus data pembelian BBM ini?"
+  const yakin = window.confirm(
+    "Yakin ingin menghapus data pembelian BBM ini?"
+  );
+
+  if (!yakin) return;
+
+  try {
+    await deletePembelianBBM(id);
+    await loadData();
+
+    alert("Data pembelian berhasil dihapus.");
+  } catch (error: any) {
+    console.error(error);
+
+    alert(
+      error?.message ||
+      "Gagal menghapus data pembelian BBM."
     );
-
-    if (!yakin) return;
-
-    try {
-      await deletePembelianBBM(id);
-      await loadData();
-
-      alert("Data pembelian berhasil dihapus.");
-    } catch (error) {
-      console.error(error);
-      alert("Gagal menghapus data pembelian BBM.");
-    }
   }
+}
 
   const totalLiter = data.reduce(
     (total, item) => total + Number(item.jumlah_liter || 0),
