@@ -6,6 +6,7 @@ import Dashboard from "./pages/Dashboard";
 import Warga from "./pages/Warga";
 import Periode from "./pages/Periode";
 import Transaksi from "./pages/Transaksi";
+import PembelianBBM from "./pages/PembelianBBM";
 import Laporan from "./pages/Laporan";
 import PrintLaporan from "./pages/PrintLaporan";
 import PrintIdCard from "./pages/PrintIdCard";
@@ -71,7 +72,14 @@ export default function App() {
             </ProtectedRoute>
           }
         />
-
+<Route
+  path="/pembelian-bbm"
+  element={
+    <ProtectedRoute>
+      <PembelianBBM />
+    </ProtectedRoute>
+  }
+/>
 
         <Route
           path="/transaksi"
