@@ -26,6 +26,11 @@ export default function Sidebar() {
   path: "/pembelian-bbm",
 },
 {
+  title: "Pengeluaran",
+  icon: "💰",
+  path: "/pengeluaran",
+},
+{
   title: "Pengambilan",
   icon: "🛢️",
   path: "/transaksi",

@@ -12,7 +12,7 @@ import PrintLaporan from "./pages/PrintLaporan";
 import PrintIdCard from "./pages/PrintIdCard";
 
 import ProtectedRoute from "./components/ProtectedRoute";
-
+import Pengeluaran from "./pages/Pengeluaran";
 
 export default function App() {
 
@@ -20,7 +20,7 @@ export default function App() {
     <BrowserRouter>
 
       <Routes>
-
+<Route path="/pengeluaran" element={<Pengeluaran />} />
 
         {/* =========================
             HALAMAN UMUM
