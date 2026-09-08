@@ -5,7 +5,7 @@ import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 
 import { getPeriode } from "../services/periode";
-import { getLaporan } from "../services/laporan";
+import { getLaporan, getLabaRugi } from "../services/laporan";
 
 export default function Laporan() {
   const navigate = useNavigate();
@@ -14,7 +14,7 @@ export default function Laporan() {
   const [periodeId, setPeriodeId] = useState("");
   const [data, setData] = useState<any[]>([]);
   const [petugas, setPetugas] = useState("");
-
+const [labaRugi, setLabaRugi] = useState<any>(null);
   useEffect(() => {
     loadPeriode();
   }, []);
@@ -30,24 +30,26 @@ export default function Laporan() {
   }
 
   async function tampilkan() {
-    if (!periodeId) {
-      alert("Silakan pilih periode.");
-      return;
-    }
-
-    try {
-      const hasil = await getLaporan(Number(periodeId));
-      setData(hasil);
-
-      if (hasil.length === 0) {
-        alert("Tidak ada data pada periode ini.");
-      }
-    } catch (err) {
-      console.error(err);
-      alert("Gagal mengambil data laporan.");
-    }
+  if (!periodeId) {
+    alert("Silakan pilih periode.");
+    return;
   }
 
+  try {
+    const hasil = await getLaporan(Number(periodeId));
+    const hasilLabaRugi = await getLabaRugi(Number(periodeId));
+
+    setData(hasil);
+    setLabaRugi(hasilLabaRugi);
+
+    if (hasil.length === 0) {
+      alert("Tidak ada data pada periode ini.");
+    }
+  } catch (err) {
+    console.error(err);
+    alert("Gagal mengambil data laporan.");
+  }
+}
   // =====================================================
   // DOWNLOAD PDF
   // =====================================================
@@ -60,7 +62,7 @@ export default function Laporan() {
 
     try {
       const hasil = await getLaporan(Number(periodeId));
-
+const hasilLabaRugi = await getLabaRugi(Number(periodeId));
       if (!hasil || hasil.length === 0) {
         alert("Tidak ada data pada periode ini.");
         return;
@@ -86,6 +88,11 @@ export default function Laporan() {
       });
 
       const sisaKuota = kuotaLiter - totalLiter;
+      const totalPenjualan = hasilLabaRugi.totalPenjualan;
+const totalModal = hasilLabaRugi.totalModal;
+const labaKotor = hasilLabaRugi.labaKotor;
+const totalPengeluaran = hasilLabaRugi.totalPengeluaran;
+const labaBersih = hasilLabaRugi.labaBersih;
 
 // =====================================================
 // LOAD LOGO
@@ -179,21 +186,41 @@ doc.line(15, 52, 195, 52);
         ],
 
         body: [
-          ["Periode", namaPeriode],
-          ["Jenis BBM", namaBBM],
-          [
-            "Kuota",
-            `${kuotaLiter.toLocaleString("id-ID")} L`,
-          ],
-          [
-            "Terjual",
-            `${totalLiter.toLocaleString("id-ID")} L`,
-          ],
-          [
-            "Sisa Kuota",
-            `${sisaKuota.toLocaleString("id-ID")} L`,
-          ],
-        ],
+  ["Periode", namaPeriode],
+  ["Jenis BBM", namaBBM],
+  [
+    "Kuota",
+    `${kuotaLiter.toLocaleString("id-ID")} L`,
+  ],
+  [
+    "Terjual",
+    `${totalLiter.toLocaleString("id-ID")} L`,
+  ],
+  [
+    "Sisa Kuota",
+    `${sisaKuota.toLocaleString("id-ID")} L`,
+  ],
+  [
+    "Total Penjualan",
+    `Rp ${totalPenjualan.toLocaleString("id-ID")}`,
+  ],
+  [
+    "Modal BBM",
+    `Rp ${totalModal.toLocaleString("id-ID")}`,
+  ],
+  [
+    "Laba Kotor",
+    `Rp ${labaKotor.toLocaleString("id-ID")}`,
+  ],
+  [
+    "Total Pengeluaran",
+    `Rp ${totalPengeluaran.toLocaleString("id-ID")}`,
+  ],
+  [
+    "Laba Bersih",
+    `Rp ${labaBersih.toLocaleString("id-ID")}`,
+  ],
+],
 
         styles: {
           fontSize: 9,
@@ -510,6 +537,50 @@ doc.line(15, 52, 195, 52);
             width: 300,
           }}
         />
+              {labaRugi && (
+        <div
+          style={{
+            marginTop: 20,
+            marginBottom: 20,
+            padding: 20,
+            border: "1px solid #ddd",
+            borderRadius: 10,
+            background: "#f9f9f9",
+          }}
+        >
+          <h2>📊 Laporan Laba Rugi</h2>
+
+          <p>
+            <b>Total Penjualan:</b>{" "}
+            Rp {labaRugi.totalPenjualan.toLocaleString("id-ID")}
+          </p>
+
+          <p>
+            <b>Modal BBM:</b>{" "}
+            Rp {labaRugi.totalModal.toLocaleString("id-ID")}
+          </p>
+
+          <p>
+            <b>Laba Kotor:</b>{" "}
+            Rp {labaRugi.labaKotor.toLocaleString("id-ID")}
+          </p>
+
+          <p>
+            <b>Total Pengeluaran:</b>{" "}
+            Rp {labaRugi.totalPengeluaran.toLocaleString("id-ID")}
+          </p>
+
+          <p
+            style={{
+              fontSize: 20,
+              fontWeight: "bold",
+            }}
+          >
+            Laba Bersih: Rp{" "}
+            {labaRugi.labaBersih.toLocaleString("id-ID")}
+          </p>
+        </div>
+      )}
       </div>
 
       <table
