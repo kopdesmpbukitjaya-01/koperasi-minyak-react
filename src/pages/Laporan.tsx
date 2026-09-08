@@ -354,41 +354,158 @@ doc.line(15, 52, 195, 52);
         }
       );
 
-      // =====================================================
-      // TANDA TANGAN
-      // =====================================================
+     // =====================================================
+// TANDA TANGAN
+// =====================================================
 
-      y += 15;
+y += 15;
 
-      doc.setFont("helvetica", "normal");
+doc.setFont("helvetica", "normal");
+doc.setFontSize(10);
 
-      doc.text(
-        "Petugas Pencatat,",
-        30,
-        y
-      );
+// ==========================================
+// PETUGAS PENCATAT - KIRI
+// ==========================================
 
-      doc.text(
-        "Mengetahui,",
-        145,
-        y
-      );
+doc.text(
+  "Petugas Pencatat",
+  50,
+  y,
+  {
+    align: "center",
+  }
+);
 
-      y += 22;
+// Ruang tanda tangan
+y += 25;
 
-      doc.setFont("helvetica", "bold");
+// Garis tanda tangan
+doc.text(
+  "________________________",
+  50,
+  y,
+  {
+    align: "center",
+  }
+);
 
-      doc.text(
-        petugas || "(............................)",
-        30,
-        y
-      );
+// Nama petugas
+y += 6;
 
-      doc.text(
-        "(............................)",
-        145,
-        y
-      );
+doc.setFont("helvetica", "bold");
+doc.text(
+  petugas || "__________________",
+  50,
+  y,
+  {
+    align: "center",
+  }
+);
+
+// ==========================================
+// WAKIL KETUA - KANAN
+// ==========================================
+
+const signatureY = y - 31;
+
+doc.setFont("helvetica", "normal");
+
+doc.text(
+  "Wakil Ketua Bidang Usaha KDMP",
+  155,
+  signatureY,
+  {
+    align: "center",
+  }
+);
+
+doc.text(
+  "Bukit Jaya Kecamatan Bulik Timur",
+  155,
+  signatureY + 5,
+  {
+    align: "center",
+  }
+);
+
+// Ruang tanda tangan
+doc.text(
+  "________________________",
+  155,
+  signatureY + 30,
+  {
+    align: "center",
+  }
+);
+
+// Nama wakil ketua
+doc.setFont("helvetica", "bold");
+
+doc.text(
+  "H. Eko Supriadi",
+  155,
+  signatureY + 36,
+  {
+    align: "center",
+  }
+);
+
+// ==========================================
+// MENGETAHUI - TENGAH BAWAH
+// ==========================================
+
+const mengetahuiY = y + 25;
+
+doc.setFont("helvetica", "normal");
+
+doc.text(
+  "Mengetahui:",
+  105,
+  mengetahuiY,
+  {
+    align: "center",
+  }
+);
+
+doc.setFont("helvetica", "bold");
+
+doc.text(
+  "Ketua Koperasi Merah Putih Bukit Jaya",
+  105,
+  mengetahuiY + 6,
+  {
+    align: "center",
+  }
+);
+
+doc.text(
+  "Kecamatan Bulik Timur",
+  105,
+  mengetahuiY + 11,
+  {
+    align: "center",
+  }
+);
+
+// Ruang tanda tangan
+doc.text(
+  "________________________",
+  105,
+  mengetahuiY + 36,
+  {
+    align: "center",
+  }
+);
+
+// Nama ketua
+doc.text(
+  "IQOM MUKHIQOM",
+  105,
+  mengetahuiY + 42,
+  {
+    align: "center",
+  }
+);
 
       // =====================================================
       // FOOTER

@@ -29,15 +29,41 @@ export default function PrintLaporan() {
   // ==========================================
   // CETAK SETELAH DATA SELESAI DIMUAT
   // ==========================================
-  useEffect(() => {
-    if (!loading && data.length > 0) {
-      const timer = setTimeout(() => {
-        window.print();
-      }, 500);
+ useEffect(() => {
+  if (!loading && data.length > 0) {
+    const timer = setTimeout(() => {
+      const images = Array.from(document.images);
 
-      return () => clearTimeout(timer);
-    }
-  }, [loading, data]);
+      if (images.length === 0) {
+        window.print();
+        return;
+      }
+
+      let loaded = 0;
+
+      const checkImages = () => {
+        loaded++;
+
+        if (loaded === images.length) {
+          setTimeout(() => {
+            window.print();
+          }, 300);
+        }
+      };
+
+      images.forEach((img) => {
+        if (img.complete) {
+          checkImages();
+        } else {
+          img.addEventListener("load", checkImages, { once: true });
+          img.addEventListener("error", checkImages, { once: true });
+        }
+      });
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }
+}, [loading, data]);
 
   if (loading) {
     return (
@@ -91,14 +117,6 @@ export default function PrintLaporan() {
   const namaBBM =
     data[0]?.periode?.jenis_bbm?.nama || "-";
 
-  const tanggalCetak = new Date().toLocaleDateString(
-    "id-ID",
-    {
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-    }
-  );
 
   return (
     <>
@@ -492,103 +510,141 @@ export default function PrintLaporan() {
           </table>
         </div>
 
-        {/* =================================================
-            TANDA TANGAN
-        ================================================= */}
-        <div
-          className="signature-area"
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            marginTop: 45,
-            fontSize: 13,
-          }}
-        >
+       {/* =================================================
+    TANDA TANGAN
+================================================= */}
+<div
+  className="signature-area"
+  style={{
+    marginTop: 45,
+    fontSize: 13,
+  }}
+>
+  {/* BARIS ATAS: PETUGAS & WAKIL KETUA */}
+  <div
+    style={{
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "flex-start",
+    }}
+  >
+    {/* PETUGAS PENCATAT */}
+    <div
+      style={{
+        width: "42%",
+        textAlign: "center",
+      }}
+    >
+      <div
+        style={{
+          fontWeight: "bold",
+        }}
+      >
+        Petugas Pencatat
+      </div>
 
-          {/* KETUA */}
-          <div
-            style={{
-              width: "42%",
-              textAlign: "center",
-            }}
-          >
-            <div>
-              Mengetahui,
-            </div>
+      <div
+        style={{
+          height: 65,
+        }}
+      />
 
-            <div
-              style={{
-                marginTop: 5,
-                fontWeight: "bold",
-              }}
-            >
-              Ketua KDMP Bukit Jaya
-            </div>
+      <div>
+        __________________________
+      </div>
 
-            <div>
-              Kecamatan Bulik Timur
-            </div>
+      <div
+        style={{
+          marginTop: 5,
+        }}
+      >
+        {petugas || "__________________"}
+      </div>
+    </div>
 
-            <div
-              style={{
-                height: 65,
-              }}
-            />
+    {/* WAKIL KETUA */}
+    <div
+      style={{
+        width: "48%",
+        textAlign: "center",
+      }}
+    >
+      <div
+        style={{
+          fontWeight: "bold",
+          lineHeight: 1.4,
+        }}
+      >
+        Wakil Ketua Bidang Usaha KDMP
+        <br />
+        Bukit Jaya Kecamatan Bulik Timur
+      </div>
 
-            <div>
-              __________________________
-            </div>
+      <div
+        style={{
+          height: 65,
+        }}
+      />
 
-            <div
-              style={{
-                marginTop: 5,
-              }}
-            >
-              Nama : __________________
-            </div>
-          </div>
+      <div>
+        __________________________
+      </div>
 
-          {/* PETUGAS */}
-          <div
-            style={{
-              width: "42%",
-              textAlign: "center",
-            }}
-          >
-            <div>
-              Bukit Jaya, {tanggalCetak}
-            </div>
+      <div
+        style={{
+          marginTop: 5,
+          fontWeight: "bold",
+        }}
+      >
+        H. Eko Supriadi
+      </div>
+    </div>
+  </div>
 
-            <div
-              style={{
-                marginTop: 5,
-                fontWeight: "bold",
-              }}
-            >
-              Petugas Pencatat
-            </div>
+  {/* MENGETAHUI - TENGAH BAWAH */}
+  <div
+    style={{
+      width: "100%",
+      textAlign: "center",
+      marginTop: 35,
+    }}
+  >
+    <div>
+      Mengetahui:
+    </div>
 
-            <div
-              style={{
-                height: 65,
-              }}
-            />
+    <div
+      style={{
+        marginTop: 5,
+        fontWeight: "bold",
+        lineHeight: 1.4,
+      }}
+    >
+      Ketua Koperasi Merah Putih Bukit Jaya
+      <br />
+      Kecamatan Bulik Timur
+    </div>
 
-            <div>
-              __________________________
-            </div>
+    <div
+      style={{
+        height: 65,
+      }}
+    />
 
-            <div
-              style={{
-                marginTop: 5,
-              }}
-            >
-              Nama : {petugas || "__________________"}
-            </div>
-          </div>
+    <div>
+      __________________________
+    </div>
 
-        </div>
-
+    <div
+      style={{
+        marginTop: 5,
+        fontWeight: "bold",
+      }}
+    >
+      IQOM MUKHIQOM
+    </div>
+  </div>
+</div>
         {/* =================================================
             FOOTER
         ================================================= */}
