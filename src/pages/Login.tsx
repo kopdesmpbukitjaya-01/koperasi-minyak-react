@@ -11,18 +11,25 @@ export default function Login() {
   const [password, setPassword] = useState("");
 
   const login = async () => {
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+  console.log("LOGIN EMAIL:", email);
 
-    if (error) {
-      alert(error.message);
-      return;
-    }
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+  });
 
-    navigate("/dashboard");
-  };
+  console.log("LOGIN DATA:", data);
+  console.log("LOGIN ERROR:", error);
+
+  if (error) {
+    alert(error.message);
+    return;
+  }
+
+  console.log("SESSION:", data.session);
+
+  navigate("/dashboard");
+};
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-red-600 via-red-500 to-red-700 flex items-center justify-center p-6">
