@@ -1,26 +1,53 @@
 import { supabase } from "../lib/supabase";
+import {
+  simpanSemuaPeriodeOffline,
+  ambilSemuaPeriodeOffline,
+} from "./offline_db";
 
 // =========================
 // GET PERIODE
 // =========================
 export async function getPeriode() {
-  const { data, error } = await supabase
-    .from("periode")
-    .select(`
-      *,
-      jenis_bbm (
-        id,
-        nama
-      )
-    `)
-    .order("id", { ascending: false });
+  try {
+    const { data, error } = await supabase
+      .from("periode")
+      .select(`
+        *,
+        jenis_bbm (
+          id,
+          nama
+        )
+      `)
+      .order("id", { ascending: false });
 
-  if (error) throw error;
+    if (error) throw error;
 
-  return data ?? [];
+    const periode = data ?? [];
+
+    // Simpan data periode terbaru ke IndexedDB
+    await simpanSemuaPeriodeOffline(periode);
+
+    return periode;
+  } catch (error) {
+    console.warn(
+      "Tidak dapat mengambil data periode dari server. Menggunakan data lokal.",
+      error
+    );
+
+    // Jika offline, gunakan data yang tersimpan di IndexedDB
+    const periodeOffline = await ambilSemuaPeriodeOffline();
+
+    if (periodeOffline.length === 0) {
+      throw new Error(
+        "Data periode belum tersedia secara offline. Buka aplikasi saat online terlebih dahulu."
+      );
+    }
+
+    return periodeOffline.sort(
+      (a, b) => Number(b.id) - Number(a.id)
+    );
+  }
 }
-
-
 // =========================
 // ADD PERIODE
 // =========================

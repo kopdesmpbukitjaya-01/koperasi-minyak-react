@@ -249,3 +249,51 @@ export async function ambilSemuaWargaOffline(): Promise<any[]> {
     };
   });
 }
+// =====================================================
+// DATA PERIODE
+// =====================================================
+
+export async function simpanSemuaPeriodeOffline(
+  periode: any[]
+) {
+  const db = await openDB();
+
+  return new Promise<void>((resolve, reject) => {
+    const transaction = db.transaction(
+      STORE_PERIODE,
+      "readwrite"
+    );
+
+    const store = transaction.objectStore(STORE_PERIODE);
+
+    periode.forEach((item) => {
+      store.put(item);
+    });
+
+    transaction.oncomplete = () => resolve();
+    transaction.onerror = () => reject(transaction.error);
+  });
+}
+
+export async function ambilSemuaPeriodeOffline(): Promise<any[]> {
+  const db = await openDB();
+
+  return new Promise((resolve, reject) => {
+    const transaction = db.transaction(
+      STORE_PERIODE,
+      "readonly"
+    );
+
+    const request = transaction
+      .objectStore(STORE_PERIODE)
+      .getAll();
+
+    request.onsuccess = () => {
+      resolve(request.result);
+    };
+
+    request.onerror = () => {
+      reject(request.error);
+    };
+  });
+}
