@@ -54,11 +54,12 @@ export async function getLabaRugi(periodeId: number) {
   if (transaksiError) throw transaksiError;
 
   // Ambil total pengeluaran periode
-  const { data: pengeluaran, error: pengeluaranError } =
-    await supabase
-      .from("pengeluaran")
-      .select("jumlah")
-      .eq("periode_id", periodeId);
+ const { data: pengeluaran, error: pengeluaranError } =
+  await supabase
+    .from("pengeluaran")
+    .select("id, tanggal, keterangan, jumlah")
+    .eq("periode_id", periodeId)
+    .order("tanggal", { ascending: true });
 
   if (pengeluaranError) throw pengeluaranError;
 
@@ -92,13 +93,14 @@ export async function getLabaRugi(periodeId: number) {
   const labaBersih = labaKotor - totalPengeluaran;
 
   return {
-    periode,
-    totalLiterTerjual,
-    totalPenjualan,
-    hargaModalPerLiter,
-    totalModal,
-    labaKotor,
-    totalPengeluaran,
-    labaBersih,
-  };
+  periode,
+  totalLiterTerjual,
+  totalPenjualan,
+  hargaModalPerLiter,
+  totalModal,
+  labaKotor,
+  pengeluaran: pengeluaran || [],
+  totalPengeluaran,
+  labaBersih,
+};
 }
