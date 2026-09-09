@@ -54,7 +54,7 @@ const [labaRugi, setLabaRugi] = useState<any>(null);
   // DOWNLOAD PDF
   // =====================================================
 
-  async function downloadPdf() {
+    async function downloadPdf() {
     if (!periodeId) {
       alert("Silakan pilih periode terlebih dahulu.");
       return;
@@ -62,7 +62,8 @@ const [labaRugi, setLabaRugi] = useState<any>(null);
 
     try {
       const hasil = await getLaporan(Number(periodeId));
-const hasilLabaRugi = await getLabaRugi(Number(periodeId));
+      const hasilLabaRugi = await getLabaRugi(Number(periodeId));
+
       if (!hasil || hasil.length === 0) {
         alert("Tidak ada data pada periode ini.");
         return;
@@ -88,97 +89,106 @@ const hasilLabaRugi = await getLabaRugi(Number(periodeId));
       });
 
       const sisaKuota = kuotaLiter - totalLiter;
-      const totalPenjualan = hasilLabaRugi.totalPenjualan;
-const totalModal = hasilLabaRugi.totalModal;
-const labaKotor = hasilLabaRugi.labaKotor;
-const totalPengeluaran = hasilLabaRugi.totalPengeluaran;
-const labaBersih = hasilLabaRugi.labaBersih;
 
-// =====================================================
-// LOAD LOGO
-// =====================================================
+      const totalPenjualan =
+        Number(hasilLabaRugi.totalPenjualan) || 0;
 
-const logoImg = new Image();
+      const totalModal =
+        Number(hasilLabaRugi.totalModal) || 0;
 
-await new Promise<void>((resolve, reject) => {
-  logoImg.onload = () => resolve();
-  logoImg.onerror = () => reject(new Error("Logo gagal dimuat"));
-  logoImg.src = logo;
-});
+      const labaKotor =
+        Number(hasilLabaRugi.labaKotor) || 0;
 
-  // =====================================================
-// =====================================================
-// HEADER
-// =====================================================
+      const totalPengeluaran =
+        Number(hasilLabaRugi.totalPengeluaran) || 0;
 
-// LOGO
-doc.addImage(
-  logoImg,
-  "PNG",
-  18,
-  6,
-  24,
-  24
-);
+      const labaBersih =
+        Number(hasilLabaRugi.labaBersih) || 0;
 
-// NAMA KOPERASI
-doc.setFont("helvetica", "bold");
-doc.setFontSize(17);
+      const pengeluaran =
+        hasilLabaRugi.pengeluaran || [];
 
-doc.text(
-  "KOPERASI DESA MERAH PUTIH",
-  105,
-  15,
-  { align: "center" }
-);
+      // =====================================================
+      // LOAD LOGO
+      // =====================================================
 
-doc.setFontSize(16);
+      const logoImg = new Image();
 
-doc.text(
-  "BUKIT JAYA",
-  105,
-  23,
-  { align: "center" }
-);
+      await new Promise<void>((resolve, reject) => {
+        logoImg.onload = () => resolve();
+        logoImg.onerror = () =>
+          reject(new Error("Logo gagal dimuat"));
+        logoImg.src = logo;
+      });
 
-doc.setFontSize(13);
+      // =====================================================
+      // HALAMAN 1 - RINGKASAN
+      // =====================================================
 
-doc.text(
-  "PERTASHOP",
-  105,
-  30,
-  { align: "center" }
-);
+      doc.addImage(
+        logoImg,
+        "PNG",
+        18,
+        6,
+        24,
+        24
+      );
 
-// JUDUL LAPORAN
-doc.setFont("helvetica", "bold");
-doc.setFontSize(15);
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(17);
 
-doc.text(
-  "LAPORAN PENGAMBILAN BBM",
-  105,
-  40,
-  { align: "center" }
-);
+      doc.text(
+        "KOPERASI DESA MERAH PUTIH",
+        105,
+        15,
+        { align: "center" }
+      );
 
-doc.setFont("helvetica", "normal");
-doc.setFontSize(10);
+      doc.setFontSize(16);
 
-doc.text(
-  `Periode: ${namaPeriode}`,
-  105,
-  47,
-  { align: "center" }
-);
+      doc.text(
+        "BUKIT JAYA",
+        105,
+        23,
+        { align: "center" }
+      );
 
-doc.line(15, 52, 195, 52);
+      doc.setFontSize(13);
+
+      doc.text(
+        "PERTASHOP",
+        105,
+        30,
+        { align: "center" }
+      );
+
+      doc.setFontSize(15);
+
+      doc.text(
+        "LAPORAN PENGAMBILAN BBM",
+        105,
+        40,
+        { align: "center" }
+      );
+
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(10);
+
+      doc.text(
+        `Periode: ${namaPeriode}`,
+        105,
+        47,
+        { align: "center" }
+      );
+
+      doc.line(15, 52, 195, 52);
+
       // =====================================================
       // RINGKASAN
       // =====================================================
 
       autoTable(doc, {
         startY: 56,
-
         theme: "grid",
 
         head: [
@@ -186,41 +196,50 @@ doc.line(15, 52, 195, 52);
         ],
 
         body: [
-  ["Periode", namaPeriode],
-  ["Jenis BBM", namaBBM],
-  [
-    "Kuota",
-    `${kuotaLiter.toLocaleString("id-ID")} L`,
-  ],
-  [
-    "Terjual",
-    `${totalLiter.toLocaleString("id-ID")} L`,
-  ],
-  [
-    "Sisa Kuota",
-    `${sisaKuota.toLocaleString("id-ID")} L`,
-  ],
-  [
-    "Total Penjualan",
-    `Rp ${totalPenjualan.toLocaleString("id-ID")}`,
-  ],
-  [
-    "Modal BBM",
-    `Rp ${totalModal.toLocaleString("id-ID")}`,
-  ],
-  [
-    "Laba Kotor",
-    `Rp ${labaKotor.toLocaleString("id-ID")}`,
-  ],
-  [
-    "Total Pengeluaran",
-    `Rp ${totalPengeluaran.toLocaleString("id-ID")}`,
-  ],
-  [
-    "Laba Bersih",
-    `Rp ${labaBersih.toLocaleString("id-ID")}`,
-  ],
-],
+          ["Periode", namaPeriode],
+
+          ["Jenis BBM", namaBBM],
+
+          [
+            "Kuota",
+            `${kuotaLiter.toLocaleString("id-ID")} L`,
+          ],
+
+          [
+            "Terjual",
+            `${totalLiter.toLocaleString("id-ID")} L`,
+          ],
+
+          [
+            "Sisa Kuota",
+            `${sisaKuota.toLocaleString("id-ID")} L`,
+          ],
+
+          [
+            "Total Penjualan",
+            `Rp ${totalPenjualan.toLocaleString("id-ID")}`,
+          ],
+
+          [
+            "Modal BBM",
+            `Rp ${totalModal.toLocaleString("id-ID")}`,
+          ],
+
+          [
+            "Laba Kotor",
+            `Rp ${labaKotor.toLocaleString("id-ID")}`,
+          ],
+
+          [
+            "Total Pengeluaran",
+            `Rp ${totalPengeluaran.toLocaleString("id-ID")}`,
+          ],
+
+          [
+            "Laba Bersih",
+            `Rp ${labaBersih.toLocaleString("id-ID")}`,
+          ],
+        ],
 
         styles: {
           fontSize: 9,
@@ -244,6 +263,295 @@ doc.line(15, 52, 195, 52);
       });
 
       // =====================================================
+      // RINCIAN PENGELUARAN
+      // =====================================================
+
+      let y =
+        (doc as any).lastAutoTable.finalY + 8;
+
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(11);
+
+      doc.text(
+        "RINCIAN PENGELUARAN",
+        15,
+        y
+      );
+
+      y += 4;
+
+      const pengeluaranData =
+        pengeluaran.length > 0
+          ? pengeluaran.map(
+              (item: any, index: number) => [
+                index + 1,
+                item.tanggal || "-",
+                item.keterangan || "-",
+                `Rp ${Number(
+                  item.jumlah || 0
+                ).toLocaleString("id-ID")}`,
+              ]
+            )
+          : [
+              [
+                "",
+                "",
+                "Tidak ada pengeluaran",
+                "Rp 0",
+              ],
+            ];
+
+      autoTable(doc, {
+        startY: y + 2,
+
+        theme: "grid",
+
+        head: [
+          [
+            "No",
+            "Tanggal",
+            "Keterangan",
+            "Jumlah",
+          ],
+        ],
+
+        body: pengeluaranData,
+
+        styles: {
+          fontSize: 8,
+          cellPadding: 2.5,
+        },
+
+        headStyles: {
+          fillColor: [185, 28, 28],
+          textColor: 255,
+          fontStyle: "bold",
+          halign: "center",
+        },
+
+        columnStyles: {
+          0: {
+            cellWidth: 12,
+            halign: "center",
+          },
+
+          1: {
+            cellWidth: 30,
+            halign: "center",
+          },
+
+          2: {
+            cellWidth: 83,
+          },
+
+          3: {
+            cellWidth: 45,
+            halign: "right",
+          },
+        },
+      });
+
+      // =====================================================
+      // TOTAL PENGELUARAN
+      // =====================================================
+
+      y =
+        (doc as any).lastAutoTable.finalY + 7;
+
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(10);
+
+      doc.text(
+        `TOTAL PENGELUARAN: Rp ${totalPengeluaran.toLocaleString(
+          "id-ID"
+        )}`,
+        195,
+        y,
+        { align: "right" }
+      );
+
+      // =====================================================
+// TANDA TANGAN
+// =====================================================
+
+y += 10;
+
+doc.setFont("helvetica", "normal");
+doc.setFontSize(10);
+
+// ==========================================
+// PETUGAS PENCATAT - KIRI
+// ==========================================
+
+doc.text(
+  "Petugas Pencatat",
+  50,
+  y,
+  {
+    align: "center",
+  }
+);
+
+// Ruang tanda tangan
+y += 18;
+
+// Garis tanda tangan
+doc.text(
+  "________________________",
+  50,
+  y,
+  {
+    align: "center",
+  }
+);
+
+// Nama petugas
+y += 5;
+
+doc.setFont("helvetica", "bold");
+
+doc.text(
+  petugas || "__________________",
+  50,
+  y,
+  {
+    align: "center",
+  }
+);
+
+// ==========================================
+// WAKIL KETUA - KANAN
+// ==========================================
+
+const signatureY = y - 23;
+
+doc.setFont("helvetica", "normal");
+
+doc.text(
+  "Wakil Ketua Bidang Usaha KDMP",
+  155,
+  signatureY,
+  {
+    align: "center",
+  }
+);
+
+doc.text(
+  "Bukit Jaya Kecamatan Bulik Timur",
+  155,
+  signatureY + 5,
+  {
+    align: "center",
+  }
+);
+
+// Ruang tanda tangan
+doc.text(
+  "________________________",
+  155,
+  signatureY + 22,
+  {
+    align: "center",
+  }
+);
+
+// Nama wakil ketua
+doc.setFont("helvetica", "bold");
+
+doc.text(
+  "H. Eko Supriadi",
+  155,
+  signatureY + 27,
+  {
+    align: "center",
+  }
+);
+
+// ==========================================
+// MENGETAHUI - TENGAH BAWAH
+// ==========================================
+
+const mengetahuiY = y + 13;
+
+doc.setFont("helvetica", "normal");
+
+doc.text(
+  "Mengetahui:",
+  105,
+  mengetahuiY,
+  {
+    align: "center",
+  }
+);
+
+doc.setFont("helvetica", "bold");
+
+doc.text(
+  "Ketua Koperasi Merah Putih Bukit Jaya",
+  105,
+  mengetahuiY + 5,
+  {
+    align: "center",
+  }
+);
+
+doc.text(
+  "Kecamatan Bulik Timur",
+  105,
+  mengetahuiY + 10,
+  {
+    align: "center",
+  }
+);
+
+// Ruang tanda tangan
+doc.text(
+  "________________________",
+  105,
+  mengetahuiY + 27,
+  {
+    align: "center",
+  }
+);
+
+// Nama ketua
+doc.text(
+  "IQOM MUKHIQOM",
+  105,
+  mengetahuiY + 32,
+  {
+    align: "center",
+  }
+);
+      // =====================================================
+      // HALAMAN 2 - DAFTAR TRANSAKSI
+      // =====================================================
+
+      doc.addPage();
+
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(14);
+
+      doc.text(
+        "DAFTAR TRANSAKSI PENGAMBILAN BBM",
+        105,
+        15,
+        { align: "center" }
+      );
+
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(10);
+
+      doc.text(
+        `Periode: ${namaPeriode}`,
+        105,
+        22,
+        { align: "center" }
+      );
+
+      doc.line(15, 27, 195, 27);
+
+      // =====================================================
       // TABEL TRANSAKSI
       // =====================================================
 
@@ -252,30 +560,31 @@ doc.line(15, 52, 195, 52);
           index + 1,
           item.warga?.nama || "-",
           item.tanggal || "-",
-          `${Number(item.liter || 0).toLocaleString(
-            "id-ID"
-          )} L`,
-          `Rp ${Number(item.harga || 0).toLocaleString(
-            "id-ID"
-          )}`,
-          `Rp ${Number(item.total || 0).toLocaleString(
-            "id-ID"
-          )}`,
+          `${Number(
+            item.liter || 0
+          ).toLocaleString("id-ID")} L`,
+          `Rp ${Number(
+            item.harga || 0
+          ).toLocaleString("id-ID")}`,
+          `Rp ${Number(
+            item.total || 0
+          ).toLocaleString("id-ID")}`,
         ]
       );
 
       autoTable(doc, {
-        startY:
-          (doc as any).lastAutoTable.finalY + 8,
+        startY: 32,
 
-        head: [[
-          "No",
-          "Nama Warga",
-          "Tanggal",
-          "Liter",
-          "Harga/Liter",
-          "Total",
-        ]],
+        head: [
+          [
+            "No",
+            "Nama Warga",
+            "Tanggal",
+            "Liter",
+            "Harga/Liter",
+            "Total",
+          ],
+        ],
 
         body: tableData,
 
@@ -326,10 +635,10 @@ doc.line(15, 52, 195, 52);
       });
 
       // =====================================================
-      // TOTAL
+      // TOTAL TRANSAKSI
       // =====================================================
 
-      let y =
+      y =
         (doc as any).lastAutoTable.finalY + 8;
 
       doc.setFont("helvetica", "bold");
@@ -349,179 +658,40 @@ doc.line(15, 52, 195, 52);
         )}`,
         195,
         y,
-        {
-          align: "right",
-        }
+        { align: "right" }
       );
 
-     // =====================================================
-// TANDA TANGAN
-// =====================================================
-
-y += 15;
-
-doc.setFont("helvetica", "normal");
-doc.setFontSize(10);
-
-// ==========================================
-// PETUGAS PENCATAT - KIRI
-// ==========================================
-
-doc.text(
-  "Petugas Pencatat",
-  50,
-  y,
-  {
-    align: "center",
-  }
-);
-
-// Ruang tanda tangan
-y += 25;
-
-// Garis tanda tangan
-doc.text(
-  "________________________",
-  50,
-  y,
-  {
-    align: "center",
-  }
-);
-
-// Nama petugas
-y += 6;
-
-doc.setFont("helvetica", "bold");
-doc.text(
-  petugas || "__________________",
-  50,
-  y,
-  {
-    align: "center",
-  }
-);
-
-// ==========================================
-// WAKIL KETUA - KANAN
-// ==========================================
-
-const signatureY = y - 31;
-
-doc.setFont("helvetica", "normal");
-
-doc.text(
-  "Wakil Ketua Bidang Usaha KDMP",
-  155,
-  signatureY,
-  {
-    align: "center",
-  }
-);
-
-doc.text(
-  "Bukit Jaya Kecamatan Bulik Timur",
-  155,
-  signatureY + 5,
-  {
-    align: "center",
-  }
-);
-
-// Ruang tanda tangan
-doc.text(
-  "________________________",
-  155,
-  signatureY + 30,
-  {
-    align: "center",
-  }
-);
-
-// Nama wakil ketua
-doc.setFont("helvetica", "bold");
-
-doc.text(
-  "H. Eko Supriadi",
-  155,
-  signatureY + 36,
-  {
-    align: "center",
-  }
-);
-
-// ==========================================
-// MENGETAHUI - TENGAH BAWAH
-// ==========================================
-
-const mengetahuiY = y + 25;
-
-doc.setFont("helvetica", "normal");
-
-doc.text(
-  "Mengetahui:",
-  105,
-  mengetahuiY,
-  {
-    align: "center",
-  }
-);
-
-doc.setFont("helvetica", "bold");
-
-doc.text(
-  "Ketua Koperasi Merah Putih Bukit Jaya",
-  105,
-  mengetahuiY + 6,
-  {
-    align: "center",
-  }
-);
-
-doc.text(
-  "Kecamatan Bulik Timur",
-  105,
-  mengetahuiY + 11,
-  {
-    align: "center",
-  }
-);
-
-// Ruang tanda tangan
-doc.text(
-  "________________________",
-  105,
-  mengetahuiY + 36,
-  {
-    align: "center",
-  }
-);
-
-// Nama ketua
-doc.text(
-  "IQOM MUKHIQOM",
-  105,
-  mengetahuiY + 42,
-  {
-    align: "center",
-  }
-);
-
       // =====================================================
-      // FOOTER
+      // FOOTER SEMUA HALAMAN
       // =====================================================
 
-      doc.setFont("helvetica", "normal");
-      doc.setFontSize(8);
+      const jumlahHalaman =
+        doc.getNumberOfPages();
 
-      doc.text(
-        "Dokumen Laporan Pengambilan BBM - KDMP Bukit Jaya",
-        105,
-        287,
-        {
-          align: "center",
-        }
-      );
+      for (
+        let i = 1;
+        i <= jumlahHalaman;
+        i++
+      ) {
+        doc.setPage(i);
+
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(8);
+
+        doc.text(
+          "Dokumen Laporan Pengambilan BBM - KDMP Bukit Jaya",
+          105,
+          287,
+          { align: "center" }
+        );
+
+        doc.text(
+          `Halaman ${i} dari ${jumlahHalaman}`,
+          195,
+          287,
+          { align: "right" }
+        );
+      }
 
       // =====================================================
       // DOWNLOAD
