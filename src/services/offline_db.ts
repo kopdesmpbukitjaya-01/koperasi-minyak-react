@@ -201,3 +201,51 @@ export async function hapusQueueOffline(
     transaction.onerror = () => reject(transaction.error);
   });
 }
+// =====================================================
+// DATA WARGA
+// =====================================================
+
+export async function simpanSemuaWargaOffline(
+  warga: any[]
+) {
+  const db = await openDB();
+
+  return new Promise<void>((resolve, reject) => {
+    const transaction = db.transaction(
+      STORE_WARGA,
+      "readwrite"
+    );
+
+    const store = transaction.objectStore(STORE_WARGA);
+
+    warga.forEach((item) => {
+      store.put(item);
+    });
+
+    transaction.oncomplete = () => resolve();
+    transaction.onerror = () => reject(transaction.error);
+  });
+}
+
+export async function ambilSemuaWargaOffline(): Promise<any[]> {
+  const db = await openDB();
+
+  return new Promise((resolve, reject) => {
+    const transaction = db.transaction(
+      STORE_WARGA,
+      "readonly"
+    );
+
+    const request = transaction
+      .objectStore(STORE_WARGA)
+      .getAll();
+
+    request.onsuccess = () => {
+      resolve(request.result);
+    };
+
+    request.onerror = () => {
+      reject(request.error);
+    };
+  });
+}

@@ -1,37 +1,83 @@
 import { supabase } from "../lib/supabase";
+import {
+  simpanSemuaWargaOffline,
+  ambilSemuaWargaOffline,
+} from "./offline_db";
 
 export async function getWarga() {
-  const { data, error } = await supabase
-    .from("warga")
-    .select("*");
+  try {
+    const { data, error } = await supabase
+      .from("warga")
+      .select("*");
 
-  if (error) throw error;
+    if (error) throw error;
 
-  return (data ?? []).sort((a, b) => {
-    const statusA = String(a.status ?? "").trim().toLowerCase();
-    const statusB = String(b.status ?? "").trim().toLowerCase();
+    const warga = (data ?? []).sort((a, b) => {
+      const statusA = String(a.status ?? "").trim().toLowerCase();
+      const statusB = String(b.status ?? "").trim().toLowerCase();
 
-    const isAnggotaA = statusA === "anggota";
-    const isAnggotaB = statusB === "anggota";
+      const isAnggotaA = statusA === "anggota";
+      const isAnggotaB = statusB === "anggota";
 
-    // Anggota selalu di atas
-    if (isAnggotaA && !isAnggotaB) {
-      return -1;
-    }
+      // Anggota selalu di atas
+      if (isAnggotaA && !isAnggotaB) {
+        return -1;
+      }
 
-    if (!isAnggotaA && isAnggotaB) {
-      return 1;
-    }
+      if (!isAnggotaA && isAnggotaB) {
+        return 1;
+      }
 
-    // Dalam kelompok yang sama, urut berdasarkan nama
-    return String(a.nama ?? "").localeCompare(
-      String(b.nama ?? ""),
-      "id",
-      { sensitivity: "base" }
+      // Dalam kelompok yang sama, urut berdasarkan nama
+      return String(a.nama ?? "").localeCompare(
+        String(b.nama ?? ""),
+        "id",
+        { sensitivity: "base" }
+      );
+    });
+
+    // Simpan data warga terbaru ke IndexedDB
+    await simpanSemuaWargaOffline(warga);
+
+    return warga;
+  } catch (error) {
+    console.warn(
+      "Tidak dapat mengambil data warga dari server. Menggunakan data lokal.",
+      error
     );
-  });
-}
 
+    // Jika offline, gunakan data yang tersimpan di IndexedDB
+    const wargaOffline = await ambilSemuaWargaOffline();
+
+    if (wargaOffline.length === 0) {
+      throw new Error(
+        "Data warga belum tersedia secara offline. Buka aplikasi saat online terlebih dahulu."
+      );
+    }
+
+    return wargaOffline.sort((a, b) => {
+      const statusA = String(a.status ?? "").trim().toLowerCase();
+      const statusB = String(b.status ?? "").trim().toLowerCase();
+
+      const isAnggotaA = statusA === "anggota";
+      const isAnggotaB = statusB === "anggota";
+
+      if (isAnggotaA && !isAnggotaB) {
+        return -1;
+      }
+
+      if (!isAnggotaA && isAnggotaB) {
+        return 1;
+      }
+
+      return String(a.nama ?? "").localeCompare(
+        String(b.nama ?? ""),
+        "id",
+        { sensitivity: "base" }
+      );
+    });
+  }
+}
 export async function addWarga(
   no_kk: string,
   nama: string,
