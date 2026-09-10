@@ -1,4 +1,3 @@
-
 import { supabase } from "../lib/supabase";
 
 import {
@@ -59,20 +58,15 @@ export async function syncTransaksiOffline() {
 
         if (error) {
           // Jika ternyata sudah ada di server,
-          // jangan terus mencoba transaksi yang sama.
+          // hapus antrean karena tidak perlu dikirim ulang.
           if (error.code === "23505") {
             console.warn(
               "Transaksi sudah ada di server:",
               transaksi
             );
 
-            await hapusTransaksiOffline(
-              transaksi.id
-            );
-
-            await hapusQueueOffline(
-              item.queue_id!
-            );
+            await hapusTransaksiOffline(transaksi.id);
+            await hapusQueueOffline(item.queue_id!);
 
             continue;
           }
@@ -80,22 +74,50 @@ export async function syncTransaksiOffline() {
           throw error;
         }
 
-        // Hapus transaksi sementara
-        await hapusTransaksiOffline(
-          transaksi.id
+        // =================================================
+        // SERVER SUDAH BERHASIL
+        // QUEUE LANGSUNG DIHAPUS
+        // =================================================
+
+        await hapusQueueOffline(item.queue_id!);
+
+        console.log(
+          "Transaksi berhasil dikirim ke Supabase. Queue dihapus:",
+          item.queue_id
         );
 
-        // Simpan dengan ID Supabase yang asli
-        await simpanTransaksiOffline({
-          id: Number(data.id),
-          warga_id: Number(data.warga_id),
-          periode_id: Number(data.periode_id),
-          jenis_bbm_id: Number(data.jenis_bbm_id),
-          tanggal: data.tanggal,
-          liter: Number(data.liter),
-          harga: Number(data.harga),
-          total: Number(data.total),
-        });
+        // =================================================
+        // PERBARUI CACHE LOKAL
+        // =================================================
+
+        try {
+          // Hapus transaksi sementara
+          await hapusTransaksiOffline(transaksi.id);
+
+          // Simpan transaksi dengan ID Supabase asli
+          if (data) {
+            await simpanTransaksiOffline({
+              id: Number(data.id),
+              warga_id: Number(data.warga_id),
+              periode_id: Number(data.periode_id),
+              jenis_bbm_id: Number(data.jenis_bbm_id),
+              tanggal: data.tanggal,
+              liter: Number(data.liter),
+              harga: Number(data.harga),
+              total: Number(data.total),
+            });
+          }
+        } catch (cacheError) {
+          // Server sudah berhasil dan queue sudah dihapus.
+          // Error cache tidak boleh membuat transaksi
+          // dikirim ulang ke server.
+          console.warn(
+            "Server berhasil, tetapi cache lokal gagal diperbarui:",
+            cacheError
+          );
+        }
+
+        continue;
       }
 
       // =================================================
@@ -131,9 +153,17 @@ export async function syncTransaksiOffline() {
         }
 
         // Cache lokal sudah berisi data terbaru
-        await simpanTransaksiOffline(
-          transaksi
+        await simpanTransaksiOffline(transaksi);
+
+        // Queue berhasil diproses
+        await hapusQueueOffline(item.queue_id!);
+
+        console.log(
+          "Sinkronisasi update berhasil:",
+          transaksi.id
         );
+
+        continue;
       }
 
       // =================================================
@@ -154,24 +184,18 @@ export async function syncTransaksiOffline() {
           }
         }
 
-        await hapusTransaksiOffline(
+        await hapusTransaksiOffline(transaksi.id);
+
+        // Queue berhasil diproses
+        await hapusQueueOffline(item.queue_id!);
+
+        console.log(
+          "Sinkronisasi delete berhasil:",
           transaksi.id
         );
+
+        continue;
       }
-
-      // =================================================
-      // QUEUE BERHASIL → HAPUS
-      // =================================================
-
-      await hapusQueueOffline(
-        item.queue_id!
-      );
-
-      console.log(
-        "Sinkronisasi berhasil:",
-        item.action,
-        transaksi.id
-      );
     } catch (error) {
       console.error(
         "Gagal sinkronisasi transaksi:",
@@ -179,9 +203,8 @@ export async function syncTransaksiOffline() {
         error
       );
 
-      // Jangan hapus queue.
+      // Jangan hapus queue jika server belum berhasil.
       // Akan dicoba lagi ketika internet kembali.
-
       break;
     }
   }
@@ -208,4 +231,3 @@ export function mulaiSyncOtomatis() {
     syncTransaksiOffline();
   });
 }
-
