@@ -144,19 +144,67 @@ export async function hapusTransaksiOffline(id: number) {
 export async function tambahQueueOffline(
   item: OfflineQueueItem
 ) {
-  const db = await openDB();
+  console.log("OFFLINE QUEUE: mulai menyimpan", item);
 
-  return new Promise<void>((resolve, reject) => {
-    const transaction = db.transaction(
-      STORE_QUEUE,
-      "readwrite"
+  try {
+    const db = await openDB();
+
+    console.log("OFFLINE QUEUE: database terbuka");
+
+    return new Promise<void>((resolve, reject) => {
+      const transaction = db.transaction(
+        STORE_QUEUE,
+        "readwrite"
+      );
+
+      console.log("OFFLINE QUEUE: transaksi IndexedDB dibuat");
+
+      const request = transaction
+        .objectStore(STORE_QUEUE)
+        .add(item);
+
+      request.onsuccess = () => {
+        console.log(
+          "OFFLINE QUEUE: item berhasil ditambahkan, key:",
+          request.result
+        );
+      };
+
+      request.onerror = () => {
+        console.error(
+          "OFFLINE QUEUE: GAGAL add item:",
+          request.error
+        );
+      };
+
+      transaction.oncomplete = () => {
+        console.log("OFFLINE QUEUE: BERHASIL DISIMPAN");
+        resolve();
+      };
+
+      transaction.onerror = () => {
+        console.error(
+          "OFFLINE QUEUE: TRANSAKSI GAGAL:",
+          transaction.error
+        );
+        reject(transaction.error);
+      };
+
+      transaction.onabort = () => {
+        console.error(
+          "OFFLINE QUEUE: TRANSAKSI DIABORT:",
+          transaction.error
+        );
+        reject(transaction.error);
+      };
+    });
+  } catch (error) {
+    console.error(
+      "OFFLINE QUEUE: ERROR membuka database:",
+      error
     );
-
-    transaction.objectStore(STORE_QUEUE).add(item);
-
-    transaction.oncomplete = () => resolve();
-    transaction.onerror = () => reject(transaction.error);
-  });
+    throw error;
+  }
 }
 
 export async function ambilQueueOffline(): Promise<
