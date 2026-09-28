@@ -35,6 +35,7 @@ export default function Transaksi() {
   const [periodeId, setPeriodeId] = useState("");
   const [tanggal, setTanggal] = useState("");
   const [liter, setLiter] = useState("");
+  const [metodePembayaran, setMetodePembayaran] = useState("Tunai");
 
   const [scannerOpen, setScannerOpen] = useState(false);
   const [scanResult, setScanResult] = useState("");
@@ -258,18 +259,19 @@ export default function Transaksi() {
       // ===================================================
 
       if (editId === null) {
-        await addTransaksi(
-          Number(wargaId),
-          Number(periodeId),
-          Number(jenisBBMId),
-          tanggal,
-          Number(liter)
-        );
+  await addTransaksi(
+    Number(wargaId),
+    Number(periodeId),
+    Number(jenisBBMId),
+    tanggal,
+    Number(liter),
+    metodePembayaran
+  );
 
-        alert(
-          "✅ Transaksi berhasil disimpan."
-        );
-      }
+  alert(
+    "✅ Transaksi berhasil disimpan."
+  );
+}
 
       // ===================================================
       // UPDATE TRANSAKSI
@@ -727,6 +729,21 @@ export default function Transaksi() {
                 className="w-full rounded-xl border border-gray-300 bg-gray-50 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-red-600"
               />
             </div>
+            {/* METODE PEMBAYARAN */}
+<div className="mt-4">
+  <label className="block font-semibold text-gray-700 mb-2">
+    Metode Pembayaran
+  </label>
+
+  <select
+    value={metodePembayaran}
+    onChange={(e) => setMetodePembayaran(e.target.value)}
+    className="w-full border rounded-lg px-3 py-2"
+  >
+    <option value="Tunai">Tunai</option>
+    <option value="Transfer">Transfer</option>
+  </select>
+</div>
 
           </div>
 
@@ -867,6 +884,9 @@ export default function Transaksi() {
                     <th className="px-4 py-3 text-center">
                       Liter
                     </th>
+                    <th className="px-4 py-3">
+  Pembayaran
+</th>
 
                     <th className="px-4 py-3 text-right">
                       Harga/Liter
@@ -913,8 +933,12 @@ export default function Transaksi() {
                         </td>
 
                         <td className="px-4 py-4 text-center font-semibold text-blue-600">
-                          {t.liter} L
-                        </td>
+  {t.liter} L
+</td>
+
+<td className="px-4 py-4 text-center font-semibold">
+  {t.metode_pembayaran}
+</td>
 
                         <td className="px-4 py-4 text-right">
                           Rp{" "}

@@ -253,8 +253,10 @@ export async function addTransaksi(
   periode_id: number,
   jenis_bbm_id: number,
   tanggal: string,
-  liter: number
+  liter: number,
+  metode_pembayaran: string
 ) {
+  
   // =====================================================
   // CEK DUPLIKAT
   // =====================================================
@@ -282,20 +284,20 @@ export async function addTransaksi(
   // =====================================================
 
   try {
-    const { error } = await supabase
-      .from("transaksi")
-      .insert([
-        {
-          warga_id,
-          periode_id,
-          jenis_bbm_id,
-          tanggal,
-          liter,
-          harga,
-          total,
-        },
-      ]);
-
+   const { error } = await supabase
+  .from("transaksi")
+.insert([
+  {
+    warga_id,
+    periode_id,
+    jenis_bbm_id,
+    tanggal,
+    liter,
+    harga,
+    total,
+    metode_pembayaran,
+  },
+]);
     if (error) {
       // Database menolak duplikat
       if (error.code === "23505") {

@@ -556,35 +556,41 @@ doc.text(
       // =====================================================
 
       const tableData = hasil.map(
-        (item: any, index: number) => [
-          index + 1,
-          item.warga?.nama || "-",
-          item.tanggal || "-",
-          `${Number(
-            item.liter || 0
-          ).toLocaleString("id-ID")} L`,
-          `Rp ${Number(
-            item.harga || 0
-          ).toLocaleString("id-ID")}`,
-          `Rp ${Number(
-            item.total || 0
-          ).toLocaleString("id-ID")}`,
-        ]
-      );
+  (item: any, index: number) => [
+    index + 1,
+    item.warga?.nama || "-",
+    item.tanggal || "-",
+    `${Number(
+      item.liter || 0
+    ).toLocaleString("id-ID")} L`,
 
-      autoTable(doc, {
-        startY: 32,
+    item.metode_pembayaran
+      ? item.metode_pembayaran.toUpperCase()
+      : "-",
 
-        head: [
-          [
-            "No",
-            "Nama Warga",
-            "Tanggal",
-            "Liter",
-            "Harga/Liter",
-            "Total",
-          ],
-        ],
+    `Rp ${Number(
+      item.harga || 0
+    ).toLocaleString("id-ID")}`,
+
+    `Rp ${Number(
+      item.total || 0
+    ).toLocaleString("id-ID")}`,
+  ]
+);
+autoTable(doc, {
+  startY: 32,
+
+  head: [
+    [
+      "No",
+      "Nama Warga",
+      "Tanggal",
+      "Liter",
+      "Pembayaran",
+      "Harga/Liter",
+      "Total",
+    ],
+  ],
 
         body: tableData,
 
@@ -603,35 +609,41 @@ doc.text(
         },
 
         columnStyles: {
-          0: {
-            cellWidth: 10,
-            halign: "center",
-          },
+  0: {
+    cellWidth: 10,
+    halign: "center",
+  },
 
-          1: {
-            cellWidth: 55,
-          },
+  1: {
+    cellWidth: 45,
+  },
 
-          2: {
-            cellWidth: 25,
-            halign: "center",
-          },
+  2: {
+    cellWidth: 25,
+    halign: "center",
+  },
 
-          3: {
-            cellWidth: 20,
-            halign: "center",
-          },
+  3: {
+    cellWidth: 18,
+    halign: "center",
+  },
 
-          4: {
-            cellWidth: 35,
-            halign: "right",
-          },
+  4: {
+    cellWidth: 25,
+    halign: "center",
+    fontStyle: "bold",
+  },
 
-          5: {
-            cellWidth: 35,
-            halign: "right",
-          },
-        },
+  5: {
+    cellWidth: 32,
+    halign: "right",
+  },
+
+  6: {
+    cellWidth: 35,
+    halign: "right",
+  },
+},
       });
 
       // =====================================================
@@ -889,6 +901,7 @@ doc.text(
             <th>Nama</th>
             <th>Tanggal</th>
             <th>Liter</th>
+            <th>Pembayaran</th>
             <th>Harga/Liter</th>
             <th>Total</th>
           </tr>
@@ -914,6 +927,7 @@ doc.text(
                 <td align="center">
                   {t.liter} L
                 </td>
+                
 
                 <td align="right">
                   Rp{" "}

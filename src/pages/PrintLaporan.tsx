@@ -399,12 +399,16 @@ export default function PrintLaporan() {
               </th>
 
               <th style={{ width: "10%" }}>
-                Liter
-              </th>
+  Liter
+</th>
 
-              <th style={{ width: "17%" }}>
-                Harga/Liter
-              </th>
+<th style={{ width: "14%" }}>
+  Pembayaran
+</th>
+
+<th style={{ width: "15%" }}>
+  Harga/Liter
+</th>
 
               <th style={{ width: "18%" }}>
                 Total
@@ -437,22 +441,33 @@ export default function PrintLaporan() {
                 </td>
 
                 <td
-                  style={{
-                    textAlign: "center",
-                  }}
-                >
-                  {Number(t.liter).toLocaleString("id-ID")}
-                </td>
+  style={{
+    textAlign: "center",
+  }}
+>
+  {Number(t.liter).toLocaleString("id-ID")}
+</td>
 
-                <td
-                  style={{
-                    textAlign: "right",
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  Rp{" "}
-                  {Number(t.harga).toLocaleString("id-ID")}
-                </td>
+<td
+  style={{
+    textAlign: "center",
+    fontWeight: "bold",
+  }}
+>
+ {t.metode_pembayaran
+  ? t.metode_pembayaran.toUpperCase()
+  : "-"}
+</td>
+
+<td
+  style={{
+    textAlign: "right",
+    whiteSpace: "nowrap",
+  }}
+>
+  Rp{" "}
+  {Number(t.harga).toLocaleString("id-ID")}
+</td>
 
                 <td
                   style={{
