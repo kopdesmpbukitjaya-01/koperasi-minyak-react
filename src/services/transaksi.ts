@@ -362,11 +362,18 @@ export async function addTransaksi(
 
 export async function updateTransaksi(
   id: number,
+
   warga_id: number,
+
   periode_id: number,
+
   jenis_bbm_id: number,
+
   tanggal: string,
-  liter: number
+
+  liter: number,
+
+  metode_pembayaran: string
 ) {
   // =====================================================
   // AMBIL HARGA
@@ -409,18 +416,19 @@ export async function updateTransaksi(
   // =====================================================
 
   try {
-    const { error } = await supabase
-      .from("transaksi")
-      .update({
-        warga_id,
-        periode_id,
-        jenis_bbm_id,
-        tanggal,
-        liter,
-        harga,
-        total,
-      })
-      .eq("id", id);
+  const { error } = await supabase
+  .from("transaksi")
+  .update({
+    warga_id,
+    periode_id,
+    jenis_bbm_id,
+    tanggal,
+    liter,
+    harga,
+    total,
+    metode_pembayaran,
+  })
+  .eq("id", id);
 
     if (error) throw error;
 

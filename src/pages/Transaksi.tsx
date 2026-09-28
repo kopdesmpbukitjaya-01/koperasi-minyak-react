@@ -319,14 +319,15 @@ export default function Transaksi() {
           }
         }
 
-        await updateTransaksi(
-          editId,
-          Number(wargaId),
-          Number(periodeId),
-          Number(jenisBBMId),
-          tanggal,
-          Number(liter)
-        );
+       await updateTransaksi(
+  editId,
+  Number(wargaId),
+  Number(periodeId),
+  Number(jenisBBMId),
+  tanggal,
+  Number(liter),
+  metodePembayaran
+);
 
         alert(
           "✅ Transaksi berhasil diperbarui."
@@ -397,6 +398,9 @@ export default function Transaksi() {
     setLiter(
       String(item.liter)
     );
+    setMetodePembayaran(
+  item.metode_pembayaran || "Tunai"
+);
   }
 
   // =====================================================
