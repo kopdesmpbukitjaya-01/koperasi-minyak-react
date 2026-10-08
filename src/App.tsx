@@ -10,7 +10,7 @@ import PembelianBBM from "./pages/PembelianBBM";
 import Laporan from "./pages/Laporan";
 import PrintLaporan from "./pages/PrintLaporan";
 import PrintIdCard from "./pages/PrintIdCard";
-
+import Anggota from "./pages/Anggota";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Pengeluaran from "./pages/Pengeluaran";
 
@@ -99,7 +99,14 @@ export default function App() {
             </ProtectedRoute>
           }
         />
-
+<Route
+  path="/anggota"
+  element={
+    <ProtectedRoute>
+      <Anggota />
+    </ProtectedRoute>
+  }
+/>
 
         <Route
           path="/print-laporan"
