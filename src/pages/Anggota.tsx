@@ -1,251 +1,439 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import {
   getAnggotaKoperasi,
   addSimpanan,
   getSimpananAnggota,
-  updateSimpanan,
-  deleteSimpanan,
+  getRekapSemuaAnggota,
 } from "../services/simpanan";
 
 
 export default function Anggota() {
 
+
+  const navigate = useNavigate();
+
+
+
   const [anggota, setAnggota] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
 
   const [wargaId, setWargaId] = useState("");
 
+
+
   const [tanggalSetor, setTanggalSetor] = useState(
-    new Date().toISOString().slice(0, 10)
+    new Date().toISOString().slice(0,10)
   );
 
-  const [simpananPokok, setSimpananPokok] = useState("");
-  const [simpananWajib, setSimpananWajib] = useState("");
-  const [simpananSukarela, setSimpananSukarela] = useState("");
 
-  const [rekapSimpanan, setRekapSimpanan] = useState<any[]>([]);
-const [editId, setEditId] = useState<number | null>(null);
 
-  useEffect(() => {
+  const [pokok,setPokok] = useState("");
+
+  const [wajib,setWajib] = useState("");
+
+  const [sukarela,setSukarela] = useState("");
+
+
+
+  // rekap anggota terpilih
+
+  const [rekapSimpanan,setRekapSimpanan] =
+  useState<any[]>([]);
+
+
+
+  const [totalPokok,setTotalPokok] =
+  useState(0);
+
+  const [totalWajib,setTotalWajib] =
+  useState(0);
+
+  const [totalSukarela,setTotalSukarela] =
+  useState(0);
+
+  const [totalDana,setTotalDana] =
+  useState(0);
+
+
+
+
+  // rekap seluruh koperasi
+
+  const [rekapGabungan,setRekapGabungan] =
+  useState<any[]>([]);
+
+
+  const [totalSemuaPokok,setTotalSemuaPokok] =
+  useState(0);
+
+  const [totalSemuaWajib,setTotalSemuaWajib] =
+  useState(0);
+
+  const [totalSemuaSukarela,setTotalSemuaSukarela] =
+  useState(0);
+
+  const [totalSemuaDana,setTotalSemuaDana] =
+  useState(0);
+
+
+
+
+
+  useEffect(()=>{
+
+
     loadAnggota();
-  }, []);
+
+    loadRekapSemua();
+
+
+  },[]);
 
 
 
-  async function loadAnggota() {
 
-    try {
 
-      const data = await getAnggotaKoperasi();
+
+
+  async function loadAnggota(){
+
+
+    try{
+
+
+      const data =
+      await getAnggotaKoperasi();
+
 
       setAnggota(data || []);
 
-    } catch (error) {
 
-      console.error(
-        "Gagal mengambil anggota:",
-        error
-      );
 
-    } finally {
+    }catch(error){
 
-      setLoading(false);
+
+      console.error(error);
+
 
     }
+
 
   }
 
 
 
-  async function loadRekapSimpanan(
-  id: number
-) {
 
-  try {
 
-    const data =
+
+
+
+  async function loadRekapSimpanan(id:number){
+
+
+    try{
+
+
+      const data =
       await getSimpananAnggota(id);
 
-    setRekapSimpanan(data || []);
 
-  } catch (error) {
 
-    console.error(
-      "Gagal mengambil rekap:",
-      error
-    );
-
-  }
-
-}
+      setRekapSimpanan(data || []);
 
 
 
-function editSimpanan(item: any) {
 
-  setEditId(item.id);
+      let pokokTotal = 0;
 
-  setTanggalSetor(
-    item.tanggal_setor
-  );
+      let wajibTotal = 0;
 
-
-  setSimpananPokok(
-    String(item.simpanan_pokok || 0)
-  );
+      let sukarelaTotal = 0;
 
 
-  setSimpananWajib(
-    String(item.simpanan_wajib || 0)
-  );
 
 
-  setSimpananSukarela(
-    String(item.simpanan_sukarela || 0)
-  );
-
-  setSimpananSukarela(
-    String(item.simpanan_sukarela || 0)
-  );
-
-}
-async function hapusSimpanan(
-  id: number
-) {
-
-  const yakin = window.confirm(
-    "Yakin ingin menghapus data simpanan ini?"
-  );
+      (data || []).forEach((item:any)=>{
 
 
-  if (!yakin) return;
+        pokokTotal += Number(
+          item.simpanan_pokok || 0
+        );
 
 
-  try {
-
-    await deleteSimpanan(id);
-
-
-    alert(
-      "✅ Data berhasil dihapus"
-    );
+        wajibTotal += Number(
+          item.simpanan_wajib || 0
+        );
 
 
-    if (wargaId) {
+        sukarelaTotal += Number(
+          item.simpanan_sukarela || 0
+        );
 
-      await loadRekapSimpanan(
-        Number(wargaId)
+
+      });
+
+
+
+
+      setTotalPokok(pokokTotal);
+
+      setTotalWajib(wajibTotal);
+
+      setTotalSukarela(sukarelaTotal);
+
+
+      setTotalDana(
+        pokokTotal +
+        wajibTotal +
+        sukarelaTotal
       );
+
+
+
+    }catch(error){
+
+
+      console.error(error);
+
 
     }
 
 
-  } catch (error) {
-
-    console.error(
-      "Gagal hapus:",
-      error
-    );
+  }
 
 
-    alert(
-      "Gagal menghapus data"
-    );
+
+
+
+
+
+
+
+  async function loadRekapSemua(){
+
+
+    try{
+
+
+      const data =
+      await getRekapSemuaAnggota();
+
+
+
+
+      const hasil:any = {};
+
+
+
+      let pokokTotal = 0;
+
+      let wajibTotal = 0;
+
+      let sukarelaTotal = 0;
+
+
+
+
+
+      (data || []).forEach((item:any)=>{
+
+
+        const id =
+        item.warga.id;
+
+
+
+        if(!hasil[id]){
+
+
+          hasil[id]={
+
+            id:item.warga.id,
+
+            nama:item.warga.nama,
+
+            no_kk:item.warga.no_kk,
+
+            pokok:0,
+
+            wajib:0,
+
+            sukarela:0,
+
+          };
+
+
+        }
+
+
+
+        hasil[id].pokok += Number(
+          item.simpanan_pokok || 0
+        );
+
+
+        hasil[id].wajib += Number(
+          item.simpanan_wajib || 0
+        );
+
+
+        hasil[id].sukarela += Number(
+          item.simpanan_sukarela || 0
+        );
+
+
+
+        pokokTotal += Number(
+          item.simpanan_pokok || 0
+        );
+
+
+        wajibTotal += Number(
+          item.simpanan_wajib || 0
+        );
+
+
+        sukarelaTotal += Number(
+          item.simpanan_sukarela || 0
+        );
+
+
+
+      });
+
+
+
+
+
+      setRekapGabungan(
+        Object.values(hasil)
+      );
+
+
+      setTotalSemuaPokok(
+        pokokTotal
+      );
+
+
+      setTotalSemuaWajib(
+        wajibTotal
+      );
+
+
+      setTotalSemuaSukarela(
+        sukarelaTotal
+      );
+
+
+      setTotalSemuaDana(
+        pokokTotal +
+        wajibTotal +
+        sukarelaTotal
+      );
+
+
+
+    }catch(error){
+
+
+      console.error(error);
+
+
+    }
+
 
   }
 
-}
-  async function simpanSimpanan() {
 
 
-    if (!wargaId) {
+
+
+
+
+
+  async function simpan(){
+
+
+    if(!wargaId){
+
 
       alert(
         "Pilih anggota terlebih dahulu"
       );
 
+
       return;
+
 
     }
 
 
-    try {
 
 
-      if (editId) {
 
-  await updateSimpanan(
-    editId,
-    tanggalSetor,
-    Number(simpananPokok || 0),
-    Number(simpananWajib || 0),
-    Number(simpananSukarela || 0)
-  );
-
-} else {
-
-  await addSimpanan(
-    Number(wargaId),
-    tanggalSetor,
-    Number(simpananPokok || 0),
-    Number(simpananWajib || 0),
-    Number(simpananSukarela || 0)
-  );
-
-}
+    try{
 
 
-      alert(
-        "✅ Simpanan berhasil disimpan"
+      await addSimpanan(
+
+        Number(wargaId),
+
+        tanggalSetor,
+
+        Number(pokok || 0),
+
+        Number(wajib || 0),
+
+        Number(sukarela || 0)
+
       );
 
 
-      // refresh rekap setelah simpan
+
+
+      alert(
+        "Simpanan berhasil disimpan"
+      );
+
+
 
       await loadRekapSimpanan(
         Number(wargaId)
       );
 
 
-      setSimpananPokok("");
-      setSimpananWajib("");
-      setSimpananSukarela("");
-      setEditId(null);
+      await loadRekapSemua();
 
 
-    } catch (error) {
 
 
-      console.error(
-        "ERROR SIMPAN:",
-        error
-      );
+      setPokok("");
+
+      setWajib("");
+
+      setSukarela("");
+
+
+
+    }catch(error){
+
+
+      console.error(error);
 
 
       alert(
-        JSON.stringify(error)
+        "Gagal menyimpan"
       );
 
 
     }
 
-  }
-
-
-
-  if (loading) {
-
-    return (
-
-      <div className="p-6">
-
-        Memuat data anggota...
-
-      </div>
-
-    );
 
   }
+
+
+
 
 
 
@@ -254,32 +442,61 @@ async function hapusSimpanan(
     <div className="p-6">
 
 
-      <h1 className="text-2xl font-bold mb-6">
-        Anggota Koperasi
-      </h1>
+      <div className="flex justify-between items-center mb-6">
+
+
+        <h1 className="text-3xl font-bold text-red-700">
+          👥 Anggota Koperasi
+        </h1>
 
 
 
-      <div className="bg-white rounded-xl shadow p-5">
+        <button
+
+          onClick={()=>navigate("/dashboard")}
+
+          className="bg-gray-700 text-white px-5 py-2 rounded-lg"
+
+        >
+
+          ← Dashboard
+
+        </button>
 
 
-        <label className="block font-semibold mb-2">
+      </div>
+
+
+
+
+
+      <div className="bg-white rounded-xl shadow p-6">
+
+
+        <label className="font-semibold">
+
           Pilih Anggota
+
         </label>
+
 
 
         <select
 
           value={wargaId}
 
-          onChange={(e) => {
 
-            const id = e.target.value;
+          onChange={(e)=>{
+
+
+            const id=e.target.value;
+
 
             setWargaId(id);
 
 
-            if (id) {
+
+            if(id){
 
               loadRekapSimpanan(
                 Number(id)
@@ -287,41 +504,46 @@ async function hapusSimpanan(
 
             }
 
+
           }}
 
-          className="w-full border rounded-lg px-3 py-2"
+
+          className="w-full border rounded-lg p-3 mt-2"
 
         >
 
 
           <option value="">
+
             -- Pilih Anggota --
+
           </option>
 
 
 
-          {anggota.map((item) => (
+          {
+            anggota.map((item:any)=>(
 
-            <option
-              key={item.id}
-              value={item.id}
-            >
+              <option
 
-              {item.nama}
+                key={item.id}
 
-            </option>
+                value={item.id}
 
-          ))}
+              >
+
+                {item.nama}
+
+              </option>
+
+            ))
+          }
 
 
         </select>
+                <div className="mt-5">
 
-
-
-
-        <div className="mt-4">
-
-          <label className="block font-semibold mb-2">
+          <label className="font-semibold">
             Tanggal Setor
           </label>
 
@@ -332,11 +554,11 @@ async function hapusSimpanan(
 
             value={tanggalSetor}
 
-            onChange={(e) =>
+            onChange={(e)=>
               setTanggalSetor(e.target.value)
             }
 
-            className="w-full border rounded-lg px-3 py-2"
+            className="w-full border rounded-lg p-3 mt-2"
 
           />
 
@@ -345,9 +567,10 @@ async function hapusSimpanan(
 
 
 
-        <div className="mt-4">
 
-          <label className="block font-semibold mb-2">
+        <div className="mt-5">
+
+          <label className="font-semibold">
             Simpanan Pokok
           </label>
 
@@ -356,13 +579,13 @@ async function hapusSimpanan(
 
             type="number"
 
-            value={simpananPokok}
+            value={pokok}
 
-            onChange={(e) =>
-              setSimpananPokok(e.target.value)
+            onChange={(e)=>
+              setPokok(e.target.value)
             }
 
-            className="w-full border rounded-lg px-3 py-2"
+            className="w-full border rounded-lg p-3 mt-2"
 
           />
 
@@ -371,9 +594,10 @@ async function hapusSimpanan(
 
 
 
-        <div className="mt-4">
 
-          <label className="block font-semibold mb-2">
+        <div className="mt-5">
+
+          <label className="font-semibold">
             Simpanan Wajib
           </label>
 
@@ -382,13 +606,13 @@ async function hapusSimpanan(
 
             type="number"
 
-            value={simpananWajib}
+            value={wajib}
 
-            onChange={(e) =>
-              setSimpananWajib(e.target.value)
+            onChange={(e)=>
+              setWajib(e.target.value)
             }
 
-            className="w-full border rounded-lg px-3 py-2"
+            className="w-full border rounded-lg p-3 mt-2"
 
           />
 
@@ -397,9 +621,10 @@ async function hapusSimpanan(
 
 
 
-        <div className="mt-4">
 
-          <label className="block font-semibold mb-2">
+        <div className="mt-5">
+
+          <label className="font-semibold">
             Simpanan Sukarela
           </label>
 
@@ -408,13 +633,13 @@ async function hapusSimpanan(
 
             type="number"
 
-            value={simpananSukarela}
+            value={sukarela}
 
-            onChange={(e) =>
-              setSimpananSukarela(e.target.value)
+            onChange={(e)=>
+              setSukarela(e.target.value)
             }
 
-            className="w-full border rounded-lg px-3 py-2"
+            className="w-full border rounded-lg p-3 mt-2"
 
           />
 
@@ -423,66 +648,105 @@ async function hapusSimpanan(
 
 
 
+
         <button
 
-          onClick={simpanSimpanan}
+          onClick={simpan}
 
           className="
-            mt-6
-            bg-red-600
-            text-white
-            px-5
-            py-2
-            rounded-lg
-            font-semibold
+          mt-6
+          bg-red-700
+          text-white
+          px-6
+          py-3
+          rounded-lg
+          font-semibold
           "
 
         >
 
-          SIMPAN
+          💾 SIMPAN
 
         </button>
 
 
 
 
-        {/* REKAP */}
+
+        {/* REKAP ANGGOTA TERPILIH */}
+
 
         <div className="mt-10">
 
 
-          <h2 className="text-xl font-bold mb-4">
-            Rekap Simpanan
+          <h2 className="text-xl font-bold text-red-700 mb-4">
+
+            📋 Riwayat Simpanan Anggota
+
           </h2>
 
-{rekapSimpanan.length > 0 && (
-  <div className="mb-5 bg-gray-50 p-4 rounded-lg">
 
-    <p>
-      <b>ID Anggota:</b>{" "}
-      {rekapSimpanan[0]?.warga?.kode_warga || "-"}
-    </p>
 
-    <p>
-      <b>Nama Anggota:</b>{" "}
-      {rekapSimpanan[0]?.warga?.nama || "-"}
-    </p>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
 
-    <p>
-      <b>No KK:</b>{" "}
-      {rekapSimpanan[0]?.warga?.no_kk || "-"}
-    </p>
 
-  </div>
-)}
+            <div className="bg-blue-50 p-4 rounded-xl">
+
+              <p>Simpanan Pokok</p>
+
+              <b>
+                Rp {totalPokok.toLocaleString("id-ID")}
+              </b>
+
+            </div>
+
+
+            <div className="bg-green-50 p-4 rounded-xl">
+
+              <p>Simpanan Wajib</p>
+
+              <b>
+                Rp {totalWajib.toLocaleString("id-ID")}
+              </b>
+
+            </div>
+
+
+            <div className="bg-yellow-50 p-4 rounded-xl">
+
+              <p>Simpanan Sukarela</p>
+
+              <b>
+                Rp {totalSukarela.toLocaleString("id-ID")}
+              </b>
+
+            </div>
+
+
+            <div className="bg-red-50 p-4 rounded-xl">
+
+              <p>Total Dana</p>
+
+              <b>
+                Rp {totalDana.toLocaleString("id-ID")}
+              </b>
+
+            </div>
+
+
+          </div>
+
+
+
+
 
           <table className="w-full border">
 
 
-            <thead>
+            <thead className="bg-gray-100">
 
-              <tr className="bg-gray-100">
 
+              <tr>
 
                 <th className="border p-2">
                   Tanggal
@@ -500,17 +764,17 @@ async function hapusSimpanan(
 
 
                 <th className="border p-2">
-  Sukarela
-</th>
+                  Sukarela
+                </th>
 
-<th className="border p-2">
-  Total
-</th>
-<th className="border p-2">
-  Aksi
-</th>
+
+                <th className="border p-2">
+                  Total
+                </th>
+
 
               </tr>
+
 
             </thead>
 
@@ -519,7 +783,9 @@ async function hapusSimpanan(
             <tbody>
 
 
-              {rekapSimpanan.map((item) => (
+            {
+              rekapSimpanan.map((item:any)=>(
+
 
                 <tr key={item.id}>
 
@@ -533,97 +799,48 @@ async function hapusSimpanan(
 
                   <td className="border p-2 text-right">
 
-                    Rp {Number(item.simpanan_pokok)
-                      .toLocaleString("id-ID")}
-
-                  </td>
-                  <td className="border p-2 text-center">
-
-  <button
-    onClick={() => editSimpanan(item)}
-    className="
-      bg-yellow-500
-      text-white
-      px-3
-      py-1
-      rounded
-      mr-2
-    "
-  >
-    Edit
-  </button>
-
-
-  <button
-    onClick={() => hapusSimpanan(item.id)}
-    className="
-      bg-red-600
-      text-white
-      px-3
-      py-1
-      rounded
-    "
-  >
-    Hapus
-  </button>
-
-</td>
-
-
-                  <td className="border p-2 text-right">
-
-                    Rp {Number(item.simpanan_wajib)
-                      .toLocaleString("id-ID")}
+                    Rp {Number(
+                      item.simpanan_pokok || 0
+                    ).toLocaleString("id-ID")}
 
                   </td>
 
 
                   <td className="border p-2 text-right">
 
-                    Rp {Number(item.simpanan_sukarela)
-                      .toLocaleString("id-ID")}
+                    Rp {Number(
+                      item.simpanan_wajib || 0
+                    ).toLocaleString("id-ID")}
 
                   </td>
-<td className="border p-2 text-right font-semibold">
 
-  Rp {(
-    Number(item.simpanan_pokok || 0) +
-    Number(item.simpanan_wajib || 0) +
-    Number(item.simpanan_sukarela || 0)
-  ).toLocaleString("id-ID")}
 
-</td>
-<td className="border p-2 text-center">
+                  <td className="border p-2 text-right">
 
-  <button
-    onClick={() => editSimpanan(item)}
-    className="
-      bg-yellow-500
-      text-white
-      px-3
-      py-1
-      rounded
-    "
-  >
-    Edit
-  </button>
-<button
-  onClick={() => hapusSimpanan(item.id)}
-  className="
-    bg-red-600
-    text-white
-    px-3
-    py-1
-    rounded
-    ml-2
-  "
->
-  Hapus
-</button>
-</td>
+                    Rp {Number(
+                      item.simpanan_sukarela || 0
+                    ).toLocaleString("id-ID")}
+
+                  </td>
+
+
+                  <td className="border p-2 text-right font-bold">
+
+                    Rp {(
+                      Number(item.simpanan_pokok || 0)+
+                      Number(item.simpanan_wajib || 0)+
+                      Number(item.simpanan_sukarela || 0)
+
+                    ).toLocaleString("id-ID")}
+
+                  </td>
+
+
                 </tr>
 
-              ))}
+
+              ))
+            }
 
 
             </tbody>
@@ -635,10 +852,222 @@ async function hapusSimpanan(
         </div>
 
 
+
+
+
+        {/* REKAP SELURUH ANGGOTA */}
+
+
+        <div className="mt-12">
+
+
+          <h2 className="text-2xl font-bold text-red-700 mb-5">
+
+            📊 Rekap Seluruh Dana Anggota Koperasi
+
+          </h2>
+
+
+
+
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+
+
+            <div className="bg-blue-50 p-5 rounded-xl">
+
+              <p>Total Pokok</p>
+
+              <b>
+                Rp {totalSemuaPokok.toLocaleString("id-ID")}
+              </b>
+
+            </div>
+
+
+
+            <div className="bg-green-50 p-5 rounded-xl">
+
+              <p>Total Wajib</p>
+
+              <b>
+                Rp {totalSemuaWajib.toLocaleString("id-ID")}
+              </b>
+
+            </div>
+
+
+
+            <div className="bg-yellow-50 p-5 rounded-xl">
+
+              <p>Total Sukarela</p>
+
+              <b>
+                Rp {totalSemuaSukarela.toLocaleString("id-ID")}
+              </b>
+
+            </div>
+
+
+
+            <div className="bg-red-50 p-5 rounded-xl">
+
+              <p>Total Dana Koperasi</p>
+
+              <b>
+                Rp {totalSemuaDana.toLocaleString("id-ID")}
+              </b>
+
+            </div>
+
+
+          </div>
+                    <div className="overflow-x-auto">
+
+
+            <table className="w-full border">
+
+
+              <thead className="bg-gray-100">
+
+                <tr>
+
+                  <th className="border p-2">
+                    ID
+                  </th>
+
+                  <th className="border p-2">
+                    Nama Anggota
+                  </th>
+
+                  <th className="border p-2">
+                    No KK
+                  </th>
+
+                  <th className="border p-2">
+                    Simpanan Pokok
+                  </th>
+
+                  <th className="border p-2">
+                    Simpanan Wajib
+                  </th>
+
+                  <th className="border p-2">
+                    Simpanan Sukarela
+                  </th>
+
+                  <th className="border p-2">
+                    Total Dana
+                  </th>
+
+                </tr>
+
+              </thead>
+
+
+
+              <tbody>
+
+
+                {
+                  rekapGabungan.map((item:any)=>(
+
+
+                    <tr key={item.id}>
+
+
+                      <td className="border p-2 text-center">
+
+                        {item.id}
+
+                      </td>
+
+
+
+                      <td className="border p-2">
+
+                        {item.nama}
+
+                      </td>
+
+
+
+                      <td className="border p-2">
+
+                        {item.no_kk}
+
+                      </td>
+
+
+
+                      <td className="border p-2 text-right">
+
+                        Rp {Number(
+                          item.pokok || 0
+                        ).toLocaleString("id-ID")}
+
+                      </td>
+
+
+
+                      <td className="border p-2 text-right">
+
+                        Rp {Number(
+                          item.wajib || 0
+                        ).toLocaleString("id-ID")}
+
+                      </td>
+
+
+
+                      <td className="border p-2 text-right">
+
+                        Rp {Number(
+                          item.sukarela || 0
+                        ).toLocaleString("id-ID")}
+
+                      </td>
+
+
+
+                      <td className="border p-2 text-right font-bold">
+
+
+                        Rp {(
+                          Number(item.pokok || 0) +
+                          Number(item.wajib || 0) +
+                          Number(item.sukarela || 0)
+
+                        ).toLocaleString("id-ID")}
+
+
+                      </td>
+
+
+                    </tr>
+
+
+                  ))
+                }
+
+
+              </tbody>
+
+
+            </table>
+
+
+          </div>
+
+
+
+        </div>
+
+
       </div>
 
 
     </div>
+
 
   );
 

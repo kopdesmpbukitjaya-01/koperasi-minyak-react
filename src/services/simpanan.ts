@@ -126,3 +126,31 @@ export async function deleteSimpanan(
 
 
 }
+// Rekap semua anggota koperasi
+export async function getRekapSemuaAnggota() {
+
+  const { data, error } = await supabase
+    .from("simpanan_anggota")
+    .select(`
+      id,
+      simpanan_pokok,
+      simpanan_wajib,
+      simpanan_sukarela,
+      warga (
+        id,
+        nama,
+        kode_warga,
+        no_kk
+      )
+    `)
+    .order("id", {
+      ascending: false,
+    });
+
+
+  if (error) throw error;
+
+
+  return data;
+
+}
