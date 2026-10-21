@@ -44,7 +44,7 @@ export default function Login() {
 />
  
   <h1 className="text-3xl font-bold text-gray-800">
-    Pertashop KDMP Bukit Jaya
+    KOPERASI DESA MERAH PUTIH BUKIT JAYA
   </h1>
 
   <p className="text-gray-500 mt-2">

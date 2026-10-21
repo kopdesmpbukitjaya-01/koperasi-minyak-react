@@ -1,6 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-
-import Home from "./pages/Home";
+import PublicDashboard from "./pages/PublicDashboard";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Warga from "./pages/Warga";
@@ -27,9 +26,9 @@ export default function App() {
         ========================== */}
 
         <Route
-          path="/"
-          element={<Home />}
-        />
+ path="/"
+ element={<PublicDashboard />}
+/>
 
 
         <Route

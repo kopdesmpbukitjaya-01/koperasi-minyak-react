@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { useNavigate } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import logo from "../assets/logo.png";
 
@@ -7,6 +8,17 @@ type Props = {
 };
 
 export default function Layout({ children }: Props) {
+
+  const navigate = useNavigate();
+
+
+  function logout() {
+
+    localStorage.removeItem("user");
+
+    navigate("/");
+
+  }
   return (
     <div className="flex min-h-screen bg-gray-100">
 
@@ -25,16 +37,16 @@ export default function Layout({ children }: Props) {
             <div>
 
               <h1 className="text-3xl font-extrabold text-red-700">
-                PERTASHOP
-              </h1>
+  KOPERASI DESA MERAH PUTIH BUKIT JAYA
+</h1>
 
-              <h2 className="text-xl font-bold text-gray-800 mt-1">
-                KOPERASI DESA MERAH PUTIH
-              </h2>
+<h2 className="text-xl font-bold text-gray-800 mt-1">
+  KECAMATAN BULIK TIMUR
+</h2>
 
-              <p className="text-gray-500 mt-1">
-                Bukit Jaya • Kecamatan Bulik Timur
-              </p>
+<p className="text-gray-500 mt-1">
+  Sistem Informasi Koperasi Desa Merah Putih
+</p>
 
             </div>
 
@@ -50,6 +62,23 @@ export default function Layout({ children }: Props) {
                 <h3 className="text-lg font-bold text-gray-800">
                   Administrator
                 </h3>
+                <button
+  onClick={logout}
+  className="
+    mt-2
+    bg-red-600
+    text-white
+    px-4
+    py-2
+    rounded-lg
+    text-sm
+    font-semibold
+    hover:bg-red-700
+    transition
+  "
+>
+  Logout
+</button>
 
               </div>
 

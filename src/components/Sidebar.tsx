@@ -56,12 +56,12 @@ export default function Sidebar() {
     >
       <div className="p-6 backdrop-blur-sm bg-black/20 border-b border-white/20">
         <h2 className="text-2xl font-bold">
-          KDMP Bukit Jaya
-        </h2>
+  KOPERASI DESA MERAH PUTIH BUKIT JAYA
+</h2>
 
-        <p className="text-sm text-gray-200">
-          Pertashop
-        </p>
+<p className="text-sm text-gray-200">
+  Sistem Koperasi Desa
+</p>
       </div>
 
       <div className="p-3">
