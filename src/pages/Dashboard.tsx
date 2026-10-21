@@ -141,22 +141,22 @@ export default function Dashboard() {
 
 
                 <h1 className="text-5xl font-extrabold text-red-700">
-                  PERTASHOP
+                  KOPERASI DESA MERAH PUTIH
                 </h1>
 
 
                 <h2 className="text-3xl font-bold text-gray-800 mt-2">
-                  KOPERASI DESA MERAH PUTIH
+                  BUKIT JAYA
                 </h2>
 
 
                 <h3 className="text-2xl font-semibold text-gray-700">
-                  BUKIT JAYA
+                  KECAMATAN BULIK TIMUR
                 </h3>
 
 
                 <p className="text-gray-600 mt-3 text-lg">
-                  Kecamatan Bulik Timur
+                  Jl. Sunan Giri KM.18 Bukit Jaya, Bulik Timur, Kabupaten Lamandau, Kalimantan tengah, Indonesia
                 </p>
 
 
