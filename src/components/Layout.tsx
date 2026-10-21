@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
-
+import { useState } from "react";
 import Sidebar from "./Sidebar";
 import logo from "../assets/logo.png";
 
@@ -14,7 +14,7 @@ export default function Layout({ children }: Props) {
 
 
   const navigate = useNavigate();
-
+const [menuOpen,setMenuOpen] = useState(false);
 
 
   function logout(){
@@ -130,16 +130,65 @@ shadow-[0_0_20px_rgba(168,85,247,.8)]
 ========================= */}
 
 
+{/* DESKTOP SIDEBAR */}
+
+<div
+className="
+hidden
+md:block
+relative
+z-20
+"
+>
+<Sidebar />
+</div>
+
+
+
+{/* MOBILE SIDEBAR */}
+
+{
+menuOpen && (
+
+<div
+className="
+fixed
+inset-0
+z-50
+md:hidden
+"
+>
+
+
+<div
+className="
+absolute
+inset-0
+bg-black/60
+"
+onClick={()=>setMenuOpen(false)}
+/>
+
+
 <div
 className="
 relative
-z-20
+w-72
+h-full
+bg-[#080d24]
+shadow-2xl
 "
 >
 
 <Sidebar />
 
 </div>
+
+
+</div>
+
+)
+}
 
 
 
@@ -201,7 +250,17 @@ gap-4
 "
 >
 
+<button
 
+onClick={()=>setMenuOpen(true)}
+
+className="
+md:hidden
+text-3xl
+"
+>
+☰
+</button>
 
 
 {/* TITLE */}
