@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Layout from "../components/Layout";
 
 import {
   getAnggotaKoperasi,
@@ -36,8 +37,6 @@ export default function Anggota() {
 
 
 
-  // rekap anggota terpilih
-
   const [rekapSimpanan,setRekapSimpanan] =
   useState<any[]>([]);
 
@@ -57,8 +56,6 @@ export default function Anggota() {
 
 
 
-
-  // rekap seluruh koperasi
 
   const [rekapGabungan,setRekapGabungan] =
   useState<any[]>([]);
@@ -439,46 +436,141 @@ export default function Anggota() {
 
   return (
 
-    <div className="p-6">
+  <Layout>
 
 
-      <div className="flex justify-between items-center mb-6">
+  <div className="space-y-8">
 
 
-        <h1 className="text-3xl font-bold text-red-700">
+
+    {/* HEADER */}
+
+
+    <div
+      className="
+      rounded-3xl
+      p-6
+      bg-gradient-to-r
+      from-red-600/20
+      via-purple-600/20
+      to-blue-600/20
+      backdrop-blur-xl
+      border
+      border-white/10
+      shadow-[0_0_40px_rgba(168,85,247,0.25)]
+      flex
+      justify-between
+      items-center
+      "
+    >
+
+
+      <div>
+
+
+        <h1
+          className="
+          text-4xl
+          font-black
+          text-white
+          "
+        >
+
           👥 Anggota Koperasi
+
         </h1>
 
 
-
-        <button
-
-          onClick={()=>navigate("/dashboard")}
-
-          className="bg-gray-700 text-white px-5 py-2 rounded-lg"
-
+        <p
+          className="
+          text-gray-300
+          mt-2
+          "
         >
 
-          ← Dashboard
+          Kelola simpanan anggota koperasi desa.
 
-        </button>
+        </p>
 
 
       </div>
 
 
 
+      <button
+
+        onClick={()=>navigate("/dashboard")}
+
+        className="
+        bg-black/40
+        hover:bg-black/60
+        text-white
+        px-6
+        py-3
+        rounded-xl
+        border
+        border-white/20
+        shadow-lg
+        "
+
+      >
+
+        ← Dashboard
+
+      </button>
 
 
-      <div className="bg-white rounded-xl shadow p-6">
+
+    </div>
 
 
-        <label className="font-semibold">
+
+
+
+    {/* FORM SIMPANAN */}
+
+
+    <div
+      className="
+      rounded-3xl
+      p-8
+      bg-white/5
+      backdrop-blur-xl
+      border
+      border-white/10
+      shadow-[0_0_40px_rgba(59,130,246,0.15)]
+      "
+    >
+
+
+      <h2
+        className="
+        text-2xl
+        font-bold
+        text-white
+        mb-6
+        "
+      >
+
+        💰 Input Simpanan Anggota
+
+      </h2>
+            {/* PILIH ANGGOTA */}
+
+
+      <div>
+
+        <label
+          className="
+          text-sm
+          font-semibold
+          text-gray-300
+          "
+        >
 
           Pilih Anggota
 
         </label>
-
 
 
         <select
@@ -508,12 +600,27 @@ export default function Anggota() {
           }}
 
 
-          className="w-full border rounded-lg p-3 mt-2"
+          className="
+          w-full
+          mt-2
+          rounded-xl
+          bg-black/30
+          border
+          border-white/20
+          px-4
+          py-3
+          text-white
+          focus:ring-2
+          focus:ring-red-500
+          "
 
         >
 
 
-          <option value="">
+          <option
+            value=""
+            className="text-black"
+          >
 
             -- Pilih Anggota --
 
@@ -530,6 +637,8 @@ export default function Anggota() {
 
                 value={item.id}
 
+                className="text-black"
+
               >
 
                 {item.nama}
@@ -541,312 +650,342 @@ export default function Anggota() {
 
 
         </select>
-                <div className="mt-5">
-
-          <label className="font-semibold">
-            Tanggal Setor
-          </label>
 
 
-          <input
-
-            type="date"
-
-            value={tanggalSetor}
-
-            onChange={(e)=>
-              setTanggalSetor(e.target.value)
-            }
-
-            className="w-full border rounded-lg p-3 mt-2"
-
-          />
-
-        </div>
+      </div>
 
 
 
 
 
-        <div className="mt-5">
-
-          <label className="font-semibold">
-            Simpanan Pokok
-          </label>
+      {/* TANGGAL SETOR */}
 
 
-          <input
-
-            type="number"
-
-            value={pokok}
-
-            onChange={(e)=>
-              setPokok(e.target.value)
-            }
-
-            className="w-full border rounded-lg p-3 mt-2"
-
-          />
-
-        </div>
+      <div className="mt-5">
 
 
-
-
-
-        <div className="mt-5">
-
-          <label className="font-semibold">
-            Simpanan Wajib
-          </label>
-
-
-          <input
-
-            type="number"
-
-            value={wajib}
-
-            onChange={(e)=>
-              setWajib(e.target.value)
-            }
-
-            className="w-full border rounded-lg p-3 mt-2"
-
-          />
-
-        </div>
-
-
-
-
-
-        <div className="mt-5">
-
-          <label className="font-semibold">
-            Simpanan Sukarela
-          </label>
-
-
-          <input
-
-            type="number"
-
-            value={sukarela}
-
-            onChange={(e)=>
-              setSukarela(e.target.value)
-            }
-
-            className="w-full border rounded-lg p-3 mt-2"
-
-          />
-
-        </div>
-
-
-
-
-
-        <button
-
-          onClick={simpan}
-
+        <label
           className="
-          mt-6
-          bg-red-700
-          text-white
-          px-6
-          py-3
-          rounded-lg
+          text-sm
           font-semibold
+          text-gray-300
           "
-
         >
 
-          💾 SIMPAN
+          Tanggal Setor
 
-        </button>
+        </label>
 
 
 
+        <input
 
+          type="date"
 
-        {/* REKAP ANGGOTA TERPILIH */}
+          value={tanggalSetor}
 
+          onChange={(e)=>
+            setTanggalSetor(e.target.value)
+          }
 
-        <div className="mt-10">
+          className="
+          w-full
+          mt-2
+          rounded-xl
+          bg-black/30
+          border
+          border-white/20
+          px-4
+          py-3
+          text-white
+          "
 
+        />
 
-          <h2 className="text-xl font-bold text-red-700 mb-4">
 
-            📋 Riwayat Simpanan Anggota
+      </div>
 
-          </h2>
 
 
 
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
 
 
-            <div className="bg-blue-50 p-4 rounded-xl">
 
-              <p>Simpanan Pokok</p>
+      {/* SIMPANAN POKOK */}
 
-              <b>
-                Rp {totalPokok.toLocaleString("id-ID")}
-              </b>
 
-            </div>
+      <div className="mt-5">
 
 
-            <div className="bg-green-50 p-4 rounded-xl">
+        <label
+          className="
+          text-sm
+          font-semibold
+          text-gray-300
+          "
+        >
 
-              <p>Simpanan Wajib</p>
+          Simpanan Pokok
 
-              <b>
-                Rp {totalWajib.toLocaleString("id-ID")}
-              </b>
+        </label>
 
-            </div>
 
 
-            <div className="bg-yellow-50 p-4 rounded-xl">
+        <input
 
-              <p>Simpanan Sukarela</p>
+          type="number"
 
-              <b>
-                Rp {totalSukarela.toLocaleString("id-ID")}
-              </b>
+          value={pokok}
 
-            </div>
+          onChange={(e)=>
+            setPokok(e.target.value)
+          }
 
+          placeholder="Masukkan nominal pokok"
 
-            <div className="bg-red-50 p-4 rounded-xl">
+          className="
+          w-full
+          mt-2
+          rounded-xl
+          bg-black/30
+          border
+          border-white/20
+          px-4
+          py-3
+          text-white
+          "
 
-              <p>Total Dana</p>
+        />
 
-              <b>
-                Rp {totalDana.toLocaleString("id-ID")}
-              </b>
 
-            </div>
+      </div>
 
 
-          </div>
 
 
 
 
 
-          <table className="w-full border">
+      {/* SIMPANAN WAJIB */}
 
 
-            <thead className="bg-gray-100">
+      <div className="mt-5">
 
 
-              <tr>
+        <label
+          className="
+          text-sm
+          font-semibold
+          text-gray-300
+          "
+        >
 
-                <th className="border p-2">
-                  Tanggal
-                </th>
+          Simpanan Wajib
 
+        </label>
 
-                <th className="border p-2">
-                  Pokok
-                </th>
 
 
-                <th className="border p-2">
-                  Wajib
-                </th>
+        <input
 
+          type="number"
 
-                <th className="border p-2">
-                  Sukarela
-                </th>
+          value={wajib}
 
+          onChange={(e)=>
+            setWajib(e.target.value)
+          }
 
-                <th className="border p-2">
-                  Total
-                </th>
+          placeholder="Masukkan nominal wajib"
 
+          className="
+          w-full
+          mt-2
+          rounded-xl
+          bg-black/30
+          border
+          border-white/20
+          px-4
+          py-3
+          text-white
+          "
 
-              </tr>
+        />
 
 
-            </thead>
+      </div>
 
 
 
-            <tbody>
 
 
-            {
-              rekapSimpanan.map((item:any)=>(
 
 
-                <tr key={item.id}>
+      {/* SIMPANAN SUKARELA */}
 
 
-                  <td className="border p-2 text-center">
+      <div className="mt-5">
 
-                    {item.tanggal_setor}
 
-                  </td>
+        <label
+          className="
+          text-sm
+          font-semibold
+          text-gray-300
+          "
+        >
 
+          Simpanan Sukarela
 
-                  <td className="border p-2 text-right">
+        </label>
 
-                    Rp {Number(
-                      item.simpanan_pokok || 0
-                    ).toLocaleString("id-ID")}
 
-                  </td>
 
+        <input
 
-                  <td className="border p-2 text-right">
+          type="number"
 
-                    Rp {Number(
-                      item.simpanan_wajib || 0
-                    ).toLocaleString("id-ID")}
+          value={sukarela}
 
-                  </td>
+          onChange={(e)=>
+            setSukarela(e.target.value)
+          }
 
+          placeholder="Masukkan nominal sukarela"
 
-                  <td className="border p-2 text-right">
+          className="
+          w-full
+          mt-2
+          rounded-xl
+          bg-black/30
+          border
+          border-white/20
+          px-4
+          py-3
+          text-white
+          "
 
-                    Rp {Number(
-                      item.simpanan_sukarela || 0
-                    ).toLocaleString("id-ID")}
+        />
 
-                  </td>
 
+      </div>
 
-                  <td className="border p-2 text-right font-bold">
 
-                    Rp {(
-                      Number(item.simpanan_pokok || 0)+
-                      Number(item.simpanan_wajib || 0)+
-                      Number(item.simpanan_sukarela || 0)
 
-                    ).toLocaleString("id-ID")}
 
-                  </td>
 
 
-                </tr>
 
+      {/* BUTTON SIMPAN */}
 
-              ))
-            }
 
+      <button
 
-            </tbody>
+        onClick={simpan}
 
 
-          </table>
+        className="
+        mt-8
+        bg-gradient-to-r
+        from-red-600
+        via-purple-600
+        to-blue-600
+        hover:scale-105
+        transition
+        text-white
+        px-8
+        py-3
+        rounded-xl
+        font-bold
+        shadow-[0_0_25px_rgba(239,68,68,0.4)]
+        "
+
+      >
+
+        💾 SIMPAN
+
+
+      </button>
+
+
+
+    </div>
+
+
+
+
+
+
+
+    {/* REKAP ANGGOTA TERPILIH */}
+
+
+    <div
+      className="
+      rounded-3xl
+      p-8
+      bg-white/5
+      backdrop-blur-xl
+      border
+      border-white/10
+      shadow-[0_0_35px_rgba(34,197,94,0.15)]
+      "
+    >
+
+
+      <h2
+        className="
+        text-2xl
+        font-bold
+        text-white
+        mb-6
+        "
+      >
+
+        📋 Riwayat Simpanan Anggota
+
+      </h2>
+      {/* SUMMARY ANGGOTA TERPILIH */}
+
+
+      <div
+        className="
+        grid
+        grid-cols-1
+        md:grid-cols-4
+        gap-5
+        mb-8
+        "
+      >
+
+
+        <div
+          className="
+          rounded-2xl
+          p-5
+          bg-blue-500/10
+          border
+          border-blue-400/20
+          "
+        >
+
+          <p className="text-gray-300">
+            Simpanan Pokok
+          </p>
+
+
+          <p
+            className="
+            text-2xl
+            font-black
+            text-blue-300
+            mt-2
+            "
+          >
+
+            Rp {totalPokok.toLocaleString("id-ID")}
+
+          </p>
 
 
         </div>
@@ -855,209 +994,103 @@ export default function Anggota() {
 
 
 
-        {/* REKAP SELURUH ANGGOTA */}
+        <div
+          className="
+          rounded-2xl
+          p-5
+          bg-green-500/10
+          border
+          border-green-400/20
+          "
+        >
 
+          <p className="text-gray-300">
+            Simpanan Wajib
+          </p>
 
-        <div className="mt-12">
 
+          <p
+            className="
+            text-2xl
+            font-black
+            text-green-300
+            mt-2
+            "
+          >
 
-          <h2 className="text-2xl font-bold text-red-700 mb-5">
+            Rp {totalWajib.toLocaleString("id-ID")}
 
-            📊 Rekap Seluruh Dana Anggota Koperasi
+          </p>
 
-          </h2>
 
+        </div>
 
 
 
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
 
 
-            <div className="bg-blue-50 p-5 rounded-xl">
+        <div
+          className="
+          rounded-2xl
+          p-5
+          bg-yellow-500/10
+          border
+          border-yellow-400/20
+          "
+        >
 
-              <p>Total Pokok</p>
+          <p className="text-gray-300">
+            Simpanan Sukarela
+          </p>
 
-              <b>
-                Rp {totalSemuaPokok.toLocaleString("id-ID")}
-              </b>
 
-            </div>
+          <p
+            className="
+            text-2xl
+            font-black
+            text-yellow-300
+            mt-2
+            "
+          >
 
+            Rp {totalSukarela.toLocaleString("id-ID")}
 
+          </p>
 
-            <div className="bg-green-50 p-5 rounded-xl">
 
-              <p>Total Wajib</p>
+        </div>
 
-              <b>
-                Rp {totalSemuaWajib.toLocaleString("id-ID")}
-              </b>
 
-            </div>
 
 
 
-            <div className="bg-yellow-50 p-5 rounded-xl">
+        <div
+          className="
+          rounded-2xl
+          p-5
+          bg-red-500/10
+          border
+          border-red-400/20
+          "
+        >
 
-              <p>Total Sukarela</p>
+          <p className="text-gray-300">
+            Total Dana
+          </p>
 
-              <b>
-                Rp {totalSemuaSukarela.toLocaleString("id-ID")}
-              </b>
 
-            </div>
+          <p
+            className="
+            text-2xl
+            font-black
+            text-red-300
+            mt-2
+            "
+          >
 
+            Rp {totalDana.toLocaleString("id-ID")}
 
-
-            <div className="bg-red-50 p-5 rounded-xl">
-
-              <p>Total Dana Koperasi</p>
-
-              <b>
-                Rp {totalSemuaDana.toLocaleString("id-ID")}
-              </b>
-
-            </div>
-
-
-          </div>
-                    <div className="overflow-x-auto">
-
-
-            <table className="w-full border">
-
-
-              <thead className="bg-gray-100">
-
-                <tr>
-
-                  <th className="border p-2">
-                    ID
-                  </th>
-
-                  <th className="border p-2">
-                    Nama Anggota
-                  </th>
-
-                  <th className="border p-2">
-                    No KK
-                  </th>
-
-                  <th className="border p-2">
-                    Simpanan Pokok
-                  </th>
-
-                  <th className="border p-2">
-                    Simpanan Wajib
-                  </th>
-
-                  <th className="border p-2">
-                    Simpanan Sukarela
-                  </th>
-
-                  <th className="border p-2">
-                    Total Dana
-                  </th>
-
-                </tr>
-
-              </thead>
-
-
-
-              <tbody>
-
-
-                {
-                  rekapGabungan.map((item:any)=>(
-
-
-                    <tr key={item.id}>
-
-
-                      <td className="border p-2 text-center">
-
-                        {item.id}
-
-                      </td>
-
-
-
-                      <td className="border p-2">
-
-                        {item.nama}
-
-                      </td>
-
-
-
-                      <td className="border p-2">
-
-                        {item.no_kk}
-
-                      </td>
-
-
-
-                      <td className="border p-2 text-right">
-
-                        Rp {Number(
-                          item.pokok || 0
-                        ).toLocaleString("id-ID")}
-
-                      </td>
-
-
-
-                      <td className="border p-2 text-right">
-
-                        Rp {Number(
-                          item.wajib || 0
-                        ).toLocaleString("id-ID")}
-
-                      </td>
-
-
-
-                      <td className="border p-2 text-right">
-
-                        Rp {Number(
-                          item.sukarela || 0
-                        ).toLocaleString("id-ID")}
-
-                      </td>
-
-
-
-                      <td className="border p-2 text-right font-bold">
-
-
-                        Rp {(
-                          Number(item.pokok || 0) +
-                          Number(item.wajib || 0) +
-                          Number(item.sukarela || 0)
-
-                        ).toLocaleString("id-ID")}
-
-
-                      </td>
-
-
-                    </tr>
-
-
-                  ))
-                }
-
-
-              </tbody>
-
-
-            </table>
-
-
-          </div>
-
+          </p>
 
 
         </div>
@@ -1066,9 +1099,761 @@ export default function Anggota() {
       </div>
 
 
+
+
+
+
+      {/* TABLE RIWAYAT */}
+
+
+      <div
+        className="
+        overflow-x-auto
+        rounded-2xl
+        border
+        border-white/10
+        "
+      >
+
+
+        <table
+          className="
+          w-full
+          "
+        >
+
+
+          <thead
+            className="
+            bg-black/40
+            text-gray-300
+            "
+          >
+
+
+            <tr>
+
+
+              <th
+                className="
+                px-4
+                py-3
+                text-left
+                "
+              >
+                Tanggal
+              </th>
+
+
+
+              <th
+                className="
+                px-4
+                py-3
+                text-right
+                "
+              >
+                Pokok
+              </th>
+
+
+
+              <th
+                className="
+                px-4
+                py-3
+                text-right
+                "
+              >
+                Wajib
+              </th>
+
+
+
+              <th
+                className="
+                px-4
+                py-3
+                text-right
+                "
+              >
+                Sukarela
+              </th>
+
+
+
+              <th
+                className="
+                px-4
+                py-3
+                text-right
+                "
+              >
+                Total
+              </th>
+
+
+            </tr>
+
+
+          </thead>
+
+
+
+
+
+          <tbody>
+
+
+          {
+            rekapSimpanan.length === 0 ? (
+
+
+              <tr>
+
+
+                <td
+                  colSpan={5}
+                  className="
+                  text-center
+                  py-8
+                  text-gray-400
+                  "
+                >
+
+                  Belum ada riwayat simpanan.
+
+
+                </td>
+
+
+              </tr>
+
+
+
+            ) : (
+
+
+              rekapSimpanan.map((item:any)=>(
+
+
+                <tr
+
+                  key={item.id}
+
+                  className="
+                  border-t
+                  border-white/10
+                  hover:bg-white/5
+                  transition
+                  "
+
+                >
+
+
+
+                  <td
+                    className="
+                    px-4
+                    py-4
+                    text-gray-200
+                    "
+                  >
+
+                    {item.tanggal_setor}
+
+                  </td>
+
+
+
+
+
+                  <td
+                    className="
+                    px-4
+                    py-4
+                    text-right
+                    text-blue-300
+                    "
+                  >
+
+                    Rp {Number(
+                      item.simpanan_pokok || 0
+                    ).toLocaleString("id-ID")}
+
+
+                  </td>
+
+
+
+
+
+                  <td
+                    className="
+                    px-4
+                    py-4
+                    text-right
+                    text-green-300
+                    "
+                  >
+
+                    Rp {Number(
+                      item.simpanan_wajib || 0
+                    ).toLocaleString("id-ID")}
+
+
+                  </td>
+
+
+
+
+
+                  <td
+                    className="
+                    px-4
+                    py-4
+                    text-right
+                    text-yellow-300
+                    "
+                  >
+
+                    Rp {Number(
+                      item.simpanan_sukarela || 0
+                    ).toLocaleString("id-ID")}
+
+
+                  </td>
+
+
+
+
+
+                  <td
+                    className="
+                    px-4
+                    py-4
+                    text-right
+                    font-bold
+                    text-red-300
+                    "
+                  >
+
+                    Rp {(
+                      Number(item.simpanan_pokok || 0) +
+                      Number(item.simpanan_wajib || 0) +
+                      Number(item.simpanan_sukarela || 0)
+
+                    ).toLocaleString("id-ID")}
+
+
+                  </td>
+
+
+
+                </tr>
+
+
+              ))
+
+
+            )
+
+          }
+
+
+
+          </tbody>
+
+
+        </table>
+
+
+      </div>
+
+
     </div>
 
 
+
+
+
+
+    {/* REKAP SELURUH ANGGOTA */}
+
+
+    <div
+      className="
+      rounded-3xl
+      p-8
+      bg-white/5
+      backdrop-blur-xl
+      border
+      border-white/10
+      shadow-[0_0_40px_rgba(168,85,247,0.15)]
+      "
+    >
+
+
+      <h2
+        className="
+        text-2xl
+        font-black
+        text-white
+        mb-6
+        "
+      >
+
+        📊 Rekap Seluruh Dana Anggota Koperasi
+
+      </h2>
+            {/* SUMMARY SELURUH ANGGOTA */}
+
+
+      <div
+        className="
+        grid
+        grid-cols-1
+        md:grid-cols-4
+        gap-5
+        mb-8
+        "
+      >
+
+
+        <div
+          className="
+          rounded-2xl
+          p-5
+          bg-blue-500/10
+          border
+          border-blue-400/20
+          "
+        >
+
+          <p className="text-gray-300">
+            Total Pokok
+          </p>
+
+
+          <p
+            className="
+            text-2xl
+            font-black
+            text-blue-300
+            mt-2
+            "
+          >
+
+            Rp {totalSemuaPokok.toLocaleString("id-ID")}
+
+          </p>
+
+
+        </div>
+
+
+
+
+
+        <div
+          className="
+          rounded-2xl
+          p-5
+          bg-green-500/10
+          border
+          border-green-400/20
+          "
+        >
+
+          <p className="text-gray-300">
+            Total Wajib
+          </p>
+
+
+          <p
+            className="
+            text-2xl
+            font-black
+            text-green-300
+            mt-2
+            "
+          >
+
+            Rp {totalSemuaWajib.toLocaleString("id-ID")}
+
+          </p>
+
+
+        </div>
+
+
+
+
+
+        <div
+          className="
+          rounded-2xl
+          p-5
+          bg-yellow-500/10
+          border
+          border-yellow-400/20
+          "
+        >
+
+          <p className="text-gray-300">
+            Total Sukarela
+          </p>
+
+
+          <p
+            className="
+            text-2xl
+            font-black
+            text-yellow-300
+            mt-2
+            "
+          >
+
+            Rp {totalSemuaSukarela.toLocaleString("id-ID")}
+
+          </p>
+
+
+        </div>
+
+
+
+
+
+        <div
+          className="
+          rounded-2xl
+          p-5
+          bg-red-500/10
+          border
+          border-red-400/20
+          "
+        >
+
+          <p className="text-gray-300">
+            Total Dana Koperasi
+          </p>
+
+
+          <p
+            className="
+            text-2xl
+            font-black
+            text-red-300
+            mt-2
+            "
+          >
+
+            Rp {totalSemuaDana.toLocaleString("id-ID")}
+
+          </p>
+
+
+        </div>
+
+
+      </div>
+
+
+
+
+
+
+
+      {/* TABLE SELURUH ANGGOTA */}
+
+
+      <div
+        className="
+        overflow-x-auto
+        rounded-2xl
+        border
+        border-white/10
+        "
+      >
+
+
+        <table
+          className="
+          w-full
+          "
+        >
+
+
+          <thead
+            className="
+            bg-black/40
+            text-gray-300
+            "
+          >
+
+            <tr>
+
+
+              <th className="px-4 py-3 text-left">
+                ID
+              </th>
+
+
+              <th className="px-4 py-3 text-left">
+                Nama Anggota
+              </th>
+
+
+              <th className="px-4 py-3 text-left">
+                No KK
+              </th>
+
+
+              <th className="px-4 py-3 text-right">
+                Simpanan Pokok
+              </th>
+
+
+              <th className="px-4 py-3 text-right">
+                Simpanan Wajib
+              </th>
+
+
+              <th className="px-4 py-3 text-right">
+                Simpanan Sukarela
+              </th>
+
+
+              <th className="px-4 py-3 text-right">
+                Total Dana
+              </th>
+
+
+            </tr>
+
+
+          </thead>
+
+
+
+
+
+          <tbody>
+
+
+          {
+            rekapGabungan.length === 0 ? (
+
+
+              <tr>
+
+
+                <td
+                  colSpan={7}
+                  className="
+                  text-center
+                  py-10
+                  text-gray-400
+                  "
+                >
+
+                  Belum ada data anggota.
+
+
+                </td>
+
+
+              </tr>
+
+
+
+            ) : (
+
+
+              rekapGabungan.map((item:any)=>(
+
+
+                <tr
+
+                  key={item.id}
+
+                  className="
+                  border-t
+                  border-white/10
+                  hover:bg-white/5
+                  transition
+                  "
+
+                >
+
+
+
+                  <td
+                    className="
+                    px-4
+                    py-4
+                    text-gray-200
+                    "
+                  >
+
+                    {item.id}
+
+                  </td>
+
+
+
+
+
+                  <td
+                    className="
+                    px-4
+                    py-4
+                    font-semibold
+                    text-white
+                    "
+                  >
+
+                    {item.nama}
+
+                  </td>
+
+
+
+
+
+                  <td
+                    className="
+                    px-4
+                    py-4
+                    text-gray-300
+                    "
+                  >
+
+                    {item.no_kk}
+
+                  </td>
+
+
+
+
+
+                  <td
+                    className="
+                    px-4
+                    py-4
+                    text-right
+                    text-blue-300
+                    "
+                  >
+
+                    Rp {Number(
+                      item.pokok || 0
+                    ).toLocaleString("id-ID")}
+
+
+                  </td>
+
+
+
+
+
+                  <td
+                    className="
+                    px-4
+                    py-4
+                    text-right
+                    text-green-300
+                    "
+                  >
+
+                    Rp {Number(
+                      item.wajib || 0
+                    ).toLocaleString("id-ID")}
+
+
+                  </td>
+
+
+
+
+
+                  <td
+                    className="
+                    px-4
+                    py-4
+                    text-right
+                    text-yellow-300
+                    "
+                  >
+
+                    Rp {Number(
+                      item.sukarela || 0
+                    ).toLocaleString("id-ID")}
+
+
+                  </td>
+
+
+
+
+
+                  <td
+                    className="
+                    px-4
+                    py-4
+                    text-right
+                    font-black
+                    text-red-300
+                    "
+                  >
+
+                    Rp {(
+                      Number(item.pokok || 0) +
+                      Number(item.wajib || 0) +
+                      Number(item.sukarela || 0)
+
+                    ).toLocaleString("id-ID")}
+
+
+                  </td>
+
+
+
+                </tr>
+
+
+              ))
+
+
+            )
+
+          }
+
+
+
+          </tbody>
+
+
+        </table>
+
+
+      </div>
+
+
+    </div>
+
+
+
+
+
+  </div>
+
+
+  </Layout>
+
+
   );
+
 
 }

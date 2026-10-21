@@ -1,99 +1,440 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
+
 import logo from "../assets/logo_crop.png";
 
-console.log(logo);
+
 export default function Login() {
+
+
   const navigate = useNavigate();
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
 
-  const login = async () => {
-  console.log("LOGIN EMAIL:", email);
+  const [email,setEmail] = useState("");
 
-  const { data, error } = await supabase.auth.signInWithPassword({
-    email,
-    password,
-  });
+  const [password,setPassword] = useState("");
 
-  console.log("LOGIN DATA:", data);
-  console.log("LOGIN ERROR:", error);
 
-  if (error) {
-    alert(error.message);
-    return;
+
+  async function login(){
+
+
+    console.log("LOGIN EMAIL:",email);
+
+
+
+    const {data,error} =
+      await supabase.auth.signInWithPassword({
+
+        email,
+
+        password,
+
+      });
+
+
+
+    console.log(
+      "LOGIN DATA:",
+      data
+    );
+
+
+    console.log(
+      "LOGIN ERROR:",
+      error
+    );
+
+
+
+    if(error){
+
+      alert(error.message);
+
+      return;
+
+    }
+
+
+
+    navigate("/dashboard");
+
+
   }
 
-  console.log("SESSION:", data.session);
 
-  navigate("/dashboard");
-};
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-red-600 via-red-500 to-red-700 flex items-center justify-center p-6">
 
-      <div className="w-full max-w-md bg-white rounded-3xl shadow-2xl p-8">
 
-        <div className="text-center mb-8">
+return (
+
+<div
+className="
+min-h-screen
+flex
+items-center
+justify-center
+p-6
+bg-gradient-to-br
+from-slate-950
+via-red-900
+to-red-600
+"
+>
+
+
+
+<div
+className="
+w-full
+max-w-md
+bg-white/95
+backdrop-blur
+rounded-3xl
+shadow-2xl
+p-8
+border
+border-white/40
+"
+>
+
+
+
+
+
+{/* HEADER LOGO */}
+
+<div
+className="
+flex
+items-center
+justify-center
+gap-4
+mb-8
+"
+>
+
+
+<div
+className="
+w-24
+h-24
+rounded-full
+bg-white
+shadow-xl
+border-4
+border-red-600
+flex
+items-center
+justify-center
+overflow-hidden
+"
+>
+
 <img
-  src={logo}
-  alt="Logo Pertashop KDMP Bukit Jaya"
-  className="w-28 h-28 object-contain mx-auto mb-4"
-/>
- 
-  <h1 className="text-3xl font-bold text-gray-800">
-    KOPERASI DESA MERAH PUTIH BUKIT JAYA
-  </h1>
 
-  <p className="text-gray-500 mt-2">
-    Koperasi Desa Merah Putih Bukit Jaya
-  </p>
+src={logo}
+
+alt="Logo Koperasi"
+
+className="
+w-full
+h-full
+object-contain
+p-2
+"
+
+/>
 
 </div>
 
-        <div className="space-y-5">
 
-          <div>
-            <label className="block text-gray-700 font-medium mb-2">
-              Email
-            </label>
 
-            <input
-              type="email"
-              placeholder="Masukkan Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-red-500"
-            />
-          </div>
 
-          <div>
-            <label className="block text-gray-700 font-medium mb-2">
-              Password
-            </label>
+<div>
 
-            <input
-              type="password"
-              placeholder="Masukkan Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-red-500"
-            />
-          </div>
 
-          <button
-  onClick={login}
-  className="w-full bg-red-600 hover:bg-red-700 transition text-white font-semibold py-3 rounded-xl"
+<h1
+className="
+text-xl
+font-extrabold
+text-red-700
+leading-tight
+"
 >
-  Login
+
+KOPERASI DESA
+<br/>
+
+MERAH PUTIH
+
+</h1>
+
+
+
+<p
+className="
+text-gray-600
+font-semibold
+mt-1
+"
+>
+
+BUKIT JAYA
+
+</p>
+
+
+
+<p
+className="
+text-xs
+text-gray-500
+"
+>
+
+Kecamatan Bulik Timur
+
+</p>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+{/* JUDUL LOGIN */}
+
+
+<div
+className="
+text-center
+mb-7
+"
+>
+
+
+<h2
+className="
+text-2xl
+font-bold
+text-gray-800
+"
+>
+
+🔐 Login Admin
+
+</h2>
+
+
+
+<p
+className="
+text-gray-500
+mt-2
+"
+>
+
+Sistem Informasi KDMP Bukit Jaya
+
+</p>
+
+
+</div>
+
+
+
+
+
+
+
+{/* FORM */}
+
+
+
+<div
+className="
+space-y-5
+"
+>
+
+
+
+
+<div>
+
+
+<label
+className="
+block
+font-semibold
+text-gray-700
+mb-2
+"
+>
+
+Email
+
+</label>
+
+
+
+<input
+
+type="email"
+
+placeholder="Masukkan Email"
+
+value={email}
+
+onChange={(e)=>
+setEmail(e.target.value)
+}
+
+className="
+w-full
+rounded-xl
+border
+border-gray-300
+px-4
+py-3
+text-gray-800
+focus:outline-none
+focus:ring-2
+focus:ring-red-500
+"
+
+/>
+
+
+</div>
+
+
+
+
+
+<div>
+
+
+<label
+className="
+block
+font-semibold
+text-gray-700
+mb-2
+"
+>
+
+Password
+
+</label>
+
+
+
+<input
+
+type="password"
+
+placeholder="Masukkan Password"
+
+value={password}
+
+onChange={(e)=>
+setPassword(e.target.value)
+}
+
+className="
+w-full
+rounded-xl
+border
+border-gray-300
+px-4
+py-3
+text-gray-800
+focus:outline-none
+focus:ring-2
+focus:ring-red-500
+"
+
+/>
+
+
+</div>
+
+
+
+
+
+
+
+
+<button
+
+onClick={login}
+
+className="
+w-full
+py-3
+rounded-xl
+font-bold
+text-white
+bg-gradient-to-r
+from-red-700
+to-red-500
+shadow-lg
+hover:scale-[1.02]
+transition
+"
+
+>
+
+LOGIN
+
 </button>
 
-        </div>
 
-      </div>
 
-    </div>
-  );
+
+
+</div>
+
+
+
+
+
+
+{/* FOOTER */}
+
+<p
+className="
+text-center
+text-xs
+text-gray-400
+mt-8
+"
+>
+
+© KDMP Bukit Jaya
+<br/>
+Sistem Informasi Koperasi Desa Merah Putih
+
+</p>
+
+
+
+</div>
+
+
+
+</div>
+
+
+);
+
+
 }

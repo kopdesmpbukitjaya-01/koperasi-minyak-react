@@ -1,8 +1,11 @@
-import { useNavigate } from "react-router-dom";
-import sidebarBg from "../assets/sidebar-bg.png";
+import { useLocation, useNavigate } from "react-router-dom";
+
 
 export default function Sidebar() {
+
   const navigate = useNavigate();
+  const location = useLocation();
+
 
   const menus = [
     {
@@ -47,35 +50,264 @@ export default function Sidebar() {
     },
   ];
 
+
+
   return (
-    <div
-      className="w-64 min-h-screen text-white shadow-xl bg-cover bg-center"
-      style={{
-        backgroundImage: `linear-gradient(rgba(0,0,0,.45), rgba(0,0,0,.45)), url(${sidebarBg})`,
-      }}
+
+    <aside
+      className="
+      w-64
+      min-h-screen
+      hidden
+      md:block
+
+      bg-gradient-to-b
+      from-[#09001f]
+      via-[#10002b]
+      to-[#001b3d]
+
+      border-r
+      border-purple-500/40
+
+      shadow-[0_0_35px_rgba(168,85,247,0.35)]
+      "
     >
-      <div className="p-6 backdrop-blur-sm bg-black/20 border-b border-white/20">
-        <h2 className="text-2xl font-bold">
-  KOPERASI DESA MERAH PUTIH BUKIT JAYA
-</h2>
 
-<p className="text-sm text-gray-200">
-  Sistem Koperasi Desa
-</p>
+
+
+      {/* HEADER SIDEBAR */}
+
+      <div
+        className="
+        p-6
+
+        border-b
+        border-purple-500/40
+
+        bg-black/20
+
+        backdrop-blur-xl
+        "
+      >
+
+        <h2
+          className="
+          text-xl
+          font-black
+
+          bg-gradient-to-r
+          from-red-400
+          via-purple-400
+          to-blue-400
+
+          bg-clip-text
+          text-transparent
+          "
+        >
+          KOPERASI DESA
+        </h2>
+
+
+        <h3
+          className="
+          text-lg
+          font-bold
+          text-white
+          "
+        >
+          MERAH PUTIH
+        </h3>
+
+
+        <p
+          className="
+          text-xs
+          text-blue-300
+          mt-1
+          "
+        >
+          Bukit Jaya
+        </p>
+
+
       </div>
 
-      <div className="p-3">
-        {menus.map((menu) => (
-          <button
-            key={menu.title}
-            onClick={() => navigate(menu.path)}
-            className="w-full text-left px-4 py-3 rounded-xl hover:bg-white/20 transition-all duration-300 mb-2"
-          >
-            <span className="mr-3">{menu.icon}</span>
-            {menu.title}
-          </button>
-        ))}
-      </div>
-    </div>
+
+
+
+
+      {/* MENU */}
+
+      <nav
+        className="
+        p-4
+        space-y-3
+        "
+      >
+
+
+        {menus.map((menu)=>{
+
+
+          const aktif =
+            location.pathname === menu.path;
+
+
+
+          return (
+
+            <button
+
+              key={menu.title}
+
+              onClick={()=>navigate(menu.path)}
+
+              className={`
+              
+              group
+
+              relative
+
+              w-full
+
+              flex
+              items-center
+
+              gap-3
+
+              px-4
+              py-3
+
+              rounded-2xl
+
+
+              transition-all
+              duration-300
+
+
+              border
+
+
+              ${
+                aktif
+
+                ?
+
+                `
+                bg-gradient-to-r
+                from-red-600/80
+                via-purple-600/80
+                to-blue-600/80
+
+                border-purple-300
+
+                shadow-[0_0_20px_rgba(168,85,247,0.8)]
+
+                scale-[1.03]
+                `
+
+                :
+
+                `
+                bg-white/5
+
+                border-white/10
+
+                hover:bg-white/10
+
+                hover:border-blue-400
+
+                hover:shadow-[0_0_15px_rgba(59,130,246,0.7)]
+
+                hover:translate-x-2
+                `
+              }
+
+              `}
+
+            >
+
+
+
+              {/* ICON */}
+
+              <span
+                className="
+                text-xl
+
+                group-hover:scale-125
+
+                transition
+                "
+              >
+                {menu.icon}
+              </span>
+
+
+
+
+              <span
+                className="
+                font-semibold
+
+                text-sm
+
+                text-white
+                "
+              >
+
+                {menu.title}
+
+              </span>
+
+
+
+              {/* ACTIVE LINE */}
+
+              {
+                aktif &&
+
+                <span
+                  className="
+                  absolute
+
+                  left-0
+
+                  top-3
+
+                  h-8
+
+                  w-1
+
+                  rounded-full
+
+                  bg-white
+
+                  shadow-[0_0_15px_white]
+
+                  "
+                />
+
+              }
+
+
+
+            </button>
+
+
+          );
+
+
+        })}
+
+
+      </nav>
+
+
+
+    </aside>
+
+
   );
+
 }

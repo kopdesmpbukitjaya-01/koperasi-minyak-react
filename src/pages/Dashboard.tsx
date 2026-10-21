@@ -6,548 +6,794 @@ import { getPeriode } from "../services/periode";
 
 import logo from "../assets/logo.png";
 import banner from "../assets/banner.png";
-import background from "../assets/background.png";
 
 
 export default function Dashboard() {
- 
 
 
-  const [periodeAktif, setPeriodeAktif] = useState<any>(null);
-
-  const [dataBBM, setDataBBM] = useState<any[]>([]);
-
+const [periodeAktif,setPeriodeAktif] =
+useState<any>(null);
 
 
-  useEffect(() => {
-
-
-  loadDataBBM();
-
-  loadDashboard();
-}, []);
+const [dataBBM,setDataBBM] =
+useState<any[]>([]);
 
 
 
 
-  async function loadDataBBM() {
-  
-  try {
-    const data = await getDashboardBBM();
+
+useEffect(()=>{
+
+loadDashboard();
+loadDataBBM();
+
+},[]);
 
 
 
-    setDataBBM(data);
-  } catch (err: any) {
-  alert(
-    "Message: " + err.message +
-    "\nCode: " + err.code +
-    "\nDetails: " + err.details +
-    "\nHint: " + err.hint
-  );
+
+
+async function loadDashboard(){
+
+try{
+
+const data =
+await getPeriode();
+
+
+const aktif =
+data.find(
+(p:any)=>p.aktif === true
+);
+
+
+setPeriodeAktif(aktif);
+
+
+}catch(err){
+
+console.log(err);
+
 }
+
 }
 
 
 
 
-  async function loadDashboard() {
 
-    try {
+async function loadDataBBM(){
 
-      const data = await getPeriode();
+try{
 
+const data =
+await getDashboardBBM();
 
-      const aktif = data.find(
-        (p:any)=>p.aktif === true
-      );
 
+setDataBBM(data);
 
-      setPeriodeAktif(aktif);
 
+}catch(err:any){
 
-    } catch(err:any) {
+console.error(err);
 
-      console.log(err.message);
+}
 
-    }
+}
 
-  }
 
 
 
 
 
-  return (
 
-    <Layout>
+return (
 
+<Layout>
 
-      <div
 
-        className="min-h-screen bg-cover bg-center"
+<div className="space-y-8">
 
-        style={{
 
-          backgroundImage:`url(${background})`
 
-        }}
+{/* =====================
+        BANNER
+===================== */}
 
-      >
 
+<div
+className="
+rounded-3xl
+overflow-hidden
 
-        <div className="bg-white/80 backdrop-blur-sm min-h-screen p-8">
+border
+border-purple-500/40
 
+shadow-[0_0_40px_rgba(168,85,247,.35)]
 
+"
+>
 
-          <div className="rounded-3xl overflow-hidden shadow-2xl mb-8">
 
+<img
 
-            <img
+src={banner}
 
-              src={banner}
+alt="Banner"
 
-              alt="Banner"
+className="
+w-full
+rounded-3xl
+"
+/>
 
-              className="w-full rounded-3xl"
 
-            />
+</div>
 
 
-          </div>
 
 
 
 
-          <div className="flex flex-col lg:flex-row items-center justify-between gap-8 mb-10">
 
+{/* =====================
+      PROFILE HEADER
+===================== */}
 
-            <div className="flex items-center gap-6">
 
 
-              <img
+<div
 
-                src={logo}
+className="
+flex
+flex-col
+lg:flex-row
+justify-between
+items-center
 
-                alt="Logo"
+gap-6
 
-                className="w-32 h-32 object-contain bg-white rounded-full shadow-xl p-3"
+bg-white/5
 
-              />
+backdrop-blur-xl
 
+rounded-3xl
 
+p-6
 
-              <div>
+border
+border-white/10
 
+shadow-xl
 
-                <h1 className="text-5xl font-extrabold text-red-700">
-                  KOPERASI DESA MERAH PUTIH
-                </h1>
+"
 
+>
 
-                <h2 className="text-3xl font-bold text-gray-800 mt-2">
-                  BUKIT JAYA
-                </h2>
 
 
-                <h3 className="text-2xl font-semibold text-gray-700">
-                  KECAMATAN BULIK TIMUR
-                </h3>
 
+<div
+className="
+flex
+items-center
+gap-5
+"
+>
 
-                <p className="text-gray-600 mt-3 text-lg">
-                  Jl. Sunan Giri KM.18 Bukit Jaya, Bulik Timur, Kabupaten Lamandau, Kalimantan tengah, Indonesia
-                </p>
 
+<div
 
-              </div>
+className="
+p-1
 
+rounded-full
 
-            </div>
-                        <div className="bg-red-700 text-white rounded-2xl shadow-xl px-8 py-6">
+bg-gradient-to-r
+from-red-500
+via-purple-500
+to-blue-500
 
+shadow-[0_0_30px_rgba(168,85,247,.8)]
+"
 
-              <h2 className="text-xl font-bold">
-                Dashboard
-              </h2>
+>
 
 
-              <p className="mt-2">
-                Sistem Informasi Pertashop
-              </p>
+<img
 
+src={logo}
 
-            </div>
+className="
+w-24
+h-24
 
+rounded-full
 
-          </div>
+bg-white
 
+p-2
 
+object-contain
+"
 
+/>
 
 
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-8">
+</div>
 
 
 
-            <div className="bg-white rounded-3xl shadow-xl p-7">
 
+<div>
 
-              <p className="text-gray-500 uppercase text-sm">
-                Periode Aktif
-              </p>
 
+<h1
 
-              <h2 className="text-3xl font-bold text-blue-600 mt-3">
+className="
+text-3xl
+md:text-5xl
 
-                {periodeAktif?.nama_periode || "-"}
+font-black
 
-              </h2>
+bg-gradient-to-r
+from-red-400
+via-purple-400
+to-blue-400
 
+bg-clip-text
+text-transparent
 
-              <p className="text-gray-600 mt-3">
+"
 
-                {periodeAktif?.jenis_bbm?.nama || "-"}
+>
 
-              </p>
+KOPERASI DESA MERAH PUTIH
 
+</h1>
 
-              <div className="text-5xl mt-4">
-                📅
-              </div>
 
 
-            </div>
+<h2
 
+className="
+text-xl
+md:text-3xl
 
+font-bold
 
+text-blue-200
 
+"
 
-            <div className="bg-white rounded-3xl shadow-xl p-7">
+>
 
+BUKIT JAYA
 
-              <p className="text-gray-500 uppercase text-sm">
-                Kuota Liter
-              </p>
+</h2>
 
 
-              <h2 className="text-5xl font-bold text-orange-600 mt-3">
 
-                {periodeAktif?.kuota_liter || 0}
+<p
 
-              </h2>
+className="
+text-gray-300
+mt-2
+"
 
+>
 
-              <p className="text-gray-600">
-                Liter
-              </p>
+Kecamatan Bulik Timur
 
+</p>
 
-              <div className="text-5xl mt-4">
-                🛢️
-              </div>
 
 
-            </div>
+</div>
 
 
 
+</div>
 
 
-            <div className="bg-white rounded-3xl shadow-xl p-7">
 
 
-              <p className="text-gray-500 uppercase text-sm">
-                Jenis BBM
-              </p>
 
+<div
 
-              <h2 className="text-4xl font-bold text-green-600 mt-3">
+className="
+px-8
+py-5
 
-                {dataBBM.length}
+rounded-2xl
 
-              </h2>
+bg-gradient-to-r
 
+from-red-600
 
-              <p className="text-gray-600 mt-2">
-                Rekap Penyaluran
-              </p>
+to-purple-700
 
+shadow-[0_0_30px_rgba(239,68,68,.5)]
 
-              <div className="text-5xl mt-4">
-                ⛽
-              </div>
+"
 
+>
 
-            </div>
 
+<h2 className="font-bold text-xl">
 
+Dashboard
 
+</h2>
 
 
-            <div className="bg-white rounded-3xl shadow-xl p-7">
+<p className="text-sm">
 
+Sistem Informasi Pertashop
 
-              <p className="text-gray-500 uppercase text-sm">
-                Status
-              </p>
+</p>
 
 
-              <h2 className="text-4xl font-bold text-red-600 mt-3">
-                Aktif
-              </h2>
+</div>
 
 
-              <p className="text-gray-600 mt-2">
-                Sistem berjalan
-              </p>
 
 
-              <div className="text-5xl mt-4">
-                ✅
-              </div>
 
 
-            </div>
+</div>
 
 
 
-          </div>
-                    <div className="mt-12 bg-white rounded-3xl shadow-xl p-8">
 
 
-            <h2 className="text-3xl font-bold text-red-700 mb-8">
-              Rekap Penyaluran BBM
-            </h2>
 
 
+{/* =====================
+      STAT CARD
+===================== */}
 
-            <div className="overflow-x-auto">
 
 
-              <table className="w-full">
+<div
 
+className="
+grid
 
-                <thead className="bg-red-700 text-white">
+grid-cols-1
 
+md:grid-cols-2
 
-                  <tr>
+xl:grid-cols-4
 
-                    <th className="px-4 py-3 text-left">
-                      Periode
-                    </th>
+gap-6
 
+"
 
-                    <th className="px-4 py-3 text-left">
-                      Jenis BBM
-                    </th>
+>
 
 
-                    <th className="px-4 py-3 text-center">
-                      Jumlah KK
-                    </th>
 
 
-                    <th className="px-4 py-3 text-center">
-                      Liter
-                    </th>
 
+<Card
 
-                  </tr>
+title="Periode Aktif"
 
+value={
+periodeAktif?.nama_periode || "-"
+}
 
-                </thead>
+desc={
+periodeAktif?.jenis_bbm?.nama || "-"
+}
 
+icon="📅"
 
+/>
 
-                <tbody>
 
 
-                  {dataBBM.map((item:any,index:number)=>(
 
+<Card
 
-                    <tr
-                      key={index}
-                      className="border-b hover:bg-red-50"
-                    >
+title="Kuota Liter"
 
+value={
+`${periodeAktif?.kuota_liter || 0} L`
+}
 
-                      <td className="px-4 py-4">
-                        {item.periode}
-                      </td>
+desc="Stok periode aktif"
 
+icon="🛢️"
 
+/>
 
-                      <td className="px-4 py-4 font-semibold">
-                        {item.jenis_bbm}
-                      </td>
 
 
 
-                      <td className="px-4 py-4 text-center">
-                        {item.jumlah_kk} KK
-                      </td>
 
+<Card
 
+title="Jenis BBM"
 
-                      <td className="px-4 py-4 text-center font-bold text-blue-600">
-                        {item.liter} Liter
-                      </td>
+value={
+dataBBM.length
+}
 
+desc="Rekap penyaluran"
 
+icon="⛽"
 
-                    </tr>
+/>
 
 
-                  ))}
 
 
+<Card
 
+title="Status"
 
-                  {dataBBM.length === 0 && (
+value="AKTIF"
 
+desc="Sistem berjalan"
 
-                    <tr>
+icon="✅"
 
-                      <td
-                        colSpan={4}
-                        className="text-center py-10 text-gray-500"
-                      >
+/>
 
-                        Belum ada data transaksi BBM
 
-                      </td>
 
+</div>
 
-                    </tr>
 
 
-                  )}
 
 
-                </tbody>
 
 
-              </table>
+{/* =====================
+        REKAP TABLE
+===================== */}
 
 
-            </div>
 
+<div
 
-          </div>
+className="
+bg-white/5
 
+backdrop-blur-xl
 
+rounded-3xl
 
+border
+border-white/10
 
+shadow-xl
 
-          <div className="mt-12 bg-white rounded-3xl shadow-xl p-8">
+p-6
 
+"
 
-            <h2 className="text-3xl font-bold text-red-700 mb-8">
-              Ringkasan Sistem
-            </h2>
+>
 
 
+<h2
 
-            <table className="w-full">
+className="
+text-2xl
 
+font-black
 
-              <tbody>
+mb-5
 
+bg-gradient-to-r
 
-                <tr className="border-b">
+from-red-400
 
-                  <td className="py-4 font-semibold">
-                    Periode Aktif
-                  </td>
+to-purple-400
 
+bg-clip-text
 
-                  <td>
-                    {periodeAktif?.nama_periode || "-"}
-                  </td>
+text-transparent
 
+"
 
-                </tr>
+>
 
+Rekap Penyaluran BBM
 
+</h2>
 
 
-                <tr className="border-b">
 
 
-                  <td className="py-4 font-semibold">
-                    Jenis BBM
-                  </td>
+<div className="overflow-x-auto">
 
 
-                  <td>
-                    {periodeAktif?.jenis_bbm?.nama || "-"}
-                  </td>
+<table className="w-full">
 
 
-                </tr>
+<thead>
 
 
+<tr
 
+className="
+border-b
+border-purple-500/30
+text-purple-300
 
-                <tr>
+"
 
+>
 
-                  <td className="py-4 font-semibold">
-                    Total Data BBM
-                  </td>
 
+<th className="p-3 text-left">
 
-                  <td>
-                    {dataBBM.length} Rekap
-                  </td>
+Periode
 
+</th>
 
-                </tr>
 
+<th className="p-3">
 
-              </tbody>
+Jenis
 
+</th>
 
-            </table>
 
+<th className="p-3">
 
-          </div>
+KK
 
+</th>
 
 
+<th className="p-3">
 
+Liter
 
-          <div className="mt-10 text-center">
+</th>
 
 
-            <h2 className="text-xl font-bold text-red-700">
-              PERTASHOP KOPERASI DESA MERAH PUTIH
-            </h2>
 
+</tr>
 
-            <p className="text-gray-600 mt-2">
-              Bukit Jaya • Kecamatan Bulik Timur
-            </p>
 
+</thead>
 
-            <p className="text-gray-400 text-sm mt-4">
-              © 2026 Sistem Informasi Pertashop KDMP Bukit Jaya
-            </p>
 
 
-          </div>
+<tbody>
 
 
+{
+dataBBM.map(
+(item:any,index:number)=>(
 
-        </div>
 
+<tr
 
-      </div>
+key={index}
 
+className="
+border-b
+border-white/10
+hover:bg-purple-500/10
+transition
 
-    </Layout>
+"
 
-  );
+>
+
+
+<td className="p-3">
+
+{item.periode}
+
+</td>
+
+
+<td className="p-3 font-bold">
+
+{item.jenis_bbm}
+
+</td>
+
+
+<td className="p-3 text-center">
+
+{item.jumlah_kk}
+
+</td>
+
+
+<td className="
+p-3
+text-center
+text-blue-300
+font-bold
+">
+
+{item.liter}
+
+</td>
+
+
+</tr>
+
+
+)
+
+)
+
+}
+
+
+
+</tbody>
+
+
+</table>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+</div>
+
+
+</Layout>
+
+);
+
+
+}
+
+
+
+
+
+
+
+function Card(
+{
+title,
+value,
+desc,
+icon
+}:any
+){
+
+return (
+
+<div
+
+className="
+relative
+
+overflow-hidden
+
+rounded-3xl
+
+p-6
+
+bg-gradient-to-br
+
+from-[#101633]
+
+to-[#080b20]
+
+border
+
+border-purple-500/30
+
+shadow-[0_0_30px_rgba(139,92,246,.25)]
+
+hover:scale-105
+
+transition
+
+"
+
+>
+
+
+<div
+
+className="
+absolute
+
+right-0
+
+top-0
+
+w-32
+
+h-32
+
+bg-purple-600/20
+
+rounded-full
+
+blur-3xl
+
+"
+
+/>
+
+
+
+<p className="
+text-gray-400
+text-sm
+uppercase
+">
+
+{title}
+
+</p>
+
+
+
+<h2
+
+className="
+text-3xl
+
+font-black
+
+mt-3
+
+bg-gradient-to-r
+
+from-red-400
+
+via-purple-400
+
+to-blue-400
+
+bg-clip-text
+
+text-transparent
+
+"
+
+>
+
+{value}
+
+</h2>
+
+
+
+<p className="text-gray-300 mt-2">
+
+{desc}
+
+</p>
+
+
+
+<div className="text-5xl mt-4">
+
+{icon}
+
+</div>
+
+
+
+</div>
+
+
+)
 
 }
