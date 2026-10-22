@@ -116,14 +116,13 @@ shadow-[0_0_40px_rgba(168,85,247,.35)]
 
 
 <img
+
 src={banner}
+
 alt="Banner"
+
 className="
 w-full
-h-36
-sm:h-44
-md:h-56
-object-cover
 rounded-3xl
 "
 />
@@ -148,7 +147,7 @@ rounded-3xl
 className="
 flex
 flex-col
-md:flex-row
+lg:flex-row
 justify-between
 items-center
 
@@ -206,10 +205,8 @@ shadow-[0_0_30px_rgba(168,85,247,.8)]
 src={logo}
 
 className="
-w-20
-h-20
-md:w-24
-md:h-24
+w-24
+h-24
 
 rounded-full
 

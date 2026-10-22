@@ -44,11 +44,7 @@ export default function Transaksi() {
 
 
 
-  const [
-    filterNama,
-    setFilterNama
-  ] = useState("");
-
+  const [filterNama] = useState<string>("");
 
 
   const [saving, setSaving] = useState(false);
@@ -329,29 +325,7 @@ export default function Transaksi() {
 
 
 
-      const aktif =
-
-        dataPeriode.find(
-
-          (p:any)=>
-
-            p.status==="Aktif"
-            ||
-            p.aktif===true
-
-        );
-
-
-
-      if(aktif){
-
-
-        setFilterPeriodeId(
-          String(aktif.id)
-        );
-
-
-      }
+      
 
 
 
@@ -757,9 +731,8 @@ export default function Transaksi() {
   // =====================================================
 
 
-  const filteredList = list
+  const filteredList = list.filter((t)=>{
 
-  .filter((t)=>{
 
 
     if(
@@ -778,34 +751,20 @@ export default function Transaksi() {
 
 
 
-    if(
-
-      filterNama &&
-
-      !String(
-
-        t.warga?.nama ??
-
-        t.warga?.nama_warga ??
-
-        ""
-
-      )
-
-      .toLowerCase()
-
-      .includes(
-
-        filterNama
-        .toLowerCase()
-
-      )
-
-    ){
-
-      return false;
-
-    }
+    if (
+  filterNama.trim() !== "" &&
+  !String(
+    t.warga?.nama ??
+    t.warga?.nama_warga ??
+    ""
+  )
+  .toLowerCase()
+  .includes(
+    filterNama.toLowerCase()
+  )
+){
+  return false;
+}
 
 
 
@@ -1762,32 +1721,45 @@ export default function Transaksi() {
 
 
 
-            <input
+            <select
+  value={filterPeriodeId}
+  onChange={(e)=>
+    setFilterPeriodeId(e.target.value)
+  }
+  className="
+    bg-white
+    border
+    border-purple-500/50
+    rounded-lg
+    px-4
+    py-2
+    text-black
+    font-semibold
+  "
+>
 
-              type="text"
+  <option 
+  value=""
+  className="text-black"
+>
+  Pilih Periode
+</option>
 
-              placeholder="🔍 Cari anggota..."
+  {
+    periode.map((p:any)=>(
 
-              value={filterNama}
+      <option
+  key={p.id}
+  value={p.id}
+  className="text-black"
+>
+  {p.nama_periode}
+</option>
 
-              onChange={(e)=>
-                setFilterNama(
-                  e.target.value
-                )
-              }
+    ))
+  }
 
-
-              className="
-              rounded-xl
-              px-4
-              py-3
-              bg-black/30
-              text-white
-              border
-              border-purple-500/30
-              "
-
-            />
+</select>
 
 
           </div>

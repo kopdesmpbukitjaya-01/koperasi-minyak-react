@@ -665,7 +665,16 @@ export default function Warga() {
 
             }
 
-            className="bg-gray-700 hover:bg-gray-800 text-white px-6 py-3 rounded-xl shadow-lg transition"
+            className="
+bg-blue-600
+hover:bg-blue-700
+text-white
+px-6
+py-3
+rounded-xl
+shadow-lg
+transition
+"
 
           >
 
@@ -684,7 +693,7 @@ export default function Warga() {
         {/* FORM DATA WARGA */}
 
 
-        <div className="bg-white rounded-3xl shadow-xl p-8">
+       <div className="bg-slate-900 rounded-3xl shadow-xl p-8 border border-white/10">
 
 
           <h2 className="text-2xl font-bold text-red-700 mb-8">
@@ -707,7 +716,7 @@ export default function Warga() {
 
             <div>
 
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-white mb-2">
 
                 Nomor KK
 
@@ -728,7 +737,20 @@ export default function Warga() {
 
                 }
 
-                className="w-full rounded-xl border border-gray-300 bg-gray-50 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-red-600"
+                className="
+w-full
+rounded-xl
+border
+border-white/20
+bg-white/10
+text-white
+placeholder-gray-400
+px-4
+py-3
+focus:outline-none
+focus:ring-2
+focus:ring-red-600
+"
 
               />
 
@@ -744,7 +766,7 @@ export default function Warga() {
             <div>
 
 
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-white mb-2">
 
                 Nama Lengkap
 
@@ -766,7 +788,20 @@ export default function Warga() {
 
                 }
 
-                className="w-full rounded-xl border border-gray-300 bg-gray-50 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-red-600"
+                className="
+w-full
+rounded-xl
+border
+border-white/20
+bg-white/10
+text-white
+placeholder-gray-400
+px-4
+py-3
+focus:outline-none
+focus:ring-2
+focus:ring-red-600
+"
 
               />
 
@@ -783,7 +818,7 @@ export default function Warga() {
             <div>
 
 
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-white mb-2">
 
                 Status
 
@@ -801,7 +836,20 @@ export default function Warga() {
 
                 }
 
-                className="w-full rounded-xl border border-gray-300 bg-gray-50 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-red-600"
+                className="
+w-full
+rounded-xl
+border
+border-white/20
+bg-white/10
+text-white
+placeholder-gray-400
+px-4
+py-3
+focus:outline-none
+focus:ring-2
+focus:ring-red-600
+"
 
               >
 
@@ -836,7 +884,7 @@ export default function Warga() {
             <div>
 
 
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-white mb-2">
 
                 Alamat
 
@@ -858,7 +906,20 @@ export default function Warga() {
 
                 }
 
-                className="w-full rounded-xl border border-gray-300 bg-gray-50 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-red-600"
+                className="
+w-full
+rounded-xl
+border
+border-white/20
+bg-white/10
+text-white
+placeholder-gray-400
+px-4
+py-3
+focus:outline-none
+focus:ring-2
+focus:ring-red-600
+"
 
               />
 
@@ -875,7 +936,7 @@ export default function Warga() {
             <div>
 
 
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-white mb-2">
 
                 Nomor HP
 
@@ -897,7 +958,20 @@ export default function Warga() {
 
                 }
 
-                className="w-full rounded-xl border border-gray-300 bg-gray-50 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-red-600"
+                className="
+w-full
+rounded-xl
+border
+border-white/20
+bg-white/10
+text-white
+placeholder-gray-400
+px-4
+py-3
+focus:outline-none
+focus:ring-2
+focus:ring-red-600
+"
 
               />
 
@@ -1009,7 +1083,7 @@ export default function Warga() {
         {/* TABEL DATA WARGA */}
 
 
-        <div className="bg-white rounded-3xl shadow-xl p-8">
+       <div className="bg-slate-900 rounded-3xl shadow-xl p-8 border border-white/10">
 
 
           <div className="mb-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
@@ -1031,10 +1105,32 @@ export default function Warga() {
               {/* JUMLAH ANGGOTA */}
 
 
-              <div className="bg-green-100 border border-green-200 rounded-2xl px-6 py-4 min-w-[150px]">
+              <div
+className="
+min-w-[150px]
+rounded-2xl
+px-6
+py-4
+bg-gradient-to-br
+from-green-400/30
+to-green-700/40
+border
+border-green-400/50
+shadow-[0_0_25px_rgba(34,197,94,0.6)]
+backdrop-blur-xl
+transition
+hover:scale-105
+hover:shadow-[0_0_40px_rgba(34,197,94,0.9)]
+"
+>
 
 
-                <p className="text-sm font-semibold text-green-700">
+                <p className="
+text-sm
+font-bold
+text-green-300
+drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]
+">
 
                   🟢 Anggota
 
@@ -1042,7 +1138,12 @@ export default function Warga() {
 
 
 
-                <p className="text-3xl font-bold text-green-800">
+                <p className="
+text-4xl
+font-black
+text-white
+drop-shadow-[0_3px_3px_rgba(0,0,0,0.9)]
+">
 
                   {jumlahAnggota}
 
@@ -1050,7 +1151,11 @@ export default function Warga() {
 
 
 
-                <p className="text-sm text-green-600">
+                <p className="
+text-sm
+font-bold
+text-green-200
+">
 
                   orang
 
@@ -1066,30 +1171,62 @@ export default function Warga() {
               {/* NON ANGGOTA */}
 
 
-              <div className="bg-gray-100 border border-gray-200 rounded-2xl px-6 py-4 min-w-[150px]">
+              <div
+className="
+min-w-[150px]
+rounded-2xl
+px-6
+py-4
+bg-gradient-to-br
+from-gray-300/30
+to-gray-700/40
+border
+border-gray-400/40
+shadow-[0_0_25px_rgba(148,163,184,0.5)]
+backdrop-blur-xl
+transition
+hover:scale-105
+hover:shadow-[0_0_40px_rgba(148,163,184,0.8)]
+"
+>
 
 
-                <p className="text-sm font-semibold text-gray-700">
-
-                  ⚪ Non-Anggota
-
-                </p>
-
-
-
-                <p className="text-3xl font-bold text-gray-800">
-
-                  {jumlahNonAnggota}
-
-                </p>
+                <p
+className="
+text-sm
+font-black
+text-white
+drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]
+"
+>
+  ⚪ Non-Anggota
+</p>
 
 
 
-                <p className="text-sm text-gray-600">
+                <p
+className="
+text-4xl
+font-black
+text-white
+drop-shadow-[0_3px_6px_rgba(0,0,0,0.9)]
+"
+>
+  {jumlahNonAnggota}
+</p>
 
-                  orang
 
-                </p>
+
+               <p
+className="
+text-sm
+font-semibold
+text-gray-300
+drop-shadow-[0_2px_3px_rgba(0,0,0,0.8)]
+"
+>
+  orang
+</p>
 
 
               </div>
@@ -1150,7 +1287,20 @@ export default function Warga() {
 
                 }
 
-                className="bg-red-700 hover:bg-red-800 text-white px-6 py-3 rounded-xl shadow-lg transition font-semibold"
+                className="
+bg-gradient-to-r
+from-red-600
+to-red-800
+text-white
+px-6
+py-3
+rounded-xl
+font-semibold
+shadow-[0_0_30px_rgba(239,68,68,0.7)]
+hover:shadow-[0_0_45px_rgba(239,68,68,1)]
+hover:scale-105
+transition
+"
 
               >
 
@@ -1172,21 +1322,33 @@ export default function Warga() {
 
             <input
 
-              type="text"
+  type="text"
 
-              placeholder="🔍 Cari nama warga..."
+  placeholder="🔍 Cari nama warga..."
 
-              value={search}
+  value={search}
 
-              onChange={(e)=>
+  onChange={(e)=>
+    setSearch(e.target.value)
+  }
 
-                setSearch(e.target.value)
+  className="
+  w-full
+  md:w-96
+  rounded-xl
+  border
+  border-gray-300
+  bg-white
+  text-gray-900
+  placeholder:text-gray-400
+  px-4
+  py-3
+  focus:outline-none
+  focus:ring-2
+  focus:ring-red-600
+  "
 
-              }
-
-              className="w-full md:w-96 rounded-xl border border-gray-300 bg-gray-50 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-red-600"
-
-            />
+/>
 
 
           </div>
@@ -1201,7 +1363,7 @@ export default function Warga() {
           <div className="overflow-x-auto">
 
 
-            <table className="w-full">
+            <table className="w-full text-white">
 
 
               <thead className="bg-red-700 text-white">
@@ -1264,7 +1426,12 @@ export default function Warga() {
 
                     key={w.id}
 
-                    className="border-b hover:bg-red-50 transition"
+                    className="
+border-b
+border-white/10
+hover:bg-white/5
+transition
+"
 
                   >
 
@@ -1329,11 +1496,9 @@ export default function Warga() {
                             .trim()
 
                             .toLowerCase() === "anggota"
+? "bg-green-500/20 text-green-300 border border-green-400/40 px-3 py-1 rounded-full text-sm font-bold"
 
-                            ? "bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-semibold"
-
-                            : "bg-gray-200 text-gray-700 px-3 py-1 rounded-full text-sm font-semibold"
-
+: "bg-slate-500/30 text-gray-200 border border-gray-400/40 px-3 py-1 rounded-full text-sm font-bold"
                         }
 
                       >
