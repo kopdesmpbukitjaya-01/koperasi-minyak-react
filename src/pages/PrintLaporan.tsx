@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { getLaporan } from "../services/laporan";
-import logo from "../assets/logo_crop.png";
+import logo from "../assets/logo_transparan.png";
 export default function PrintLaporan() {
   const [searchParams] = useSearchParams();
 

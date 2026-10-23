@@ -4,7 +4,6 @@ import Layout from "../components/Layout";
 import { getDashboardBBM } from "../services/dashboard";
 import { getPeriode } from "../services/periode";
 
-import logo from "../assets/logo.png";
 import banner from "../assets/banner.png";
 
 
@@ -181,46 +180,6 @@ gap-5
 "
 >
 
-
-<div
-
-className="
-p-1
-
-rounded-full
-
-bg-gradient-to-r
-from-red-500
-via-purple-500
-to-blue-500
-
-shadow-[0_0_30px_rgba(168,85,247,.8)]
-"
-
->
-
-
-<img
-
-src={logo}
-
-className="
-w-24
-h-24
-
-rounded-full
-
-bg-white
-
-p-2
-
-object-contain
-"
-
-/>
-
-
-</div>
 
 
 
@@ -797,3 +756,5 @@ text-transparent
 )
 
 }
+
+

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabase";
-import logo from "../assets/logo_crop.png";
+import logo from "../assets/logo_transparan.png";
 
 export default function Home() {
   const [totalKK, setTotalKK] = useState(0);

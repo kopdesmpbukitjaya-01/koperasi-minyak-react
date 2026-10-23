@@ -1,4 +1,4 @@
-import { supabase } from "../lib/supabase";
+﻿import { supabase } from "../lib/supabase";
 
 
 // ===============================
@@ -15,7 +15,18 @@ export async function getJumlahAnggota() {
     .eq("status", "Anggota");
 
 
-  if (error) throw error;
+  if (error) {
+
+    console.error(
+      "ERROR WARGA PUBLIC:",
+      error.message,
+      error.details,
+      error.hint
+    );
+
+    throw error;
+
+  }
 
 
   return count || 0;
@@ -180,62 +191,114 @@ export async function getTotalPertamax(){
 // LABA BERSIH
 // Penjualan - Modal BBM - Pengeluaran
 // ===============================
+
+// ===============================
+// LABA USAHA
+// Laba Penjualan BBM - Pengeluaran
+// ===============================
 export async function getLabaBersih() {
 
-  // Total Penjualan
-  const { data: transaksi, error: errorTransaksi } =
+  
+
+
+  // Ambil transaksi BBM yang sudah terjual
+  const { data: transaksi, error: transaksiError } =
     await supabase
       .from("transaksi")
-      .select("total");
-
-  if (errorTransaksi) throw errorTransaksi;
-
-  const totalPenjualan =
-    transaksi?.reduce(
-      (sum, item) => sum + Number(item.total || 0),
-      0
-    ) || 0;
+      .select(`
+        liter,
+        total,
+        jenis_bbm_id
+      `);
 
 
-  // Total Modal BBM
-  const {
-    data: pembelian,
-    error: errorPembelian
-  } = await supabase
-    .from("pembelian_bbm")
-    .select("total_modal");
-
-  if (errorPembelian) throw errorPembelian;
-
-  const totalModal =
-    pembelian?.reduce(
-      (sum, item) =>
-        sum + Number(item.total_modal || 0),
-      0
-    ) || 0;
+  if (transaksiError)
+    throw transaksiError;
 
 
-  // Total Pengeluaran
+
+  // Ambil harga modal berdasarkan jenis BBM
+  const { data: pembelian, error: pembelianError } =
+    await supabase
+      .from("pembelian_bbm")
+      .select(`
+        jenis_bbm_id,
+        harga_modal_per_liter
+      `);
+
+
+  if (pembelianError)
+    throw pembelianError;
+
+
+
+  let totalPenjualan = 0;
+  let totalModalTerjual = 0;
+
+
+
+  (transaksi || []).forEach((trx:any)=>{
+
+
+    const liter =
+      Number(trx.liter || 0);
+
+
+    totalPenjualan +=
+      Number(trx.total || 0);
+
+
+
+    const modal =
+      pembelian?.find(
+        (item:any)=>
+          item.jenis_bbm_id === trx.jenis_bbm_id
+      );
+
+
+    totalModalTerjual +=
+      liter *
+      Number(
+        modal?.harga_modal_per_liter || 0
+      );
+
+
+  });
+
+
+
+  // Ambil pengeluaran koperasi
   const {
     data: pengeluaran,
-    error: errorPengeluaran
-  } = await supabase
-    .from("pengeluaran")
-    .select("jumlah");
+    error: pengeluaranError
+  } =
+    await supabase
+      .from("pengeluaran")
+      .select("jumlah");
 
-  if (errorPengeluaran) throw errorPengeluaran;
+
+  if (pengeluaranError)
+    throw pengeluaranError;
+
+
 
   const totalPengeluaran =
-    pengeluaran?.reduce(
-      (sum, item) =>
-        sum + Number(item.jumlah || 0),
-      0
-    ) || 0;
+    (pengeluaran || [])
+      .reduce(
+        (sum,item)=>
+          sum + Number(item.jumlah || 0),
+        0
+      );
 
 
-  return (
+
+  const labaUsaha =
     totalPenjualan -
-    totalModal -
-    totalPengeluaran
-  );
+    totalModalTerjual -
+    totalPengeluaran;
+
+return labaUsaha;
+
 }
+
+  

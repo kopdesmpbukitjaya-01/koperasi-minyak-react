@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import QRCode from "qrcode";
 import "./IdCard.css";
 
-import logo from "../assets/logo_crop.png";
+import logo from "../assets/logo_transparan.png";
 import background from "../assets/idcard-bg.png";
 
 interface IdCardProps {

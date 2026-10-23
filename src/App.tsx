@@ -1,5 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import PublicDashboard from "./pages/PublicDashboard";
+import PlatformLayout from "./components/PlatformLayout";
+
+import PublicDashboardMobile from "./pages/PublicDashboardMobile";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Warga from "./pages/Warga";
@@ -27,8 +29,12 @@ export default function App() {
         ========================== */}
 
         <Route
- path="/"
- element={<PublicDashboard />}
+  path="/"
+  element={
+    <PlatformLayout>
+      <PublicDashboardMobile />
+    </PlatformLayout>
+  }
 />
 
 
@@ -45,13 +51,15 @@ export default function App() {
 
 
         <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <Dashboard />
-            </ProtectedRoute>
-          }
-        />
+ path="/dashboard"
+ element={
+   <ProtectedRoute>
+     <PlatformLayout>
+       <Dashboard />
+     </PlatformLayout>
+   </ProtectedRoute>
+ }
+/>
 
 
         <Route

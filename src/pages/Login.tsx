@@ -1,8 +1,8 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 
-import logo from "../assets/logo_crop.png";
+import logo from "../assets/logo_transparan.png";
 
 
 export default function Login() {
@@ -227,7 +227,7 @@ text-gray-800
 "
 >
 
-🔐 Login Admin
+LOGIN ADMIN
 
 </h2>
 
@@ -373,6 +373,10 @@ focus:ring-red-500
 
 
 
+
+
+
+
 <button
 
 onClick={login}
@@ -396,6 +400,31 @@ transition
 LOGIN
 
 </button>
+<button
+
+onClick={()=>navigate("/")}
+
+className="
+w-full
+mt-3
+py-3
+rounded-xl
+font-bold
+text-white
+bg-gradient-to-r
+from-slate-700
+to-slate-900
+border
+border-red-400/50
+shadow-lg
+hover:scale-[1.02]
+transition
+"
+
+>
+← KEMBALI DASHBOARD UMUM
+</button>
+
 
 
 
@@ -438,3 +467,13 @@ Sistem Informasi Koperasi Desa Merah Putih
 
 
 }
+
+
+
+
+
+
+
+
+
+

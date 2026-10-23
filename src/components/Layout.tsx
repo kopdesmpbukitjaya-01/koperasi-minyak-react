@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 
 import Sidebar from "./Sidebar";
-import logo from "../assets/logo.png";
+import logo from "../assets/logo_transparan.png";
 
 
 type Props = {
@@ -414,9 +414,7 @@ rounded-full
 
 bg-white
 
-object-contain
-
-p-1
+object-contain p-1 border-4 border-red-500
 "
 
 />
@@ -503,3 +501,4 @@ animate-fadeIn
 
 
 }
+

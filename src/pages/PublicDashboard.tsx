@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import logo from "../assets/logo_crop.png";
+import logo from "../assets/logo_transparan.png";
 import {
   getJumlahAnggota,
   getRekapPenjualanBBM,

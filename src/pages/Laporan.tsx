@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import logo from "../assets/logo_crop.png";
+import logo from "../assets/logo_transparan.png";
 
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
