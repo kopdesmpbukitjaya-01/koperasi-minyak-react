@@ -3,13 +3,13 @@ import IdCard from "../components/IdCard";
 import { useNavigate } from "react-router-dom";
 import Layout from "../components/Layout";
 
+
 import {
   getWarga,
   addWarga,
   updateWarga,
   deleteWarga,
 } from "../services/warga";
-
 
 export default function Warga() {
 
@@ -616,7 +616,6 @@ export default function Warga() {
   return (
 
     <Layout>
-
 
       <div className="space-y-8">
 
@@ -1672,14 +1671,10 @@ transition
         </div>
 
 
-      )}
-
-
+            )}
 
     </Layout>
 
-
   );
-
 
 }
