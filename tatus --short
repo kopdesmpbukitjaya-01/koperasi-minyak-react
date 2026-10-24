@@ -1,0 +1,24 @@
+warning: in the working copy of 'android/app/capacitor.build.gradle', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'android/app/src/main/AndroidManifest.xml', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'android/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'android/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'android/capacitor.settings.gradle', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'public/manifest.webmanifest', LF will be replaced by CRLF the next time Git touches it
+ android/app/src/main/AndroidManifest.xml           |   10 [32m+[m[31m-[m
+ .../app/src/main/res/drawable-land-hdpi/splash.png |  Bin [31m7705[m -> [32m71240[m bytes
+ .../app/src/main/res/drawable-land-mdpi/splash.png |  Bin [31m4040[m -> [32m29226[m bytes
+ .../src/main/res/drawable-land-xhdpi/splash.png    |  Bin [31m9251[m -> [32m163246[m bytes
+ .../src/main/res/drawable-land-xxhdpi/splash.png   |  Bin [31m13984[m -> [32m242923[m bytes
+ .../src/main/res/drawable-land-xxxhdpi/splash.png  |  Bin [31m17683[m -> [32m340668[m bytes
+ .../app/src/main/res/drawable-port-hdpi/splash.png |  Bin [31m7934[m -> [32m32288[m bytes
+ .../app/src/main/res/drawable-port-mdpi/splash.png |  Bin [31m4096[m -> [32m15323[m bytes
+ .../src/main/res/drawable-port-xhdpi/splash.png    |  Bin [31m9875[m -> [32m64726[m bytes
+ .../src/main/res/drawable-port-xxhdpi/splash.png   |  Bin [31m13346[m -> [32m104705[m bytes
+ .../src/main/res/drawable-port-xxxhdpi/splash.png  |  Bin [31m17489[m -> [32m170788[m bytes
+ android/app/src/main/res/drawable/splash.png       |  Bin [31m4040[m -> [32m15323[m bytes
+ .../src/main/res/mipmap-anydpi-v26/ic_launcher.xml |    9 [32m+[m[31m-[m
+ .../res/mipmap-anydpi-v26/ic_launcher_round.xml    |    9 [32m+[m[31m-[m
+ package-lock.json                                  | 1684 [32m+++++++++++++++++++[m[31m-[m
+ package.json                                       |    1 [32m+[m
+ public/manifest.webmanifest                        |   38 [32m+[m[31m-[m
+ 17 files changed, 1712 insertions(+), 39 deletions(-)
