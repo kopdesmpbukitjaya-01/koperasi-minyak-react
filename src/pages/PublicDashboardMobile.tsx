@@ -251,10 +251,13 @@ shadow-[0_0_35px_rgba(168,85,247,.4)]
 
 src={banner}
 
+alt="Banner"
+
 className="
 w-full
-h-40
+aspect-[16/6]
 object-cover
+rounded-3xl
 "
 
 />

@@ -87,8 +87,6 @@ space-y-5
 
 <div
 className="
-rounded-3xl
-overflow-hidden
 shadow-[0_0_35px_rgba(168,85,247,.5)]
 border
 border-purple-500/40
@@ -106,68 +104,6 @@ object-cover
 "
 
 />
-
-</div>
-
-
-
-
-
-{/* HEADER */}
-
-
-<div
-className="
-flex
-items-center
-gap-4
-"
->
-
-
-
-
-{/* TEXT */}
-
-<div>
-
-<h1
-className="
-font-black
-text-xl
-
-bg-gradient-to-r
-from-red-400
-via-purple-400
-to-blue-400
-
-bg-clip-text
-text-transparent
-"
->
-
-KDMP BUKIT JAYA
-
-</h1>
-
-
-<p className="text-blue-200 text-sm">
-
-Kecamatan Bulik Timur
-
-</p>
-
-
-<p className="text-gray-400 text-xs">
-
-Sistem Informasi Pertashop
-
-</p>
-
-
-</div>
-
-
 
 </div>
 
@@ -460,4 +396,3 @@ font-bold
 )
 
 }
-

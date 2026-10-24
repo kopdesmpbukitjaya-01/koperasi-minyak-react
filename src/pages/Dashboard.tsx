@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import Layout from "../components/Layout";
+import { useNavigate } from "react-router-dom";
 
 import { getDashboardBBM } from "../services/dashboard";
 import { getPeriode } from "../services/periode";
@@ -8,7 +8,7 @@ import banner from "../assets/banner.png";
 
 
 export default function Dashboard() {
-
+const navigate = useNavigate();
 
 const [periodeAktif,setPeriodeAktif] =
 useState<any>(null);
@@ -88,9 +88,6 @@ console.error(err);
 
 return (
 
-<Layout>
-
-
 <div className="space-y-8">
 
 
@@ -115,13 +112,12 @@ shadow-[0_0_40px_rgba(168,85,247,.35)]
 
 
 <img
-
 src={banner}
-
 alt="Banner"
-
 className="
 w-full
+aspect-[16/6]
+object-cover
 rounded-3xl
 "
 />
@@ -139,172 +135,75 @@ rounded-3xl
       PROFILE HEADER
 ===================== */}
 
-
-
 <div
-
 className="
 flex
 flex-col
-lg:flex-row
-justify-between
+md:flex-row
 items-center
-
+justify-between
 gap-6
 
-bg-white/5
-
-backdrop-blur-xl
-
-rounded-3xl
-
-p-6
-
-border
-border-white/10
-
-shadow-xl
-
-"
-
->
-
-
-
-
-<div
-className="
-flex
-items-center
-gap-5
+p-5
+md:p-6
 "
 >
 
+  <div>
 
+    <h1
+    className="
+    text-2xl
+    md:text-5xl
+    font-black
 
+    bg-gradient-to-r
+    from-red-400
+    via-purple-400
+    to-blue-400
 
+    bg-clip-text
+    text-transparent
+    "
+    >
+      KOPERASI DESA MERAH PUTIH
+    </h1>
 
-<div>
+    <h2
+    className="
+    text-xl
+    md:text-3xl
+    font-bold
+    text-blue-200
+    "
+    >
+      BUKIT JAYA
+    </h2>
 
+    <p
+    className="
+    text-gray-300
+    mt-2
+    "
+    >
+      Kecamatan Bulik Timur
+    </p>
 
-<h1
+  </div>
 
-className="
-text-3xl
-md:text-5xl
+  <div>
 
-font-black
+    <h2 className="font-bold text-xl">
+      Dashboard
+    </h2>
 
-bg-gradient-to-r
-from-red-400
-via-purple-400
-to-blue-400
+    <p className="text-sm text-gray-300">
+      Sistem Informasi Koperasi Desa Merah Putih Bukit Jaya
+    </p>
 
-bg-clip-text
-text-transparent
-
-"
-
->
-
-KOPERASI DESA MERAH PUTIH
-
-</h1>
-
-
-
-<h2
-
-className="
-text-xl
-md:text-3xl
-
-font-bold
-
-text-blue-200
-
-"
-
->
-
-BUKIT JAYA
-
-</h2>
-
-
-
-<p
-
-className="
-text-gray-300
-mt-2
-"
-
->
-
-Kecamatan Bulik Timur
-
-</p>
-
-
+  </div>
 
 </div>
-
-
-
-</div>
-
-
-
-
-
-<div
-
-className="
-px-8
-py-5
-
-rounded-2xl
-
-bg-gradient-to-r
-
-from-red-600
-
-to-purple-700
-
-shadow-[0_0_30px_rgba(239,68,68,.5)]
-
-"
-
->
-
-
-<h2 className="font-bold text-xl">
-
-Dashboard
-
-</h2>
-
-
-<p className="text-sm">
-
-Sistem Informasi Pertashop
-
-</p>
-
-
-</div>
-
-
-
-
-
-
-</div>
-
-
-
-
 
 
 
@@ -312,7 +211,93 @@ Sistem Informasi Pertashop
       STAT CARD
 ===================== */}
 
+{/* =====================
+      MOBILE QUICK MENU
+===================== */}
 
+<div
+className="
+grid
+grid-cols-2
+gap-4
+md:hidden
+mb-5
+"
+>
+
+<button
+onClick={()=>navigate("/warga")}
+className="
+rounded-2xl
+p-5
+bg-gradient-to-br
+from-green-500
+to-green-700
+shadow-lg
+font-bold
+"
+>
+👥
+<br/>
+Data Warga
+</button>
+
+
+<button
+onClick={()=>navigate("/transaksi")}
+className="
+rounded-2xl
+p-5
+bg-gradient-to-br
+from-blue-500
+to-blue-700
+shadow-lg
+font-bold
+"
+>
+⛽
+<br/>
+Pengambilan BBM
+</button>
+
+
+<button
+onClick={()=>navigate("/pembelian-bbm")}
+className="
+rounded-2xl
+p-5
+bg-gradient-to-br
+from-orange-500
+to-red-600
+shadow-lg
+font-bold
+"
+>
+📦
+<br/>
+Pembelian
+</button>
+
+
+<button
+onClick={()=>navigate("/laporan")}
+className="
+rounded-2xl
+p-5
+bg-gradient-to-br
+from-purple-500
+to-purple-700
+shadow-lg
+font-bold
+"
+>
+📊
+<br/>
+Laporan
+</button>
+
+
+</div>
 
 <div
 
@@ -325,7 +310,7 @@ md:grid-cols-2
 
 xl:grid-cols-4
 
-gap-6
+gap-5 md:p-6
 
 "
 
@@ -420,18 +405,7 @@ icon="✅"
 <div
 
 className="
-bg-white/5
 
-backdrop-blur-xl
-
-rounded-3xl
-
-border
-border-white/10
-
-shadow-xl
-
-p-6
 
 "
 
@@ -468,10 +442,20 @@ Rekap Penyaluran BBM
 
 
 
-<div className="overflow-x-auto">
+<div
+className="
+overflow-x-auto
+rounded-2xl
+"
+>
 
 
-<table className="w-full">
+<table
+className="
+min-w-[650px]
+w-full
+"
+>
 
 
 <thead>
@@ -541,7 +525,8 @@ className="
 border-b
 border-white/10
 hover:bg-purple-500/10
-transition
+transition-all
+duration-300
 
 "
 
@@ -610,7 +595,6 @@ font-bold
 </div>
 
 
-</Layout>
 
 );
 
@@ -643,7 +627,7 @@ overflow-hidden
 
 rounded-3xl
 
-p-6
+p-5 md:p-6
 
 bg-gradient-to-br
 
@@ -657,9 +641,10 @@ border-purple-500/30
 
 shadow-[0_0_30px_rgba(139,92,246,.25)]
 
-hover:scale-105
+hover:scale-[1.02]
 
-transition
+transition-all
+duration-300
 
 "
 
@@ -706,7 +691,7 @@ uppercase
 <h2
 
 className="
-text-3xl
+text-2xl md:text-3xl
 
 font-black
 
@@ -742,7 +727,7 @@ text-transparent
 
 
 
-<div className="text-5xl mt-4">
+<div className="text-4xl md:text-5xl mt-4">
 
 {icon}
 
@@ -756,5 +741,3 @@ text-transparent
 )
 
 }
-
-

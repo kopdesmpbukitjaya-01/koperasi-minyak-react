@@ -1,9 +1,9 @@
 import type { ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
-
+import { useState } from "react";
 import Sidebar from "./Sidebar";
 import logo from "../assets/logo_transparan.png";
-
+import { supabase } from "../lib/supabase";
 
 type Props = {
   children: ReactNode;
@@ -14,16 +14,18 @@ export default function Layout({ children }: Props) {
 
 
   const navigate = useNavigate();
+const [menuOpen,setMenuOpen] = useState(false);
 
 
+  async function logout(){
 
-  function logout(){
+  await supabase.auth.signOut();
 
-    localStorage.removeItem("user");
+  localStorage.removeItem("user");
 
-    navigate("/");
+  navigate("/login");
 
-  }
+}
 
 
 
@@ -130,16 +132,65 @@ shadow-[0_0_20px_rgba(168,85,247,.8)]
 ========================= */}
 
 
+{/* DESKTOP SIDEBAR */}
+
+<div
+className="
+hidden
+md:block
+relative
+z-20
+"
+>
+<Sidebar />
+</div>
+
+
+
+{/* MOBILE SIDEBAR */}
+
+{
+menuOpen && (
+
+<div
+className="
+fixed
+inset-0
+z-50
+md:hidden
+"
+>
+
+
+<div
+className="
+absolute
+inset-0
+bg-black/60
+"
+onClick={()=>setMenuOpen(false)}
+/>
+
+
 <div
 className="
 relative
-z-20
+w-72
+h-full
+bg-[#080d24]
+shadow-2xl
 "
 >
 
 <Sidebar />
 
 </div>
+
+
+</div>
+
+)
+}
 
 
 
@@ -156,6 +207,7 @@ z-20
 <div
 className="
 flex-1
+w-full
 flex
 flex-col
 relative
@@ -163,7 +215,6 @@ z-10
 min-w-0
 "
 >
-
 
 
 
@@ -201,7 +252,20 @@ gap-4
 "
 >
 
-
+<button
+  onClick={()=>setMenuOpen(true)}
+  className="
+  md:hidden
+  text-2xl
+  p-2
+  rounded-xl
+  bg-white/10
+  border
+  border-white/20
+  "
+>
+  ☰
+</button>
 
 
 {/* TITLE */}
@@ -216,7 +280,8 @@ min-w-0
 
 <h1
 className="
-text-xl
+text-lg
+sm:text-xl
 md:text-3xl
 
 font-black
@@ -235,29 +300,35 @@ truncate
 "
 >
 
+<span className="md:hidden">
+KDMP BUKIT JAYA
+</span>
+
+<span className="hidden md:inline">
 KOPERASI DESA MERAH PUTIH BUKIT JAYA
+</span>
 
 </h1>
-
 
 
 <h2
 className="
 text-sm
 md:text-xl
-
 font-bold
-
 text-blue-200
-
-mt-1
 "
 >
 
+<span className="md:hidden">
+BULIK TIMUR
+</span>
+
+<span className="hidden md:inline">
 KECAMATAN BULIK TIMUR
+</span>
 
 </h2>
-
 
 
 <p
@@ -381,46 +452,16 @@ Logout
 
 
 
-<div
-className="
-p-[3px]
-
-rounded-full
-
-bg-gradient-to-r
-from-red-500
-via-purple-500
-to-blue-500
-
-shadow-[0_0_25px_rgba(168,85,247,.8)]
-"
->
-
+{/* LOGO */}
 
 <img
-
 src={logo}
-
-alt="logo"
-
 className="
-w-12
-h-12
-
-md:w-16
-md:h-16
-
-rounded-full
-
-bg-white
-
-object-contain p-1 border-4 border-red-500
+w-14
+h-14
+object-cover
 "
-
 />
-
-
-</div>
 
 
 
@@ -451,6 +492,7 @@ object-contain p-1 border-4 border-red-500
 
 className="
 flex-1
+w-full
 
 overflow-auto
 
@@ -467,8 +509,7 @@ relative
 <div
 
 className="
-max-w-[1600px]
-mx-auto
+w-full
 
 animate-fadeIn
 
@@ -501,4 +542,3 @@ animate-fadeIn
 
 
 }
-

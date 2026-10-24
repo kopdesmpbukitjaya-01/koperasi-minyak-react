@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import logo from "../assets/logo_transparan.png";
+
 
 import { supabase } from "../lib/supabase";
 
@@ -126,19 +126,8 @@ export default function MobileLayout({
 className="
 flex
 items-center
-gap-3
 "
 >
-
-<img
-src={logo}
-className="
-w-14
-h-14
-object-contain
-"
-/>
-
 
 <div>
 
