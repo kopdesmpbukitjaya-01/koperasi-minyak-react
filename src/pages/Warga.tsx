@@ -35,6 +35,7 @@ export default function Warga() {
   const [editId, setEditId] = useState<number | null>(null);
 
   const [selectedWarga, setSelectedWarga] = useState<any | null>(null);
+  const [detailWarga, setDetailWarga] = useState<any | null>(null);
 
 
 
@@ -506,7 +507,16 @@ export default function Warga() {
 
     ).length;
 
+const totalWarga =
+  jumlahAnggota + jumlahNonAnggota;
 
+
+const persentaseAnggota =
+  totalWarga === 0
+    ? 0
+    : Math.round(
+        (jumlahAnggota / totalWarga) * 100
+      );
 
 
 
@@ -625,77 +635,128 @@ export default function Warga() {
 
         {/* HEADER */}
 
+<div
+className="
+relative
+overflow-hidden
+rounded-3xl
+p-8
+bg-gradient-to-br
+from-red-950
+via-purple-950
+to-blue-950
+border
+border-white/20
+shadow-[0_0_40px_rgba(239,68,68,0.5)]
+"
+>
 
-        <div className="flex items-center justify-between">
-
-
-          <div>
-
-
-            <h1 className="text-4xl font-bold text-red-700">
-
-
-              👥 Data Warga
-
-
-            </h1>
-
-
-
-            <p className="text-gray-500 mt-2">
-
-
-              Kelola data warga Pertashop KDMP Bukit Jaya
-
-
-            </p>
-
-
-          </div>
-
-
+<div
+className="
+absolute
+inset-0
+bg-gradient-to-r
+from-red-500/10
+via-purple-500/10
+to-blue-500/10
+blur-3xl
+"
+/>
 
 
-          <button
+<div className="relative flex items-center justify-between">
 
-            onClick={()=>
 
-              navigate("/dashboard")
+<div>
 
-            }
-
-            className="
-bg-blue-600
-hover:bg-blue-700
+<h1
+className="
+text-4xl
+font-black
 text-white
+drop-shadow-[0_0_15px_rgba(239,68,68,0.8)]
+"
+>
+👥 Data Warga
+</h1>
+
+
+<p
+className="
+text-gray-300
+mt-3
+text-lg
+"
+>
+Kelola data warga Pertashop KDMP Bukit Jaya
+</p>
+
+
+</div>
+
+
+
+<button
+
+onClick={()=>navigate("/dashboard")}
+
+className="
 px-6
 py-3
 rounded-xl
-shadow-lg
+font-bold
+text-white
+bg-gradient-to-r
+from-blue-600
+to-cyan-600
+shadow-[0_0_25px_rgba(34,211,238,0.7)]
+hover:scale-105
 transition
 "
 
-          >
+>
 
-            ← Dashboard
+← Dashboard
 
-
-          </button>
-
-
-        </div>
+</button>
 
 
+</div>
+
+</div>
 
 
 
         {/* FORM DATA WARGA */}
 
 
-       <div className="bg-slate-900 rounded-3xl shadow-xl p-8 border border-white/10">
+       <div
+className="
+relative
+overflow-hidden
+rounded-3xl
+p-8
+bg-gradient-to-br
+from-slate-950
+via-purple-950
+to-red-950
+border
+border-white/20
+shadow-[0_0_45px_rgba(168,85,247,0.35)]
+backdrop-blur-xl
+"
+>
 
 
-          <h2 className="text-2xl font-bold text-red-700 mb-8">
+          <h2
+className="
+text-3xl
+font-black
+text-white
+mb-8
+drop-shadow-[0_0_15px_rgba(239,68,68,0.8)]
+"
+>
 
 
             {editId === null
@@ -741,14 +802,18 @@ w-full
 rounded-xl
 border
 border-white/20
-bg-white/10
+bg-black/30
 text-white
 placeholder-gray-400
 px-4
 py-3
+backdrop-blur-xl
+shadow-inner
+transition
 focus:outline-none
 focus:ring-2
-focus:ring-red-600
+focus:ring-red-500
+focus:border-red-400
 "
 
               />
@@ -792,14 +857,18 @@ w-full
 rounded-xl
 border
 border-white/20
-bg-white/10
+bg-black/30
 text-white
 placeholder-gray-400
 px-4
 py-3
+backdrop-blur-xl
+shadow-inner
+transition
 focus:outline-none
 focus:ring-2
-focus:ring-red-600
+focus:ring-red-500
+focus:border-red-400
 "
 
               />
@@ -840,20 +909,24 @@ w-full
 rounded-xl
 border
 border-white/20
-bg-white/10
+bg-black/30
 text-white
 placeholder-gray-400
 px-4
 py-3
+backdrop-blur-xl
+shadow-inner
+transition
 focus:outline-none
 focus:ring-2
-focus:ring-red-600
+focus:ring-red-500
+focus:border-red-400
 "
 
               >
 
 
-                <option value="Anggota">
+                <option value="Anggota" className="bg-slate-900 text-white">
 
                   🟢 Anggota
 
@@ -861,7 +934,7 @@ focus:ring-red-600
 
 
 
-                <option value="Non-Anggota">
+                <option value="Non-Anggota" className="bg-slate-900 text-white">
 
                   ⚪ Non-Anggota
 
@@ -910,14 +983,18 @@ w-full
 rounded-xl
 border
 border-white/20
-bg-white/10
+bg-black/30
 text-white
 placeholder-gray-400
 px-4
 py-3
+backdrop-blur-xl
+shadow-inner
+transition
 focus:outline-none
 focus:ring-2
-focus:ring-red-600
+focus:ring-red-500
+focus:border-red-400
 "
 
               />
@@ -962,14 +1039,18 @@ w-full
 rounded-xl
 border
 border-white/20
-bg-white/10
+bg-black/30
 text-white
 placeholder-gray-400
 px-4
 py-3
+backdrop-blur-xl
+shadow-inner
+transition
 focus:outline-none
 focus:ring-2
-focus:ring-red-600
+focus:ring-red-500
+focus:border-red-400
 "
 
               />
@@ -1005,7 +1086,7 @@ focus:ring-red-600
 
                   ? "bg-gray-400 cursor-not-allowed"
 
-                  : "bg-red-700 hover:bg-red-800"
+                  : "bg-gradient-to-r from-red-600 to-purple-700 shadow-[0_0_25px_rgba(239,68,68,0.8)] hover:scale-105"
 
               }`}
 
@@ -1082,13 +1163,35 @@ focus:ring-red-600
         {/* TABEL DATA WARGA */}
 
 
-       <div className="bg-slate-900 rounded-3xl shadow-xl p-8 border border-white/10">
+       <div
+className="
+relative
+overflow-hidden
+rounded-3xl
+p-8
+bg-gradient-to-br
+from-slate-950
+via-blue-950/40
+to-purple-950/40
+border
+border-white/20
+shadow-[0_0_45px_rgba(59,130,246,0.35)]
+backdrop-blur-xl
+"
+>
 
 
           <div className="mb-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
 
 
-            <h2 className="text-2xl font-bold text-red-700">
+            <h2
+className="
+text-3xl
+font-black
+text-white
+drop-shadow-[0_0_15px_rgba(239,68,68,0.8)]
+"
+>
 
               Daftar Warga
 
@@ -1106,23 +1209,37 @@ focus:ring-red-600
 
               <div
 className="
-min-w-[150px]
-rounded-2xl
+relative
+overflow-hidden
+min-w-[170px]
+rounded-3xl
 px-6
-py-4
+py-5
 bg-gradient-to-br
 from-green-400/30
-to-green-700/40
+via-emerald-900/50
+to-black
 border
 border-green-400/50
-shadow-[0_0_25px_rgba(34,197,94,0.6)]
+shadow-[0_0_35px_rgba(34,197,94,0.7)]
 backdrop-blur-xl
 transition
 hover:scale-105
-hover:shadow-[0_0_40px_rgba(34,197,94,0.9)]
+hover:shadow-[0_0_50px_rgba(34,197,94,1)]
 "
 >
-
+  <div
+className="
+absolute
+-top-10
+-right-10
+w-32
+h-32
+bg-green-400/20
+rounded-full
+blur-3xl
+"
+/>
 
                 <p className="
 text-sm
@@ -1172,23 +1289,37 @@ text-green-200
 
               <div
 className="
-min-w-[150px]
-rounded-2xl
+relative
+overflow-hidden
+min-w-[170px]
+rounded-3xl
 px-6
-py-4
+py-5
 bg-gradient-to-br
-from-gray-300/30
-to-gray-700/40
+from-slate-300/30
+via-slate-900/60
+to-black
 border
-border-gray-400/40
-shadow-[0_0_25px_rgba(148,163,184,0.5)]
+border-slate-300/40
+shadow-[0_0_35px_rgba(148,163,184,0.7)]
 backdrop-blur-xl
 transition
 hover:scale-105
-hover:shadow-[0_0_40px_rgba(148,163,184,0.8)]
+hover:shadow-[0_0_50px_rgba(148,163,184,1)]
 "
 >
-
+<div
+className="
+absolute
+-top-10
+-right-10
+w-32
+h-32
+bg-slate-300/20
+rounded-full
+blur-3xl
+"
+/>
 
                 <p
 className="
@@ -1353,325 +1484,613 @@ transition
           </div>
 
 
+{/* STATISTIK ANGGOTA */}
+
+<div className="
+grid
+md:grid-cols-3
+gap-6
+mb-8
+">
+
+
+<div
+className="
+rounded-3xl
+p-6
+bg-gradient-to-br
+from-blue-600/40
+to-blue-950/60
+border
+border-blue-400/40
+shadow-[0_0_30px_rgba(59,130,246,0.6)]
+"
+>
+
+<p className="text-blue-200 font-bold">
+👥 Total Warga
+</p>
+
+<h2 className="
+text-5xl
+font-black
+text-white
+mt-3
+">
+{totalWarga}
+</h2>
+
+<p className="text-gray-300">
+orang
+</p>
+
+</div>
 
 
 
-          {/* TABLE */}
+<div
+className="
+rounded-3xl
+p-6
+bg-gradient-to-br
+from-green-500/40
+to-green-950/60
+border
+border-green-400/40
+shadow-[0_0_30px_rgba(34,197,94,0.6)]
+"
+>
 
+<p className="text-green-300 font-bold">
+🟢 Anggota
+</p>
 
-          <div className="overflow-x-auto">
+<h2 className="
+text-5xl
+font-black
+text-white
+mt-3
+">
+{jumlahAnggota}
+</h2>
 
+<p className="text-gray-300">
+{persentaseAnggota}% dari total
+</p>
 
-            <table className="w-full text-white">
-
-
-              <thead className="bg-red-700 text-white">
-
-
-                <tr>
-
-
-                  <th className="px-4 py-3 text-left">
-                    Kode Warga
-                  </th>
-
-
-                  <th className="px-4 py-3 text-left">
-                    Nomor KK
-                  </th>
-
-
-                  <th className="px-4 py-3 text-left">
-                    Nama
-                  </th>
-
-
-                  <th className="px-4 py-3 text-center">
-                    Status
-                  </th>
-
-
-                  <th className="px-4 py-3 text-left">
-                    Alamat
-                  </th>
-
-
-                  <th className="px-4 py-3 text-left">
-                    No HP
-                  </th>
-
-
-                  <th className="px-4 py-3 text-center">
-                    Aksi
-                  </th>
-
-
-                </tr>
-
-
-              </thead>
+</div>
 
 
 
+<div
+className="
+rounded-3xl
+p-6
+bg-gradient-to-br
+from-slate-400/30
+to-black
+border
+border-slate-300/40
+shadow-[0_0_30px_rgba(148,163,184,0.6)]
+"
+>
+
+<p className="text-gray-200 font-bold">
+⚪ Non-Anggota
+</p>
+
+<h2 className="
+text-5xl
+font-black
+text-white
+mt-3
+">
+{jumlahNonAnggota}
+</h2>
+
+<p className="text-gray-300">
+{100-persentaseAnggota}% dari total
+</p>
+
+</div>
 
 
-              <tbody>
+</div>
 
 
-                {filteredList.map((w)=>(
+          {/* SEARCH RESULT WARGA */}
 
-
-                  <tr
-
-                    key={w.id}
-
-                    className="
-border-b
+<div
+className="
+bg-slate-900
+rounded-3xl
+p-8
+border
 border-white/10
-hover:bg-white/5
+shadow-xl
+"
+>
+
+<h2
+className="
+text-2xl
+font-black
+text-white
+mb-6
+"
+>
+🔍 Cari Data Warga
+</h2>
+
+
+<input
+
+type="text"
+
+placeholder="Ketik nama warga..."
+
+value={search}
+
+onChange={(e)=>setSearch(e.target.value)}
+
+className="
+w-full
+rounded-2xl
+bg-black/40
+border
+border-white/20
+text-white
+placeholder-gray-400
+px-5
+py-4
+text-lg
+focus:outline-none
+focus:ring-2
+focus:ring-red-500
+"
+
+/>
+
+
+
+{
+search.trim() === "" ? (
+
+
+<div
+className="
+mt-10
+text-center
+text-gray-400
+py-10
+"
+>
+
+<div className="text-5xl mb-4">
+👥
+</div>
+
+<p>
+Ketik nama warga untuk menampilkan data
+</p>
+
+</div>
+
+
+) : (
+
+
+<div className="mt-8 space-y-4">
+
+
+<h3
+className="
+text-white
+font-bold
+text-xl
+"
+>
+
+Hasil pencarian "{search}"
+
+</h3>
+
+
+
+{
+
+filteredList.map((w)=>(
+
+
+<div
+
+key={w.id}
+
+className="
+flex
+items-center
+justify-between
+bg-white/5
+border
+border-white/10
+rounded-2xl
+p-5
+hover:bg-white/10
 transition
 "
 
-                  >
+>
 
 
-                    <td className="px-4 py-4">
+<div>
 
-                      <span className="font-bold text-red-700">
 
-                        {w.kode_warga}
+<h3
+className="
+text-xl
+font-black
+text-white
+"
+>
 
-                      </span>
+{w.nama}
 
-                    </td>
+</h3>
 
 
+<p
+className="
+text-red-400
+font-bold
+mt-1
+"
+>
 
+{w.kode_warga}
 
-                    <td className="px-4 py-4">
+</p>
 
-                      {w.no_kk}
 
-                    </td>
+<span
+className={
 
+String(w.status ?? "")
+.toLowerCase()
+.trim()
+==="anggota"
 
+?
 
+"inline-block mt-2 px-3 py-1 rounded-full bg-green-500/20 text-green-300 border border-green-400/40 text-sm font-bold"
 
-                    <td
+:
 
-                      className={`px-4 py-4 ${
+"inline-block mt-2 px-3 py-1 rounded-full bg-gray-500/20 text-gray-300 border border-gray-400/40 text-sm font-bold"
 
-                        String(w.status ?? "")
+}
 
-                          .trim()
+>
 
-                          .toLowerCase() === "anggota"
+{w.status}
 
-                          ? "font-bold"
+</span>
 
-                          : "font-medium"
 
-                      }`}
+</div>
 
-                    >
 
-                      {w.nama}
 
-                    </td>
+<button
 
+type="button"
 
+onClick={()=>setDetailWarga(w)}
 
+className="
+bg-gradient-to-r
+from-red-600
+to-purple-700
+text-white
+px-6
+py-3
+rounded-xl
+font-bold
+shadow-[0_0_25px_rgba(239,68,68,0.7)]
+hover:scale-105
+transition
+"
 
+>
 
-                    <td className="px-4 py-4 text-center">
+DETAIL
 
+</button>
 
-                      <span
 
-                        className={
 
-                          String(w.status ?? "")
+</div>
 
-                            .trim()
 
-                            .toLowerCase() === "anggota"
-? "bg-green-500/20 text-green-300 border border-green-400/40 px-3 py-1 rounded-full text-sm font-bold"
+))
 
-: "bg-slate-500/30 text-gray-200 border border-gray-400/40 px-3 py-1 rounded-full text-sm font-bold"
-                        }
 
-                      >
+}
 
-                        {w.status}
 
-                      </span>
 
+</div>
 
-                    </td>
 
+)
 
 
+}
 
 
-                    <td className="px-4 py-4">
+</div>
 
-                      {w.alamat}
+{/* DETAIL WARGA */}
 
-                    </td>
+{detailWarga && (
 
+<div
+className="
+fixed
+inset-0
+z-50
+flex
+items-center
+justify-center
+bg-black/70
+backdrop-blur-md
+"
+>
 
+<div
+className="
+w-full
+max-w-md
+rounded-3xl
+bg-slate-900
+border
+border-white/20
+p-8
+shadow-[0_0_50px_rgba(239,68,68,0.6)]
+"
+>
 
 
+<h2
+className="
+text-3xl
+font-black
+text-white
+mb-6
+"
+>
+Detail Warga
+</h2>
 
-                    <td className="px-4 py-4">
 
-                      {w.no_hp}
 
-                    </td>
+<div
+className="
+space-y-3
+text-gray-200
+"
+>
 
+<p>
+<b>Kode Warga:</b>{" "}
+{detailWarga.kode_warga}
+</p>
 
+<p>
+<b>Nama:</b>{" "}
+{detailWarga.nama}
+</p>
 
 
+<p>
+<b>No KK:</b>{" "}
+{detailWarga.no_kk}
+</p>
 
-                    <td className="px-4 py-4">
 
+<p>
+<b>Alamat:</b>{" "}
+{detailWarga.alamat}
+</p>
 
-                      <div className="flex justify-center gap-3">
 
+<p>
+<b>No HP:</b>{" "}
+{detailWarga.no_hp}
+</p>
 
-                        <button
 
-                          onClick={()=>edit(w)}
+<p>
+<b>Status:</b>{" "}
+{detailWarga.status}
+</p>
 
-                          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow"
 
-                        >
+</div>
 
-                          ✏️ Edit
 
-                        </button>
 
+<div
+className="
+flex
+gap-3
+mt-8
+"
+>
 
 
+<button
 
+onClick={()=>edit(detailWarga)}
 
-                        <button
+className="
+flex-1
+bg-blue-600
+text-white
+rounded-xl
+py-3
+font-bold
+"
+>
 
-                          type="button"
+✏️ Edit
 
-                          onClick={()=>setSelectedWarga(w)}
+</button>
 
-                          className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg shadow"
 
-                        >
 
-                          🪪 ID Card
+<button
 
-                        </button>
+onClick={()=>setSelectedWarga(detailWarga)}
 
+className="
+flex-1
+bg-red-600
+text-white
+rounded-xl
+py-3
+font-bold
+"
+>
 
+🪪 ID Card
 
+</button>
 
 
-                        <button
 
-                          onClick={()=>hapus(w.id)}
+<button
 
-                          className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg shadow"
+onClick={()=>hapus(detailWarga.id)}
 
-                        >
+className="
+bg-black
+border
+border-red-500
+text-red-400
+px-4
+rounded-xl
+font-bold
+"
+>
 
-                          🗑️ Hapus
+🗑
 
-                        </button>
+</button>
 
 
+</div>
 
-                      </div>
 
 
-                    </td>
+<button
 
+onClick={()=>setDetailWarga(null)}
 
+className="
+mt-4
+w-full
+bg-gray-700
+text-white
+py-3
+rounded-xl
+font-bold
+"
+>
 
-                  </tr>
+Tutup
 
+</button>
 
-                ))}
 
+</div>
 
-              </tbody>
+</div>
 
-
-            </table>
-
-
-          </div>
-
-
-        </div>
-
-
-
-
-
-      </div>
-
-
-
-
-
-      {/* PREVIEW ID CARD */}
-
+)}
+                  {/* PREVIEW ID CARD */}
 
       {selectedWarga && (
 
+        <div
+className="
+fixed
+inset-0
+z-50
+flex
+items-center
+justify-center
+bg-black/70
+backdrop-blur-md
+"
+>
 
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-
-
-          <div className="relative">
-
+          <div
+className="
+relative
+p-4
+rounded-3xl
+border
+border-red-400/40
+bg-gradient-to-br
+from-slate-900
+via-purple-900/40
+to-black
+shadow-[0_0_60px_rgba(239,68,68,0.7)]
+"
+>
 
             <IdCard
-
               nama={selectedWarga.nama}
-
               noKK={selectedWarga.no_kk}
-
               kodeWarga={selectedWarga.kode_warga}
-
               status={selectedWarga.status}
-
             />
 
-
-
-
-
             <button
-
               type="button"
-
               onClick={()=>setSelectedWarga(null)}
-
-              className="absolute -right-3 -top-3 flex h-8 w-8 items-center justify-center rounded-full bg-gray-800 text-white text-lg shadow-lg"
-
+              className="
+absolute
+-right-4
+-top-4
+flex
+h-10
+w-10
+items-center
+justify-center
+rounded-full
+bg-gradient-to-br
+from-red-600
+to-purple-700
+text-white
+text-xl
+font-bold
+shadow-[0_0_25px_rgba(239,68,68,0.9)]
+hover:scale-110
+transition
+"
             >
-
               ×
-
             </button>
-
-
 
           </div>
 
+                </div>
 
-        </div>
+      )}
 
-
-            )}
+      </div>
+            </div>
 
     </Layout>
 
