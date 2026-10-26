@@ -10,7 +10,7 @@ import banner from "../assets/banner.png";
 export default function Dashboard() {
 const navigate = useNavigate();
 
-const [periodeAktif,setPeriodeAktif] =
+const [,setPeriodeAktif] =
 useState<any>(null);
 
 
@@ -225,6 +225,7 @@ mb-5
 "
 >
 
+
 <button
 onClick={()=>navigate("/warga")}
 className="
@@ -237,10 +238,15 @@ shadow-lg
 font-bold
 "
 >
+
+<div className="text-8xl mb-2">
 👥
-<br/>
+</div>
+
 Data Warga
+
 </button>
+
 
 
 <button
@@ -255,10 +261,15 @@ shadow-lg
 font-bold
 "
 >
+
+<div className="text-8xl mb-2">
 ⛽
-<br/>
+</div>
+
 Pengambilan BBM
+
 </button>
+
 
 
 <button
@@ -273,10 +284,15 @@ shadow-lg
 font-bold
 "
 >
+
+<div className="text-8xl mb-2">
 📦
-<br/>
-Pembelian
+</div>
+
+Pembelian BBM
+
 </button>
+
 
 
 <button
@@ -291,101 +307,60 @@ shadow-lg
 font-bold
 "
 >
+
+<div className="text-8xl mb-2">
 📊
-<br/>
+</div>
+
 Laporan
+
 </button>
 
 
-</div>
 
-<div
-
+<button
+onClick={()=>navigate("/anggota")}
 className="
-grid
-
-grid-cols-1
-
-md:grid-cols-2
-
-xl:grid-cols-4
-
-gap-5 md:p-6
-
+rounded-2xl
+p-5
+bg-gradient-to-br
+from-pink-500
+to-rose-700
+shadow-lg
+font-bold
 "
-
 >
 
+<div className="text-8xl mb-2">
+👥
+</div>
+
+Anggota Koperasi
+
+</button>
 
 
 
+<button
+onClick={()=>navigate("/pengeluaran")}
+className="
+rounded-2xl
+p-5
+bg-gradient-to-br
+from-yellow-500
+to-orange-700
+shadow-lg
+font-bold
+"
+>
 
-<Card
+<div className="text-8xl mb-2">
+💰
+</div>
 
-title="Periode Aktif"
+Pengeluaran
 
-value={
-periodeAktif?.nama_periode || "-"
-}
-
-desc={
-periodeAktif?.jenis_bbm?.nama || "-"
-}
-
-icon="📅"
-
-/>
-
-
-
-
-<Card
-
-title="Kuota Liter"
-
-value={
-`${periodeAktif?.kuota_liter || 0} L`
-}
-
-desc="Stok periode aktif"
-
-icon="🛢️"
-
-/>
-
-
-
-
-
-<Card
-
-title="Jenis BBM"
-
-value={
-dataBBM.length
-}
-
-desc="Rekap penyaluran"
-
-icon="⛽"
-
-/>
-
-
-
-
-<Card
-
-title="Status"
-
-value="AKTIF"
-
-desc="Sistem berjalan"
-
-icon="✅"
-
-/>
-
+</button>
 
 
 </div>
@@ -601,143 +576,3 @@ font-bold
 
 }
 
-
-
-
-
-
-
-function Card(
-{
-title,
-value,
-desc,
-icon
-}:any
-){
-
-return (
-
-<div
-
-className="
-relative
-
-overflow-hidden
-
-rounded-3xl
-
-p-5 md:p-6
-
-bg-gradient-to-br
-
-from-[#101633]
-
-to-[#080b20]
-
-border
-
-border-purple-500/30
-
-shadow-[0_0_30px_rgba(139,92,246,.25)]
-
-hover:scale-[1.02]
-
-transition-all
-duration-300
-
-"
-
->
-
-
-<div
-
-className="
-absolute
-
-right-0
-
-top-0
-
-w-32
-
-h-32
-
-bg-purple-600/20
-
-rounded-full
-
-blur-3xl
-
-"
-
-/>
-
-
-
-<p className="
-text-gray-400
-text-sm
-uppercase
-">
-
-{title}
-
-</p>
-
-
-
-<h2
-
-className="
-text-2xl md:text-3xl
-
-font-black
-
-mt-3
-
-bg-gradient-to-r
-
-from-red-400
-
-via-purple-400
-
-to-blue-400
-
-bg-clip-text
-
-text-transparent
-
-"
-
->
-
-{value}
-
-</h2>
-
-
-
-<p className="text-gray-300 mt-2">
-
-{desc}
-
-</p>
-
-
-
-<div className="text-4xl md:text-5xl mt-4">
-
-{icon}
-
-</div>
-
-
-
-</div>
-
-
-)
-
-}

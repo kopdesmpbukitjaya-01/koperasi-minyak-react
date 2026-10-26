@@ -1,6 +1,7 @@
 ﻿import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
+import { Preferences } from "@capacitor/preferences";
 
 import logo from "../assets/logo_transparan.png";
 
@@ -50,15 +51,29 @@ export default function Login() {
 
     if(error){
 
-      alert(error.message);
+  alert(error.message);
 
-      return;
+  return;
 
-    }
+}
 
 
+// SIMPAN SESSION UNTUK APK ANDROID
 
-    navigate("/dashboard");
+if(data.session){
+
+  await Preferences.set({
+
+    key: "kdmp_session",
+
+    value: JSON.stringify(data.session),
+
+  });
+
+}
+
+
+navigate("/dashboard");
 
 
   }

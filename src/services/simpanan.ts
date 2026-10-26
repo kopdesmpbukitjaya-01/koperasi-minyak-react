@@ -154,3 +154,110 @@ export async function getRekapSemuaAnggota() {
   return data;
 
 }
+// LOGIN PORTAL ANGGOTA
+export async function getPortalAnggota(
+  kode_warga:string,
+  nama:string
+){
+
+const {data:warga,error:wargaError}=await supabase
+.from("warga")
+.select(`
+id,
+nama,
+kode_warga,
+no_kk
+`)
+.eq("kode_warga",kode_warga)
+.ilike("nama",nama)
+.eq("status","Anggota")
+.single();
+
+
+if(wargaError){
+
+console.error(
+"WARGA ERROR:",
+wargaError
+);
+
+throw wargaError;
+
+}
+
+
+const {data:simpanan,error:simpananError}=await supabase
+.from("simpanan_anggota")
+.select(`
+simpanan_pokok,
+simpanan_wajib,
+simpanan_sukarela
+`)
+.eq(
+"warga_id",
+warga.id
+);
+
+
+
+if(simpananError){
+
+console.error(
+"SIMPNAN ERROR:",
+simpananError
+);
+
+throw simpananError;
+
+}
+
+
+
+let pokok=0;
+let wajib=0;
+let sukarela=0;
+
+
+
+simpanan?.forEach((item:any)=>{
+
+
+pokok += Number(
+item.simpanan_pokok || 0
+);
+
+
+wajib += Number(
+item.simpanan_wajib || 0
+);
+
+
+sukarela += Number(
+item.simpanan_sukarela || 0
+);
+
+
+});
+
+
+
+return {
+
+id:warga.id,
+
+kode_warga:warga.kode_warga,
+
+nama:warga.nama,
+
+pokok,
+
+wajib,
+
+sukarela,
+
+shu:""
+
+};
+
+
+}

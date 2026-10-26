@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Html5Qrcode } from "html5-qrcode";
+import { Capacitor } from "@capacitor/core";
 import Layout from "../components/Layout";
 
 import { getWarga } from "../services/warga";
@@ -19,9 +18,6 @@ import {
 export default function Transaksi() {
 
 
-  const navigate = useNavigate();
-
-
 
   const [list, setList] = useState<any[]>([]);
 
@@ -34,7 +30,9 @@ export default function Transaksi() {
   const [warga, setWarga] = useState<any[]>([]);
 
   const [periode, setPeriode] = useState<any[]>([]);
+const [showRiwayat,setShowRiwayat] = useState(false);
 
+const isAndroidApp = Capacitor.isNativePlatform();
 
 
   const [
@@ -123,13 +121,21 @@ export default function Transaksi() {
 
   useEffect(()=>{
 
-
-    if(!scannerOpen)
-      return;
-
+  if(!scannerOpen)
+    return;
 
 
-    const scanner =
+  let scanner:any;
+
+
+  async function startScanner(){
+
+    const {
+      Html5Qrcode
+    } = await import("html5-qrcode");
+
+
+    scanner =
       new Html5Qrcode("reader");
 
 
@@ -151,7 +157,7 @@ export default function Transaksi() {
       },
 
 
-      (decodedText)=>{
+      (decodedText: string)=>{
 
 
         const kodeScan =
@@ -194,11 +200,7 @@ export default function Transaksi() {
 
 
 
-          setTimeout(()=>{
-
-            setScannerOpen(false);
-
-          },300);
+          setScannerOpen(false);
 
 
 
@@ -221,7 +223,7 @@ export default function Transaksi() {
 
     )
 
-    .catch((err)=>{
+    .catch((err: any)=>{
 
 
       console.error(
@@ -241,6 +243,10 @@ export default function Transaksi() {
     });
 
 
+  }
+
+
+  startScanner();
 
 
 
@@ -910,32 +916,7 @@ export default function Transaksi() {
 
 
 
-            <button
-
-
-              onClick={()=>navigate("/dashboard")}
-
-
-              className="
-              px-5
-              py-3
-              rounded-xl
-              text-white
-              font-bold
-              bg-gradient-to-r
-              from-blue-600
-              to-purple-600
-              shadow-[0_0_20px_rgba(59,130,246,0.5)]
-              hover:scale-105
-              transition
-              "
-
-            >
-
-              ← Dashboard
-
-
-            </button>
+            
 
 
           </div>
@@ -1680,383 +1661,238 @@ export default function Transaksi() {
 
         {/* DAFTAR TRANSAKSI */}
 
-
-
-        <div
-
-          className="
-          rounded-3xl
-          p-6
-          md:p-8
-          bg-white/5
-          backdrop-blur-xl
-          border
-          border-white/10
-          "
-
-        >
-
-
-
-          <div className="
-          flex
-          flex-col
-          md:flex-row
-          md:justify-between
-          gap-4
-          mb-6
-          ">
-
-
-            <h2 className="
-            text-2xl
-            font-black
-            text-white
-            ">
-
-              📊 RIWAYAT PENGAMBILAN
-
-            </h2>
-
-
-
-
-            <select
-  value={filterPeriodeId}
-  onChange={(e)=>
-    setFilterPeriodeId(e.target.value)
-  }
-  className="
-    bg-white
-    border
-    border-purple-500/50
-    rounded-lg
-    px-4
-    py-2
-    text-black
-    font-semibold
-  "
+<div
+className="
+rounded-3xl
+p-6
+md:p-8
+bg-white/5
+backdrop-blur-xl
+border
+border-white/10
+"
 >
 
-  <option 
-  value=""
-  className="text-black"
+
+{isAndroidApp && !showRiwayat && (
+
+<button
+onClick={()=>setShowRiwayat(true)}
+className="
+mb-5
+w-full
+rounded-xl
+p-4
+bg-gradient-to-r
+from-purple-600
+to-blue-600
+font-bold
+text-white
+shadow-lg
+"
 >
-  Pilih Periode
+📋 Tampilkan Riwayat Pengambilan
+</button>
+
+)}
+
+
+
+{(!isAndroidApp || showRiwayat) && (
+
+<>
+
+<div
+className="
+flex
+flex-col
+md:flex-row
+md:items-center
+md:justify-between
+gap-4
+mb-5
+"
+>
+
+<h2
+className="
+text-2xl
+font-black
+text-white
+"
+>
+📊 RIWAYAT PENGAMBILAN
+</h2>
+
+
+<div className="flex gap-3 flex-wrap">
+
+<select
+value={filterPeriodeId}
+onChange={(e)=>
+setFilterPeriodeId(e.target.value)
+}
+className="
+bg-white
+rounded-lg
+px-4
+py-2
+text-black
+font-semibold
+"
+>
+
+<option value="">
+Pilih Periode
 </option>
 
-  {
-    periode.map((p:any)=>(
+{
+periode.map((p:any)=>(
 
-      <option
-  key={p.id}
-  value={p.id}
-  className="text-black"
+<option
+key={p.id}
+value={p.id}
 >
-  {p.nama_periode}
+{p.nama_periode}
 </option>
 
-    ))
-  }
+))
+}
 
 </select>
 
 
-          </div>
+{isAndroidApp && (
 
+<button
+onClick={()=>{
+setShowRiwayat(false);
+setFilterPeriodeId("");
+}}
+className="
+px-4
+py-2
+rounded-lg
+bg-red-600
+hover:bg-red-700
+text-white
+font-bold
+shadow-lg
+transition
+"
+>
+❌ Tutup Riwayat
+</button>
 
+)}
 
+</div>
 
+</div>
 
 
+<div className="overflow-x-auto">
 
-          <div className="overflow-x-auto">
 
+<table className="w-full text-white">
 
-            <table className="w-full text-white">
+<thead>
 
+<tr>
 
-              <thead>
+<th>No</th>
+<th>Nama</th>
+<th>BBM</th>
+<th>Liter</th>
+<th>Bayar</th>
+<th>Total</th>
+<th>Aksi</th>
 
+</tr>
 
-                <tr className="
-                bg-gradient-to-r
-                from-red-600
-                via-purple-600
-                to-blue-600
-                ">
+</thead>
 
 
-                  <th className="px-4 py-3">
-                    No
-                  </th>
+<tbody>
 
-                  <th className="px-4 py-3 text-left">
-                    Nama
-                  </th>
+{
+filteredList.map(
+(t,index)=>(
 
-                  <th className="px-4 py-3">
-                    BBM
-                  </th>
+<tr key={t.id}>
 
-                  <th className="px-4 py-3">
-                    Liter
-                  </th>
 
-                  <th className="px-4 py-3">
-                    Bayar
-                  </th>
+<td>
+{index+1}
+</td>
 
-                  <th className="px-4 py-3">
-                    Total
-                  </th>
 
-                  <th className="px-4 py-3">
-                    Aksi
-                  </th>
+<td>
+{getNamaWarga(t.warga)}
+</td>
 
 
-                </tr>
+<td>
+{t.jenis_bbm?.nama}
+</td>
 
 
-              </thead>
+<td>
+{t.liter} L
+</td>
 
 
+<td>
+{t.metode_pembayaran}
+</td>
 
 
+<td>
+Rp {Number(t.total)
+.toLocaleString("id-ID")}
+</td>
 
-              <tbody>
 
+<td>
 
-              {
-                filteredList.map(
-                  (t,index)=>(
+<button
+onClick={()=>edit(t)}
+>
+✏️
+</button>
 
-                  <tr
 
-                    key={t.id}
+<button
+onClick={()=>hapus(t.id)}
+>
+🗑
+</button>
 
-                    className="
-                    border-b
-                    border-white/10
-                    hover:bg-white/5
-                    "
+</td>
 
-                  >
 
+</tr>
 
-                    <td className="px-4 py-4 text-center">
+))
 
-                      {index+1}
+}
 
-                    </td>
 
+</tbody>
 
 
-                    <td className="px-4 py-4">
+</table>
 
-                      {getNamaWarga(t.warga)}
 
-                    </td>
+</div>
 
 
+</>
 
-                    <td className="px-4 py-4 text-center">
+)}
 
-                      {t.jenis_bbm?.nama}
 
-                    </td>
-
-
-
-                    <td className="
-                    px-4
-                    py-4
-                    text-center
-                    text-blue-300
-                    font-bold
-                    ">
-
-                      {t.liter} L
-
-                    </td>
-
-
-
-
-                    <td className="px-4 py-4 text-center">
-
-
-                      {
-                        t.metode_pembayaran === "Transfer"
-
-                        ?
-
-                        <span className="
-                        px-3
-                        py-1
-                        rounded-full
-                        bg-blue-500/20
-                        text-blue-300
-                        border
-                        border-blue-400/30
-                        ">
-
-                          🔵 TRANSFER
-
-                        </span>
-
-
-                        :
-
-                        <span className="
-                        px-3
-                        py-1
-                        rounded-full
-                        bg-green-500/20
-                        text-green-300
-                        border
-                        border-green-400/30
-                        ">
-
-                          🟢 TUNAI
-
-                        </span>
-
-                      }
-
-
-                    </td>
-
-
-
-
-
-                    <td className="
-                    px-4
-                    py-4
-                    text-center
-                    text-green-300
-                    font-bold
-                    ">
-
-                      Rp {Number(t.total)
-                      .toLocaleString("id-ID")}
-
-                    </td>
-
-
-
-
-
-                    <td className="px-4 py-4">
-
-
-                      <div className="flex gap-2">
-
-
-                        <button
-
-                          onClick={()=>
-                            edit(t)
-                          }
-
-                          className="
-                          bg-blue-600
-                          px-3
-                          py-2
-                          rounded-lg
-                          "
-
-                        >
-
-                          ✏️
-
-                        </button>
-
-
-
-
-                        <button
-
-                          onClick={()=>
-                            hapus(t.id)
-                          }
-
-                          className="
-                          bg-red-600
-                          px-3
-                          py-2
-                          rounded-lg
-                          "
-
-                        >
-
-                          🗑
-
-                        </button>
-
-
-                      </div>
-
-
-                    </td>
-
-
-
-                  </tr>
-
-
-                ))
-
-              }
-
-
-
-              {
-                filteredList.length===0 &&
-
-                <tr>
-
-                  <td
-
-                    colSpan={7}
-
-                    className="
-                    text-center
-                    py-10
-                    text-gray-400
-                    "
-
-                  >
-
-                    Belum ada transaksi
-
-
-                  </td>
-
-
-                </tr>
-
-              }
-
-
-
-              </tbody>
-
-
-            </table>
-
-
-          </div>
-
-
-
-        </div>
-
-
-
-
+</div>
 
 
       </div>

@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+
 
 import logo from "../assets/logo_transparan.png";
 
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
-
+import { Filesystem, Directory } from "@capacitor/filesystem";
+import { FileOpener } from "@capacitor-community/file-opener";
 import {
   getPeriode
 } from "../services/periode";
@@ -17,7 +18,7 @@ import {
 
 
   export default function Laporan() {
-  const navigate = useNavigate();
+  
 
   // ==============================
   // STATE
@@ -1322,15 +1323,37 @@ for(
 
 
 const namaFile =
-  `Laporan_${namaPeriode
-    .replace(/\s+/g,"_")
-    .replace(/[^\w-]/g,"")}.pdf`;
+  `Laporan KDMP Periode ${namaPeriode.replace(/[\\/:*?"<>|]/g,"")}.pdf`;
 
 
+const pdfBase64 =
+  doc.output("datauristring")
+    .split(",")[1];
 
-doc.save(
-  namaFile
-);
+
+const savedFile =
+await Filesystem.writeFile({
+
+  path:`Download/KDMP/${namaFile}`,
+
+  data:pdfBase64,
+
+  directory:Directory.Documents,
+
+  recursive:true
+
+});
+
+
+await FileOpener.open({
+
+  filePath: savedFile.uri,
+
+  contentType: "application/pdf"
+
+});
+
+
     } catch (err) {
 
       console.error(err);
@@ -1370,26 +1393,7 @@ doc.save(
 
 
 
-      <button
-
-        onClick={() =>
-          navigate("/dashboard")
-        }
-
-        style={{
-          padding:"10px 18px",
-          borderRadius:10,
-          border:"1px solid #38bdf8",
-          background:
-            "linear-gradient(135deg,#0f172a,#1e40af)",
-          color:"#fff",
-          cursor:"pointer"
-        }}
-
-      >
-        ← Kembali Dashboard
-
-      </button>
+    
 
 
 

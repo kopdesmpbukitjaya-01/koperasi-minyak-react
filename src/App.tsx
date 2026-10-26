@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import PlatformLayout from "./components/PlatformLayout";
-
+import AndroidBackHandler from "./components/AndroidBackHandler";
 import PublicDashboardMobile from "./pages/PublicDashboardMobile";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
@@ -14,14 +14,44 @@ import PrintIdCard from "./pages/PrintIdCard";
 import Anggota from "./pages/Anggota";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Pengeluaran from "./pages/Pengeluaran";
+import PortalAnggota from "./pages/PortalAnggota";
 
 export default function App() {
 
   return (
     <BrowserRouter>
 
+<AndroidBackHandler />
+
       <Routes>
-<Route path="/pengeluaran" element={<Pengeluaran />} />
+        <Route
+  path="/pengeluaran"
+  element={
+    <ProtectedRoute>
+      <Pengeluaran />
+    </ProtectedRoute>
+  }
+/>
+<Route
+  path="/login"
+  element={<Login />}
+/>
+
+
+<Route
+  path="/portal-anggota"
+  element={
+    <PlatformLayout>
+      <PortalAnggota />
+    </PlatformLayout>
+  }
+/>
+
+
+
+{/* =========================
+    HALAMAN ADMIN
+========================== */}
 
 
         {/* =========================

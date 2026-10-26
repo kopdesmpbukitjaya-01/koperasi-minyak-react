@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { Capacitor } from "@capacitor/core";
 import Sidebar from "./Sidebar";
 import logo from "../assets/logo_transparan.png";
 import { supabase } from "../lib/supabase";
@@ -15,7 +16,7 @@ export default function Layout({ children }: Props) {
 
   const navigate = useNavigate();
 const [menuOpen,setMenuOpen] = useState(false);
-
+const isAndroidApp = Capacitor.isNativePlatform();
 
   async function logout(){
 
@@ -252,6 +253,9 @@ gap-4
 "
 >
 
+
+
+{!isAndroidApp && (
 <button
   onClick={()=>setMenuOpen(true)}
   className="
@@ -266,8 +270,7 @@ gap-4
 >
   ☰
 </button>
-
-
+)}
 {/* TITLE */}
 
 
