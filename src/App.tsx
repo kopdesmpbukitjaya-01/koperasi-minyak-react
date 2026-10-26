@@ -14,6 +14,7 @@ import PrintIdCard from "./pages/PrintIdCard";
 import Anggota from "./pages/Anggota";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Pengeluaran from "./pages/Pengeluaran";
+import Rat from "./pages/Rat";
 import PortalAnggota from "./pages/PortalAnggota";
 
 export default function App() {
@@ -29,6 +30,15 @@ export default function App() {
   element={
     <ProtectedRoute>
       <Pengeluaran />
+    </ProtectedRoute>
+  }
+  
+/>
+<Route
+  path="/rat"
+  element={
+    <ProtectedRoute>
+      <Rat />
     </ProtectedRoute>
   }
 />
@@ -144,6 +154,14 @@ export default function App() {
       <Anggota />
     </ProtectedRoute>
   }
+/>
+<Route
+ path="/rat"
+ element={
+   <ProtectedRoute>
+     <Rat />
+   </ProtectedRoute>
+ }
 />
 
         <Route

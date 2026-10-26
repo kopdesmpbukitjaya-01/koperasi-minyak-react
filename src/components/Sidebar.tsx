@@ -48,6 +48,11 @@ export default function Sidebar() {
       icon: "📄",
       path: "/laporan",
     },
+    {
+  title: "Laporan RAT",
+  icon: "🏛️",
+  path: "/rat",
+},
   ];
 
 
