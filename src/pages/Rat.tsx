@@ -6,6 +6,9 @@ import {
   updateLaporanRat,
   deleteLaporanRat,
 } from "../services/rat";
+import {
+  getRingkasanRat
+} from "../services/rat_keuangan";
 
 
 export default function Rat(){
@@ -36,7 +39,7 @@ const [bendahara2,setBendahara2] = useState("");
 
 const [dataRat,setDataRat]=useState<any[]>([]);
 const [editId,setEditId] = useState<number | null>(null);
-
+const [ringkasan,setRingkasan]=useState<any>(null);
 
 useEffect(()=>{
 
@@ -56,15 +59,23 @@ await getLaporanRat();
 setDataRat(data || []);
 
 
+const keuangan =
+await getRingkasanRat();
+
+
+console.log("DATA RAT :", keuangan);
+
+
+setRingkasan(keuangan);
+
+
 }catch(err){
 
-console.error(err);
+console.error("ERROR RAT :", err);
 
 }
 
 }
-
-
 
 
 async function simpanRat(){
@@ -471,7 +482,124 @@ editId
 </button>
 
 
+<div
+className="
+rounded-3xl
+p-8
+bg-white/5
+border
+border-white/10
+"
+>
 
+<h2
+className="
+text-2xl
+font-bold
+text-white
+mb-5
+"
+>
+📊 Ringkasan Keuangan RAT
+</h2>
+
+
+<div
+className="
+grid
+grid-cols-1
+md:grid-cols-3
+gap-4
+"
+>
+
+
+<div className="p-4 rounded-xl bg-black/30">
+<p className="text-gray-400">
+Jumlah Anggota
+</p>
+
+<h3 className="text-2xl font-bold text-white">
+{ringkasan?.jumlahAnggota || 0}
+</h3>
+
+</div>
+
+
+
+<div className="p-4 rounded-xl bg-black/30">
+<p className="text-gray-400">
+Simpanan Pokok
+</p>
+
+<h3 className="text-xl font-bold text-white">
+Rp {Number(ringkasan?.simpananPokok || 0)
+.toLocaleString("id-ID")}
+</h3>
+
+</div>
+
+
+
+<div className="p-4 rounded-xl bg-black/30">
+<p className="text-gray-400">
+Simpanan Wajib
+</p>
+
+<h3 className="text-xl font-bold text-white">
+Rp {Number(ringkasan?.simpananWajib || 0)
+.toLocaleString("id-ID")}
+</h3>
+
+</div>
+
+
+
+<div className="p-4 rounded-xl bg-black/30">
+<p className="text-gray-400">
+Simpanan Sukarela
+</p>
+
+<h3 className="text-xl font-bold text-white">
+Rp {Number(ringkasan?.simpananSukarela || 0)
+.toLocaleString("id-ID")}
+</h3>
+
+</div>
+
+
+
+<div className="p-4 rounded-xl bg-black/30">
+<p className="text-gray-400">
+Omzet Penjualan BBM
+</p>
+
+<h3 className="text-xl font-bold text-white">
+Rp {Number(ringkasan?.omzetPenjualan || 0)
+.toLocaleString("id-ID")}
+</h3>
+
+</div>
+
+
+
+<div className="p-4 rounded-xl bg-black/30">
+<p className="text-gray-400">
+SHU Bersih
+</p>
+
+<h3 className="text-xl font-bold text-green-400">
+Rp {Number(ringkasan?.shuBersih || 0)
+.toLocaleString("id-ID")}
+</h3>
+
+</div>
+
+
+</div>
+
+
+</div>
 </div>
 
 

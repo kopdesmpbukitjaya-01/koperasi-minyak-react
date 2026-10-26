@@ -15,6 +15,7 @@ import Anggota from "./pages/Anggota";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Pengeluaran from "./pages/Pengeluaran";
 import Rat from "./pages/Rat";
+import Backup from "./pages/Backup";
 import PortalAnggota from "./pages/PortalAnggota";
 
 export default function App() {
@@ -39,6 +40,15 @@ export default function App() {
   element={
     <ProtectedRoute>
       <Rat />
+    </ProtectedRoute>
+  }
+  
+/>
+<Route
+  path="/backup"
+  element={
+    <ProtectedRoute>
+      <Backup />
     </ProtectedRoute>
   }
 />

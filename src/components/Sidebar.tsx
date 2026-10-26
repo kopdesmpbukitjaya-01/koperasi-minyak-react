@@ -53,6 +53,11 @@ export default function Sidebar() {
   icon: "🏛️",
   path: "/rat",
 },
+{
+  title: "Backup Data",
+  icon: "💾",
+  path: "/backup",
+},
   ];
 
 
