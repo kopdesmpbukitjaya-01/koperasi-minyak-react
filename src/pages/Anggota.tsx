@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Capacitor } from "@capacitor/core";
 import Layout from "../components/Layout";
 
 import {
@@ -12,8 +12,9 @@ import {
 
 export default function Anggota() {
 
-
-  const navigate = useNavigate();
+const isAndroidApp =
+  Capacitor.getPlatform() === "android";
+  
 
 
 
@@ -59,7 +60,8 @@ export default function Anggota() {
 
   const [rekapGabungan,setRekapGabungan] =
   useState<any[]>([]);
-
+const [showTabelRekap,setShowTabelRekap] =
+useState(false);
 
   const [totalSemuaPokok,setTotalSemuaPokok] =
   useState(0);
@@ -497,27 +499,7 @@ export default function Anggota() {
 
 
 
-      <button
-
-        onClick={()=>navigate("/dashboard")}
-
-        className="
-        bg-black/40
-        hover:bg-black/60
-        text-white
-        px-6
-        py-3
-        rounded-xl
-        border
-        border-white/20
-        shadow-lg
-        "
-
-      >
-
-        ← Dashboard
-
-      </button>
+      
 
 
 
@@ -1567,7 +1549,31 @@ export default function Anggota() {
 
       {/* TABLE SELURUH ANGGOTA */}
 
+{isAndroidApp && !showTabelRekap && (
 
+<button
+onClick={()=>setShowTabelRekap(true)}
+className="
+mb-5
+w-full
+rounded-xl
+p-4
+bg-gradient-to-r
+from-pink-600
+to-purple-600
+text-white
+font-bold
+shadow-lg
+"
+>
+📋 Tampilkan Data Rekap Anggota
+</button>
+
+)}
+
+
+{(!isAndroidApp || showTabelRekap) && (
+<>
       <div
         className="
         overflow-x-auto
@@ -1841,9 +1847,32 @@ export default function Anggota() {
       </div>
 
 
+{isAndroidApp && (
+
+<button
+onClick={()=>setShowTabelRekap(false)}
+className="
+mt-5
+w-full
+rounded-xl
+p-3
+bg-red-600
+text-white
+font-bold
+shadow-lg
+"
+>
+❌ Tutup Data Rekap
+</button>
+
+)}
+
+
+</>
+)}
+
+
     </div>
-
-
 
 
 

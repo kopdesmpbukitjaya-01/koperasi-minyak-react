@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Capacitor } from "@capacitor/core";
 import Layout from "../components/Layout";
 
 import {
@@ -28,14 +29,24 @@ type PengeluaranData = {
 
 export default function Pengeluaran() {
 
+
+  const isAndroidApp =
+    Capacitor.getPlatform() === "android";
+
+
+  const [showRiwayatPengeluaran,setShowRiwayatPengeluaran] =
+    useState(false);
+
+
+
   const [data, setData] = useState<PengeluaranData[]>([]);
   const [periode, setPeriode] = useState<Periode[]>([]);
-
 
   const [tanggal, setTanggal] = useState("");
   const [periodeId, setPeriodeId] = useState("");
   const [keterangan, setKeterangan] = useState("");
   const [jumlah, setJumlah] = useState("");
+
 
 
   const [editId, setEditId] = useState<number | null>(null);
@@ -898,390 +909,317 @@ export default function Pengeluaran() {
         {/* TABLE */}
 
 
+{isAndroidApp && !showRiwayatPengeluaran && (
+
+<button
+onClick={()=>setShowRiwayatPengeluaran(true)}
+className="
+mb-5
+w-full
+rounded-xl
+p-4
+bg-gradient-to-r
+from-yellow-500
+to-orange-600
+text-white
+font-bold
+shadow-lg
+"
+>
+📋 Tampilkan Riwayat Pengeluaran
+</button>
 
-        <div
-          className="
-          rounded-3xl
-          overflow-hidden
-          bg-white/5
-          backdrop-blur-xl
-          border
-          border-white/10
-          shadow-[0_0_40px_rgba(59,130,246,0.15)]
-          "
-        >
+)}
+
 
 
+{(!isAndroidApp || showRiwayatPengeluaran) && (
+
 
-          <div
-            className="
-            p-6
-            border-b
-            border-white/10
-            "
-          >
+<div
+className="
+rounded-3xl
+overflow-hidden
+bg-white/5
+backdrop-blur-xl
+border
+border-white/10
+shadow-[0_0_40px_rgba(59,130,246,0.15)]
+"
+>
 
-            <h2
-              className="
-              text-2xl
-              font-bold
-              text-white
-              "
-            >
-
-              📋 Riwayat Pengeluaran
 
-            </h2>
 
+<div
+className="
+p-6
+border-b
+border-white/10
+flex
+items-center
+justify-between
+"
+>
 
-          </div>
+<h2
+className="
+text-2xl
+font-bold
+text-white
+"
+>
+📋 Riwayat Pengeluaran
+</h2>
 
 
 
+{isAndroidApp && (
 
+<button
+onClick={()=>
+setShowRiwayatPengeluaran(false)
+}
+className="
+px-4
+py-2
+rounded-lg
+bg-red-600
+text-white
+font-bold
+"
+>
+❌ Tutup
+</button>
 
-          <div
-            className="
-            overflow-x-auto
-            "
-          >
+)}
 
 
-            <table
-              className="
-              w-full
-              "
-            >
+</div>
 
 
 
-              <thead
-                className="
-                bg-black/30
-                text-gray-300
-                "
-              >
 
-                <tr>
 
+<div
+className="
+overflow-x-auto
+"
+>
 
-                  <th
-                    className="
-                    px-4
-                    py-3
-                    text-left
-                    "
-                  >
-                    No
-                  </th>
 
+<table
+className="
+w-full
+"
+>
 
-                  <th
-                    className="
-                    px-4
-                    py-3
-                    text-left
-                    "
-                  >
-                    Tanggal
-                  </th>
 
+<thead
+className="
+bg-black/30
+text-gray-300
+"
+>
 
-                  <th
-                    className="
-                    px-4
-                    py-3
-                    text-left
-                    "
-                  >
-                    Periode
-                  </th>
+<tr>
 
+<th className="px-4 py-3 text-left">
+No
+</th>
 
-                  <th
-                    className="
-                    px-4
-                    py-3
-                    text-left
-                    "
-                  >
-                    Keterangan
-                  </th>
+<th className="px-4 py-3 text-left">
+Tanggal
+</th>
 
+<th className="px-4 py-3 text-left">
+Periode
+</th>
 
-                  <th
-                    className="
-                    px-4
-                    py-3
-                    text-right
-                    "
-                  >
-                    Jumlah
-                  </th>
+<th className="px-4 py-3 text-left">
+Keterangan
+</th>
 
+<th className="px-4 py-3 text-right">
+Jumlah
+</th>
 
-                  <th
-                    className="
-                    px-4
-                    py-3
-                    text-center
-                    "
-                  >
-                    Aksi
-                  </th>
+<th className="px-4 py-3 text-center">
+Aksi
+</th>
 
+</tr>
 
-                </tr>
+</thead>
 
 
-              </thead>
 
+<tbody>
 
 
+{
+data.length === 0 ? (
 
+<tr>
 
-              <tbody>
-                
-                {data.length === 0 ? (
+<td
+colSpan={6}
+className="
+text-center
+py-10
+text-gray-400
+"
+>
 
-                  <tr>
+Belum ada data pengeluaran.
 
-                    <td
-                      colSpan={6}
-                      className="
-                      text-center
-                      py-10
-                      text-gray-400
-                      "
-                    >
+</td>
 
-                      Belum ada data pengeluaran.
+</tr>
 
-                    </td>
 
+) : (
 
-                  </tr>
 
+data.map((item,index)=>{
 
 
-                ) : (
+const namaPeriode =
+periode.find(
+(p)=>
+p.id === item.periode_id
+)?.nama_periode
+??
+"Umum";
 
 
-                  data.map((item,index)=>{
+return (
 
 
-                    const namaPeriode =
-                      periode.find(
-                        (p)=>
-                          p.id === item.periode_id
-                      )?.nama_periode
-                      ??
-                      "Umum";
+<tr
+key={item.id}
+className="
+border-t
+border-white/10
+hover:bg-white/5
+transition
+"
+>
 
 
+<td className="px-4 py-4">
+{index + 1}
+</td>
 
-                    return (
 
+<td className="px-4 py-4">
+{item.tanggal}
+</td>
 
-                      <tr
 
-                        key={item.id}
+<td className="px-4 py-4">
+{namaPeriode}
+</td>
 
-                        className="
-                        border-t
-                        border-white/10
-                        hover:bg-white/5
-                        transition
-                        "
 
-                      >
+<td className="px-4 py-4">
+{item.keterangan}
+</td>
 
 
+<td
+className="
+px-4
+py-4
+text-right
+font-bold
+text-red-400
+"
+>
+{formatRupiah(Number(item.jumlah))}
+</td>
 
-                        <td
-                          className="
-                          px-4
-                          py-4
-                          text-gray-200
-                          "
-                        >
 
-                          {index + 1}
+<td className="px-4 py-4">
 
-                        </td>
 
+<div className="
+flex
+justify-center
+gap-2
+">
 
 
+<button
+onClick={()=>
+handleEdit(item)
+}
+className="
+bg-yellow-500
+hover:bg-yellow-600
+text-white
+px-4
+py-2
+rounded-lg
+shadow
+"
+>
+✏️
+</button>
 
 
-                        <td
-                          className="
-                          px-4
-                          py-4
-                          text-gray-200
-                          "
-                        >
 
-                          {item.tanggal}
+<button
+onClick={()=>
+handleDelete(item.id)
+}
+className="
+bg-red-600
+hover:bg-red-700
+text-white
+px-4
+py-2
+rounded-lg
+shadow
+"
+>
+🗑️
+</button>
 
-                        </td>
 
+</div>
 
 
+</td>
 
 
-                        <td
-                          className="
-                          px-4
-                          py-4
-                          text-gray-200
-                          "
-                        >
+</tr>
 
-                          {namaPeriode}
 
-                        </td>
+);
 
 
+})
 
 
+)
 
-                        <td
-                          className="
-                          px-4
-                          py-4
-                          text-gray-200
-                          "
-                        >
 
-                          {item.keterangan}
+}
 
-                        </td>
 
+</tbody>
 
 
+</table>
 
 
-                        <td
-                          className="
-                          px-4
-                          py-4
-                          text-right
-                          font-bold
-                          text-red-400
-                          "
-                        >
+</div>
 
-                          {formatRupiah(
-                            Number(item.jumlah)
-                          )}
 
-                        </td>
+</div>
 
 
-
-
-
-                        <td
-                          className="
-                          px-4
-                          py-4
-                          "
-                        >
-
-
-                          <div
-                            className="
-                            flex
-                            justify-center
-                            gap-2
-                            "
-                          >
-
-
-
-                            <button
-
-                              onClick={()=>
-                                handleEdit(item)
-                              }
-
-
-                              className="
-                              bg-yellow-500
-                              hover:bg-yellow-600
-                              text-white
-                              px-4
-                              py-2
-                              rounded-lg
-                              shadow
-                              "
-
-                            >
-
-                              ✏️
-
-                            </button>
-
-
-
-
-
-                            <button
-
-                              onClick={()=>
-                                handleDelete(item.id)
-                              }
-
-
-                              className="
-                              bg-red-600
-                              hover:bg-red-700
-                              text-white
-                              px-4
-                              py-2
-                              rounded-lg
-                              shadow
-                              "
-
-                            >
-
-                              🗑️
-
-                            </button>
-
-
-
-                          </div>
-
-
-                        </td>
-
-
-
-                      </tr>
-
-
-                    );
-
-
-                  })
-
-
-                )}
-
-
-
-              </tbody>
-
-
-            </table>
-
-
-          </div>
-
-
-        </div>
+)}
 
 
 

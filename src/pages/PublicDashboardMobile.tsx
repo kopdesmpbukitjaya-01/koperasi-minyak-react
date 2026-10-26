@@ -265,7 +265,42 @@ rounded-3xl
 
 </div>
 
+{/* PORTAL ANGGOTA */}
 
+<button
+  onClick={() => navigate("/portal-anggota")}
+  className="
+  w-full
+  rounded-3xl
+  p-5
+  bg-gradient-to-r
+  from-red-600
+  via-purple-600
+  to-blue-600
+  text-white
+  font-black
+  text-lg
+  shadow-[0_0_30px_rgba(139,92,246,.45)]
+  border
+  border-white/20
+  "
+>
+
+  💳 Portal Anggota
+
+  <div
+    className="
+    text-sm
+    font-normal
+    text-white/80
+    mt-1
+    "
+  >
+    Cek Simpanan & Informasi SHU
+  </div>
+
+
+</button>
 
 
 
