@@ -253,7 +253,7 @@ Kecamatan Bulik Timur
 
       z-50
 
-      h-16
+      h-20
 
       bg-[#080d24]/90
 
@@ -263,7 +263,7 @@ Kecamatan Bulik Timur
       border-white/10
 
       flex
-      justify-around
+      justify-evenly
       items-center
       "
       >
@@ -295,7 +295,11 @@ Kecamatan Bulik Timur
         text="Laporan"
         onClick={()=>navigate("/laporan")}
         />
-
+<Menu
+icon="🏛️"
+text="RAT"
+onClick={()=>navigate("/rat")}
+/>
 
       </nav>
 

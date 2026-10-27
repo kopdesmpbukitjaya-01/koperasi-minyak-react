@@ -1,4 +1,7 @@
 import { useEffect, useState } from "react";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
+import logo from "../assets/logo_transparan.png";
 import Layout from "../components/Layout";
 import {
   addLaporanRat,
@@ -10,7 +13,13 @@ import {
   getRingkasanRat
 } from "../services/rat_keuangan";
 
+const IDENTITAS_KOPERASI = {
+  badanHukum:
+  "AHU-0023468.AH.01.29.TAHUN 2025",
 
+  alamat:
+  "Jl. Sunan Giri No.05 RT.001 RW.000 Desa Bukit Jaya Kode Pos: 74667"
+};
 export default function Rat(){
 
 
@@ -262,7 +271,365 @@ alert(
 
 
 }
+function downloadPDF(){
 
+const doc = new jsPDF({
+
+  orientation:"portrait",
+
+  unit:"mm",
+
+  format:[215,330]
+
+});
+
+
+
+/* =====================
+      HEADER LOGO
+===================== */
+
+
+doc.addImage(
+  logo,
+  "PNG",
+  15,
+  12,
+  25,
+  25
+);
+
+
+// =========================
+// HEADER KOPERASI
+// =========================
+
+doc.setFontSize(18);
+
+doc.setFont("helvetica","bold");
+
+
+doc.text(
+"KOPERASI DESA MERAH PUTIH",
+105,
+17,
+{
+align:"center"
+}
+);
+
+
+
+doc.setFontSize(16);
+
+doc.text(
+"BUKIT JAYA",
+105,
+26,
+{
+align:"center"
+}
+);
+
+// =========================
+// IDENTITAS KOPERASI
+// =========================
+
+doc.setFontSize(10);
+
+doc.setFont("helvetica", "italic");
+
+
+doc.text(
+"Nomor Badan Hukum: AHU-0023468.AH.01.29.TAHUN 2025",
+105,
+35,
+{
+align:"center"
+}
+);
+
+
+doc.text(
+"Jl. Sunan Giri No.05 RT.001 RW.000 Desa Bukit Jaya Kode Pos: 74667",
+105,
+41,
+{
+align:"center"
+}
+);
+
+
+
+doc.line(
+15,
+47,
+200,
+47
+);
+
+
+// GARIS KOP
+
+doc.line(
+  15,
+  53,
+  195,
+  53
+);
+
+
+// =========================
+// JUDUL LAPORAN
+// =========================
+
+doc.setFont("helvetica","bold");
+
+doc.setFontSize(14);
+
+
+doc.text(
+  "LAPORAN RAPAT ANGGOTA TAHUNAN (RAT)",
+  105,
+  65,
+  {
+    align:"center"
+  }
+);
+
+
+let y = 82;
+
+
+// =========================
+// IDENTITAS RAT
+// =========================
+
+doc.setFontSize(11);
+
+
+doc.setFont("helvetica","bold");
+
+
+doc.text(
+  "Tahun Buku",
+  20,
+  y
+);
+
+
+doc.text(
+  "Nomor Badan Hukum",
+  20,
+  y + 8
+);
+
+
+doc.text(
+  "Alamat",
+  20,
+  y + 16
+);
+
+
+
+doc.setFont("helvetica","normal");
+
+
+doc.text(
+  `: ${tahun}`,
+  70,
+  y
+);
+
+
+doc.text(
+  `: ${IDENTITAS_KOPERASI.badanHukum}`,
+  70,
+  y + 8
+);
+
+
+doc.text(
+  `: ${IDENTITAS_KOPERASI.alamat}`,
+  70,
+  y + 16
+);
+
+
+
+// =========================
+// PENGURUS
+// =========================
+
+
+doc.setFont("helvetica","bold");
+
+doc.text(
+  "Pengurus Koperasi",
+  20,
+  112
+);
+
+
+
+autoTable(doc,{
+
+startY:120,
+
+
+head:[
+
+[
+"Jabatan",
+"Nama"
+]
+
+],
+
+
+body:[
+
+[
+"Ketua",
+ketua
+],
+
+[
+"Wakil Ketua Usaha",
+wakilKetuaUsaha
+],
+
+[
+"Wakil Ketua Keanggotaan",
+wakilKetuaKeanggotaan
+],
+
+[
+"Sekretaris",
+sekretaris
+],
+
+[
+"Bendahara 1",
+bendahara1
+],
+
+[
+"Bendahara 2",
+bendahara2
+],
+
+]
+
+
+});
+
+
+
+
+autoTable(doc,{
+
+startY:
+(doc as any).lastAutoTable.finalY + 15,
+
+
+head:[
+
+[
+"Keterangan",
+"Jumlah"
+]
+
+],
+
+
+body:[
+
+[
+"Jumlah Anggota",
+ringkasan?.jumlahAnggota || 0
+],
+
+
+[
+"Simpanan Pokok",
+`Rp ${Number(
+ringkasan?.simpananPokok || 0
+).toLocaleString("id-ID")}`
+],
+
+
+[
+"Simpanan Wajib",
+`Rp ${Number(
+ringkasan?.simpananWajib || 0
+).toLocaleString("id-ID")}`
+],
+
+
+[
+"Simpanan Sukarela",
+`Rp ${Number(
+ringkasan?.simpananSukarela || 0
+).toLocaleString("id-ID")}`
+],
+
+
+[
+"Omzet Penjualan BBM",
+`Rp ${Number(
+ringkasan?.omzetPenjualan || 0
+).toLocaleString("id-ID")}`
+],
+
+
+[
+"SHU Bersih",
+`Rp ${Number(
+ringkasan?.shuBersih || 0
+).toLocaleString("id-ID")}`
+],
+
+
+]
+
+});
+
+
+
+// ===============================
+// TANDA TANGAN PENGURUS
+// ===============================
+
+const signY = 250;
+
+doc.setFont("helvetica", "normal");
+doc.setFontSize(11);
+
+doc.text(`Bukit Jaya, ${new Date().toLocaleDateString("id-ID")}`, 145, signY);
+doc.text("Pengurus Koperasi", 155, signY + 7);
+
+// Ketua
+doc.text("Ketua", 25, signY + 20);
+doc.text("(........................................)", 15, signY + 55);
+doc.text(ketua || "-", 25, signY + 62);
+
+// Sekretaris
+doc.text("Sekretaris", 95, signY + 20);
+doc.text("(........................................)", 85, signY + 55);
+doc.text(sekretaris || "-", 95, signY + 62);
+
+// Bendahara
+doc.text("Bendahara", 165, signY + 20);
+doc.text("(........................................)", 155, signY + 55);
+doc.text(bendahara1 || "-", 165, signY + 62);
+doc.save(
+`Laporan_RAT_KDMP_Bukit_Jaya_${tahun}.pdf`
+);
+
+
+}
 return (
 
 <Layout>
@@ -481,7 +848,30 @@ editId
 }
 </button>
 
+<button
 
+onClick={downloadPDF}
+
+className="
+mt-8
+ml-3
+px-8
+py-3
+rounded-xl
+
+bg-gradient-to-r
+from-blue-600
+to-cyan-500
+
+text-white
+font-bold
+
+shadow-lg
+"
+
+>
+📄 Download PDF RAT
+</button>
 <div
 className="
 rounded-3xl
