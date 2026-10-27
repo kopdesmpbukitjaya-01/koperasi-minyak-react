@@ -204,10 +204,15 @@ item.jumlah || 0
 
 
 
-
 const shuBersih =
 labaKotor - totalPengeluaran;
 
+
+console.log("OMZET :", omzetPenjualan);
+console.log("MODAL BBM :", totalModalBBM);
+console.log("PENGELUARAN :", totalPengeluaran);
+console.log("LABA KOTOR :", labaKotor);
+console.log("SHU BERSIH :", shuBersih);
 
 
 

@@ -12,6 +12,9 @@ import {
 import {
   getRingkasanRat
 } from "../services/rat_keuangan";
+import {
+  getPembagianSHUAnggota
+} from "../services/shu_anggota";
 
 const IDENTITAS_KOPERASI = {
   badanHukum:
@@ -49,7 +52,7 @@ const [bendahara2,setBendahara2] = useState("");
 const [dataRat,setDataRat]=useState<any[]>([]);
 const [editId,setEditId] = useState<number | null>(null);
 const [ringkasan,setRingkasan]=useState<any>(null);
-
+const [shuAnggota,setShuAnggota]=useState<any[]>([]);
 useEffect(()=>{
 
 loadData();
@@ -76,7 +79,13 @@ console.log("DATA RAT :", keuangan);
 
 
 setRingkasan(keuangan);
+const dataSHU =
+await getPembagianSHUAnggota(
+  Number(keuangan?.shuBersih || 0) * 0.50
+);
 
+
+setShuAnggota(dataSHU || []);
 
 }catch(err){
 
@@ -596,38 +605,446 @@ ringkasan?.shuBersih || 0
 
 });
 
+// ===============================
+// HALAMAN SHU & TANDA TANGAN
+// ===============================
+
+
+let posisiY = (doc as any).lastAutoTable?.finalY || 60;
+
+
+// beri jarak
+posisiY += 20;
 
 
 // ===============================
-// TANDA TANGAN PENGURUS
+// CEK HALAMAN SHU
 // ===============================
 
-const signY = 250;
+if(posisiY > 220){
 
-doc.setFont("helvetica", "normal");
+doc.addPage();
+
+posisiY = 40;
+
+}
+
+
+
+// ===============================
+// JUDUL SHU
+// ===============================
+
+
+doc.setFontSize(14);
+
+doc.setFont(
+"helvetica",
+"bold"
+);
+
+
+doc.text(
+"ALOKASI SISA HASIL USAHA (SHU)",
+105,
+posisiY,
+{
+align:"center"
+}
+);
+
+
+
+posisiY += 10;
+
+
+
+const shu =
+Number(ringkasan?.shuBersih || 0);
+
+
+
+const alokasiSHU = [
+
+[
+"SHU Bersih",
+shu
+],
+
+[
+"Cadangan Koperasi 25%",
+shu * 0.25
+],
+
+[
+"Bagian Anggota 50%",
+shu * 0.50
+],
+
+[
+"Dana Pengurus dan Pengawas 5%",
+shu * 0.05
+],
+
+[
+"Dana Pendidikan 5%",
+shu * 0.05
+],
+
+[
+"Dana Sosial 5%",
+shu * 0.05
+]
+
+];
+
+
+
+
+autoTable(doc,{
+
+startY: posisiY,
+
+head:[
+
+[
+"Keterangan",
+"Jumlah"
+]
+
+],
+
+body:
+
+alokasiSHU.map((item:any)=>[
+
+item[0],
+
+"Rp "+
+Number(item[1])
+.toLocaleString("id-ID")
+
+]),
+
+
+theme:"grid",
+
+styles:{
+
+fontSize:11
+
+},
+
+headStyles:{
+
+fillColor:[40,40,40],
+
+textColor:255,
+
+fontStyle:"bold"
+
+}
+
+
+});
+
+
+
+
+
+// ===============================
+// TANDA TANGAN
+// ===============================
+
+
+
+
+doc.setFont(
+"helvetica",
+"normal"
+);
+
+
 doc.setFontSize(11);
 
-doc.text(`Bukit Jaya, ${new Date().toLocaleDateString("id-ID")}`, 145, signY);
-doc.text("Pengurus Koperasi", 155, signY + 7);
 
-// Ketua
-doc.text("Ketua", 25, signY + 20);
-doc.text("(........................................)", 15, signY + 55);
-doc.text(ketua || "-", 25, signY + 62);
 
-// Sekretaris
-doc.text("Sekretaris", 95, signY + 20);
-doc.text("(........................................)", 85, signY + 55);
-doc.text(sekretaris || "-", 95, signY + 62);
 
-// Bendahara
-doc.text("Bendahara", 165, signY + 20);
-doc.text("(........................................)", 155, signY + 55);
-doc.text(bendahara1 || "-", 165, signY + 62);
+// ==============================
+// HALAMAN PEMBAGIAN SHU ANGGOTA
+// ==============================
+
+
+doc.addPage();
+
+
+let shuAnggotaY = 30;
+
+
+
+doc.setFontSize(14);
+
+doc.setFont(
+"helvetica",
+"bold"
+);
+
+
+doc.text(
+"PEMBAGIAN SISA HASIL USAHA (SHU) ANGGOTA",
+105,
+shuAnggotaY,
+{
+align:"center"
+}
+);
+
+
+
+shuAnggotaY += 15;
+
+
+
+doc.setFontSize(11);
+
+doc.setFont(
+"helvetica",
+"normal"
+);
+
+
+
+autoTable(doc,{
+
+
+startY:shuAnggotaY,
+
+
+head:[
+
+[
+"No",
+"Nama Anggota",
+"Simpanan",
+"Transaksi",
+"SHU Diterima"
+]
+
+],
+
+
+body:
+
+shuAnggota.map(
+(item:any,index:number)=>[
+
+index+1,
+
+item.nama,
+
+"Rp "+
+Number(item.simpanan)
+.toLocaleString("id-ID"),
+
+
+"Rp "+
+Number(item.transaksi)
+.toLocaleString("id-ID"),
+
+
+"Rp "+
+Number(item.shu)
+.toLocaleString("id-ID")
+
+]
+),
+
+
+theme:"grid",
+
+
+styles:{
+
+fontSize:9
+
+},
+
+
+headStyles:{
+
+fontStyle:"bold"
+
+}
+
+
+});
+
+
+
+
+// TOTAL SHU ANGGOTA
+
+
+const totalSHUAnggota = shuAnggota.reduce(
+
+(total,item)=>
+
+total+
+Number(item.shu||0)
+
+,0);
+
+
+
+const posisiTotal =
+((doc as any)
+.lastAutoTable
+.finalY || shuAnggotaY)
++15;
+
+
+
+doc.setFontSize(11);
+
+doc.setFont(
+"helvetica",
+"bold"
+);
+
+
+doc.text(
+
+"TOTAL SHU DITERIMA ANGGOTA : Rp "+
+Number(totalSHUAnggota)
+.toLocaleString("id-ID"),
+
+20,
+
+posisiTotal
+
+);
+
+
+// Tempat tanggal
+
+doc.setFont("helvetica","normal");
+doc.setFontSize(11);
+
+
+// ===============================
+// HALAMAN TANDA TANGAN PENGURUS
+// ===============================
+
+doc.addPage();
+
+doc.setFont("helvetica","normal");
+doc.setFontSize(11);
+
+
+// posisi headline halaman
+const tandaTanganY = 10;
+
+
+// tanggal
+doc.text(
+`Bukit Jaya, ${new Date().toLocaleDateString("id-ID")}`,
+145,
+tandaTanganY
+);
+
+
+// pengurus koperasi
+doc.text(
+"Pengurus Koperasi",
+155,
+tandaTanganY + 6
+);
+
+
+
+// ===============================
+// KOLOM TANDA TANGAN
+// ===============================
+
+
+// Jabatan
+doc.text(
+"Ketua",
+35,
+tandaTanganY + 18
+);
+
+
+doc.text(
+"Sekretaris",
+100,
+tandaTanganY + 18
+);
+
+
+doc.text(
+"Bendahara",
+165,
+tandaTanganY + 18
+);
+
+
+
+
+// Garis tanda tangan
+doc.text(
+"(................................)",
+20,
+tandaTanganY + 38
+);
+
+
+doc.text(
+"(................................)",
+85,
+tandaTanganY + 38
+);
+
+
+doc.text(
+"(................................)",
+150,
+tandaTanganY + 38
+);
+
+
+
+
+// Nama pengurus
+
+doc.text(
+ketua || "-",
+35,
+tandaTanganY + 45
+);
+
+
+doc.text(
+sekretaris || "-",
+100,
+tandaTanganY + 45
+);
+
+
+doc.text(
+bendahara1 || "-",
+165,
+tandaTanganY + 45
+);
+
+
+// ===============================
+// SIMPAN PDF
+// ===============================
+
 doc.save(
 `Laporan_RAT_KDMP_Bukit_Jaya_${tahun}.pdf`
 );
-
 
 }
 return (
@@ -1015,6 +1432,134 @@ text-white
 mb-5
 "
 >
+  <div
+className="
+rounded-3xl
+p-8
+bg-white/5
+border
+border-white/10
+"
+>
+
+
+<h2
+className="
+text-2xl
+font-bold
+text-white
+mb-5
+"
+>
+💰 Pembagian SHU Anggota
+</h2>
+
+
+<div className="overflow-auto">
+
+
+<table className="w-full text-sm">
+
+
+<thead>
+
+<tr className="bg-black/30">
+
+<th className="p-3 text-left">
+No
+</th>
+
+<th className="p-3 text-left">
+Nama Anggota
+</th>
+
+<th className="p-3 text-left">
+Simpanan
+</th>
+
+<th className="p-3 text-left">
+Transaksi
+</th>
+
+<th className="p-3 text-left">
+SHU Diterima
+</th>
+
+</tr>
+
+</thead>
+
+
+
+<tbody>
+
+
+{
+shuAnggota.map(
+(item:any,index:number)=>(
+
+
+<tr
+key={index}
+className="
+border-b
+border-white/10
+"
+>
+
+
+<td className="p-3">
+{index+1}
+</td>
+
+
+<td className="p-3">
+{item.nama}
+</td>
+
+
+<td className="p-3">
+Rp {Number(item.simpanan)
+.toLocaleString("id-ID")}
+</td>
+
+
+<td className="p-3">
+Rp {Number(item.transaksi)
+.toLocaleString("id-ID")}
+</td>
+
+
+<td className="
+p-3
+font-bold
+text-green-400
+">
+
+Rp {Number(item.shu)
+.toLocaleString("id-ID")}
+
+</td>
+
+
+</tr>
+
+
+)
+)
+}
+
+
+</tbody>
+
+
+</table>
+
+
+</div>
+
+
+</div>
 📚 Arsip RAT
 </h2>
 
