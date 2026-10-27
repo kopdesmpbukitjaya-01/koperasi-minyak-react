@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+
 import IdCard from "../components/IdCard";
 import { useNavigate } from "react-router-dom";
 import Layout from "../components/Layout";
@@ -674,7 +675,6 @@ className="
 text-4xl
 font-black
 text-white
-drop-shadow-[0_0_15px_rgba(239,68,68,0.8)]
 "
 >
 👥 Data Warga
@@ -693,7 +693,6 @@ Kelola data warga Pertashop KDMP Bukit Jaya
 
 
 </div>
-
 
 
 <button
@@ -715,17 +714,13 @@ transition
 "
 
 >
-
 ← Dashboard
-
 </button>
 
 
 </div>
-
 </div>
-
-
+</div>
 
         {/* FORM DATA WARGA */}
 
@@ -2081,16 +2076,16 @@ transition
 "
             >
               ×
-            </button>
+                        </button>
+
 
           </div>
 
-                </div>
+        </div>
 
       )}
 
       </div>
-            </div>
 
     </Layout>
 

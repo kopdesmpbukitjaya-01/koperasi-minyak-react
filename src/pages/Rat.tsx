@@ -1,3 +1,6 @@
+import { Capacitor } from "@capacitor/core";
+import { Filesystem, Directory } from "@capacitor/filesystem";
+import { FileOpener } from "@capacitor-community/file-opener";
 import { useEffect, useState } from "react";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
@@ -56,7 +59,8 @@ const [editId,setEditId] = useState<number | null>(null);
 const [ringkasan,setRingkasan]=useState<any>(null);
 
 const [shuAnggota,setShuAnggota]=useState<any[]>([]);
-
+const [tahunSHU, setTahunSHU] = useState("");
+const [tampilkanSHU, setTampilkanSHU] = useState(false);
 
 useEffect(()=>{
 
@@ -368,7 +372,7 @@ alert(
 
 
 }
-function downloadPDF(){
+async function downloadPDF(){
 
 const doc = new jsPDF({
 
@@ -1130,9 +1134,52 @@ tandaTanganY + 45
 // SIMPAN PDF
 // ===============================
 
-doc.save(
-`Laporan_RAT_KDMP_Bukit_Jaya_${tahun}.pdf`
-);
+// ===============================
+// SIMPAN PDF
+// ===============================
+
+const fileName =
+`Laporan_RAT_KDMP_Bukit_Jaya_${tahun}.pdf`;
+
+
+if (Capacitor.isNativePlatform()) {
+
+
+  const pdfBase64 =
+  doc.output("datauristring")
+  .split(",")[1];
+
+
+  const savedFile =
+  await Filesystem.writeFile({
+
+    path:fileName,
+
+    data:pdfBase64,
+
+    directory:Directory.Documents,
+
+  });
+
+
+  await FileOpener.open({
+
+    filePath:savedFile.uri,
+
+    contentType:"application/pdf",
+
+  });
+
+
+}
+else{
+
+
+  doc.save(fileName);
+
+
+}
+
 
 }
 return (
@@ -1323,7 +1370,7 @@ text-white
 </div>
 
 
-
+</div> 
 
 <button
 
@@ -1403,275 +1450,255 @@ shadow-lg
 </button>
 <div
 className="
-rounded-3xl
-p-8
-bg-white/5
+mt-6
+p-5
+rounded-2xl
+bg-black/30
 border
 border-white/10
 "
 >
 
-<h2
+<h3
 className="
-text-2xl
+text-xl
 font-bold
 text-white
-mb-5
+mb-4
 "
 >
-📊 Ringkasan Keuangan RAT
-</h2>
-
-
-<div
-className="
-grid
-grid-cols-1
-md:grid-cols-3
-gap-4
-"
->
-
-
-<div className="p-4 rounded-xl bg-black/30">
-<p className="text-gray-400">
-Jumlah Anggota
-</p>
-
-<h3 className="text-2xl font-bold text-white">
-{ringkasan?.jumlahAnggota || 0}
+📊 Pilih Tahun RAT Pembagian SHU
 </h3>
 
-</div>
 
+<select
 
+value={tahunSHU}
 
-<div className="p-4 rounded-xl bg-black/30">
-<p className="text-gray-400">
-Simpanan Pokok
-</p>
-
-<h3 className="text-xl font-bold text-white">
-Rp {Number(ringkasan?.simpananPokok || 0)
-.toLocaleString("id-ID")}
-</h3>
-
-</div>
-
-
-
-<div className="p-4 rounded-xl bg-black/30">
-<p className="text-gray-400">
-Simpanan Wajib
-</p>
-
-<h3 className="text-xl font-bold text-white">
-Rp {Number(ringkasan?.simpananWajib || 0)
-.toLocaleString("id-ID")}
-</h3>
-
-</div>
-
-
-
-<div className="p-4 rounded-xl bg-black/30">
-<p className="text-gray-400">
-Simpanan Sukarela
-</p>
-
-<h3 className="text-xl font-bold text-white">
-Rp {Number(ringkasan?.simpananSukarela || 0)
-.toLocaleString("id-ID")}
-</h3>
-
-</div>
-
-
-
-<div className="p-4 rounded-xl bg-black/30">
-<p className="text-gray-400">
-Omzet Penjualan BBM
-</p>
-
-<h3 className="text-xl font-bold text-white">
-Rp {Number(ringkasan?.omzetPenjualan || 0)
-.toLocaleString("id-ID")}
-</h3>
-
-</div>
-
-
-
-<div className="p-4 rounded-xl bg-black/30">
-<p className="text-gray-400">
-SHU Bersih
-</p>
-
-<h3 className="text-xl font-bold text-green-400">
-Rp {Number(ringkasan?.shuBersih || 0)
-.toLocaleString("id-ID")}
-</h3>
-
-</div>
-
-
-</div>
-
-
-</div>
-</div>
-
-
-
-
-
-<div
-className="
-rounded-3xl
-p-8
-bg-white/5
-border
-border-white/10
-"
->
-
-
-<h2
-className="
-text-2xl
-font-bold
-text-white
-mb-5
-"
->
-  <div
-className="
-rounded-3xl
-p-8
-bg-white/5
-border
-border-white/10
-"
->
-
-
-<h2
-className="
-text-2xl
-font-bold
-text-white
-mb-5
-"
->
-💰 Pembagian SHU Anggota
-</h2>
-
-
-<div className="overflow-auto">
-
-
-<table className="w-full text-sm">
-
-
-<thead>
-
-<tr className="bg-black/30">
-
-<th className="p-3 text-left">
-No
-</th>
-
-<th className="p-3 text-left">
-Nama Anggota
-</th>
-
-<th className="p-3 text-left">
-Simpanan
-</th>
-
-<th className="p-3 text-left">
-Transaksi
-</th>
-
-<th className="p-3 text-left">
-SHU Diterima
-</th>
-
-</tr>
-
-</thead>
-
-
-
-<tbody>
-
-
-{
-shuAnggota.map(
-(item:any,index:number)=>(
-
-
-<tr
-key={index}
-className="
-border-b
-border-white/10
-"
->
-
-
-<td className="p-3">
-{index+1}
-</td>
-
-
-<td className="p-3">
-{item.nama}
-</td>
-
-
-<td className="p-3">
-Rp {Number(item.simpanan)
-.toLocaleString("id-ID")}
-</td>
-
-
-<td className="p-3">
-Rp {Number(item.transaksi)
-.toLocaleString("id-ID")}
-</td>
-
-
-<td className="
-p-3
-font-bold
-text-green-400
-">
-
-Rp {Number(item.shu)
-.toLocaleString("id-ID")}
-
-</td>
-
-
-</tr>
-
-
-)
-)
+onChange={(e)=>
+setTahunSHU(e.target.value)
 }
 
+className="
+w-full
+md:w-72
+p-3
+rounded-xl
+bg-black/40
+border
+border-white/20
+text-white
+"
 
-</tbody>
+>
+
+<option value="">
+Pilih Tahun RAT
+</option>
+
+<option value="2026">
+2026
+</option>
 
 
-</table>
+</select>
+
+
+<button
+
+onClick={()=>
+setTampilkanSHU(true)
+}
+
+className="
+mt-4
+px-6
+py-3
+rounded-xl
+bg-gradient-to-r
+from-blue-600
+to-cyan-500
+text-white
+font-bold
+"
+
+>
+
+🔍 Tampilkan SHU
+
+</button>
+
+
+<button
+
+onClick={()=>
+setTampilkanSHU(false)
+}
+
+className="
+mt-4
+ml-3
+px-6
+py-3
+rounded-xl
+bg-gradient-to-r
+from-gray-600
+to-gray-800
+text-white
+font-bold
+"
+
+>
+
+🙈 Sembunyikan
+
+</button>
 
 
 </div>
+{
+tampilkanSHU && tahunSHU && (
+
+  <div
+    className="
+    rounded-3xl
+    p-8
+    bg-white/5
+    border
+    border-white/10
+    "
+  >
+
+    <h2
+      className="
+      text-2xl
+      font-bold
+      text-white
+      mb-5
+      "
+    >
+      💰 Pembagian SHU Anggota
+    </h2>
 
 
-</div>
+    <div className="overflow-auto">
+
+      <table className="w-full text-sm">
+
+        <thead>
+
+          <tr className="bg-black/30">
+
+            <th className="p-3 text-left">
+              No
+            </th>
+
+            <th className="p-3 text-left">
+              Nama Anggota
+            </th>
+
+            <th className="p-3 text-left">
+              Simpanan
+            </th>
+
+            <th className="p-3 text-left">
+              Transaksi
+            </th>
+
+            <th className="p-3 text-left">
+              SHU Diterima
+            </th>
+
+          </tr>
+
+        </thead>
+
+
+        <tbody>
+
+          {
+            shuAnggota.map(
+              (item:any,index:number)=>(
+
+                <tr
+                  key={index}
+                  className="
+                  border-b
+                  border-white/10
+                  "
+                >
+
+                  <td className="p-3">
+                    {index+1}
+                  </td>
+
+
+                  <td className="p-3">
+                    {item.nama}
+                  </td>
+
+
+                  <td className="p-3">
+                    Rp {Number(item.simpanan)
+                    .toLocaleString("id-ID")}
+                  </td>
+
+
+                  <td className="p-3">
+                    Rp {Number(item.transaksi)
+                    .toLocaleString("id-ID")}
+                  </td>
+
+
+                  <td
+                    className="
+                    p-3
+                    font-bold
+                    text-green-400
+                    "
+                  >
+                    Rp {Number(item.shu)
+                    .toLocaleString("id-ID")}
+                  </td>
+
+
+                </tr>
+
+              )
+            )
+          }
+
+        </tbody>
+
+
+      </table>
+
+    </div>
+
+
+  </div>
+
+)
+
+}
+<div
+className="
+rounded-3xl
+p-8
+bg-white/5
+border
+border-white/10
+"
+>
+
+<h2
+className="
+text-2xl
+font-bold
+text-white
+mb-5
+"
+>
 📚 Arsip RAT
 </h2>
 
@@ -1698,7 +1725,6 @@ RAT Tahun {item.tahun}
 <p>
 {item.nama_koperasi}
 </p>
-
 
 
 <div className="mt-4 flex gap-3">
@@ -1744,12 +1770,10 @@ font-bold
 </div>
 
 
-
 </div>
 
 ))
 }
-
 
 
 </div>

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 
-
+import { Capacitor } from "@capacitor/core";
+import { useNavigate } from "react-router-dom";
 import logo from "../assets/logo_transparan.png";
 
 import jsPDF from "jspdf";
@@ -18,7 +19,9 @@ import {
 
 
   export default function Laporan() {
-  
+  const navigate = useNavigate();
+
+const isAPK = Capacitor.isNativePlatform();
 
   // ==============================
   // STATE
@@ -1381,15 +1384,63 @@ await FileOpener.open({
     >
 
 
-      <h1
-        style={{
-          fontSize:28,
-          fontWeight:"bold",
-          marginBottom:20
-        }}
-      >
-        📄 Laporan Pengambilan BBM
-      </h1>
+      <div
+style={{
+display:"flex",
+justifyContent:"space-between",
+alignItems:"center",
+marginBottom:20
+}}
+>
+
+<h1
+style={{
+fontSize:28,
+fontWeight:"bold"
+}}
+>
+📄 Laporan Pengambilan BBM
+</h1>
+
+
+{
+!isAPK && (
+
+<button
+
+onClick={()=>navigate("/dashboard")}
+
+style={{
+
+padding:"10px 18px",
+
+borderRadius:10,
+
+background:
+"linear-gradient(135deg,#7c3aed,#2563eb)",
+
+color:"#fff",
+
+border:"none",
+
+cursor:"pointer",
+
+fontWeight:"bold"
+
+}}
+
+>
+
+⬅️ Dashboard
+
+</button>
+
+)
+
+}
+
+
+</div>
 
 
 
