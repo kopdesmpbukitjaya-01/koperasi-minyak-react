@@ -124,6 +124,8 @@ totalTransaksi
 
 return {
 
+id:item.id,
+
 nama:item.nama,
 
 simpanan:simpananAnggota,
@@ -133,12 +135,39 @@ transaksi:transaksiAnggota,
 shu:
 jasaModal+jasaUsaha
 
-
 };
 
 
 
 });
 
+
+}
+export async function simpanSHUAnggota(
+tahun:number,
+data:any[]
+){
+
+const insertData = data.map((item:any)=>({
+
+warga_id:item.id,
+
+tahun,
+
+shu:item.shu
+
+}));
+
+
+const {error}=await supabase
+.from("shu_anggota")
+.insert(insertData);
+
+
+if(error)
+throw error;
+
+
+return true;
 
 }

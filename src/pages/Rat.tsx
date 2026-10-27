@@ -13,7 +13,8 @@ import {
   getRingkasanRat
 } from "../services/rat_keuangan";
 import {
-  getPembagianSHUAnggota
+  getPembagianSHUAnggota,
+  simpanSHUAnggota
 } from "../services/shu_anggota";
 
 const IDENTITAS_KOPERASI = {
@@ -51,8 +52,12 @@ const [bendahara2,setBendahara2] = useState("");
 
 const [dataRat,setDataRat]=useState<any[]>([]);
 const [editId,setEditId] = useState<number | null>(null);
+
 const [ringkasan,setRingkasan]=useState<any>(null);
+
 const [shuAnggota,setShuAnggota]=useState<any[]>([]);
+
+
 useEffect(()=>{
 
 loadData();
@@ -71,25 +76,108 @@ await getLaporanRat();
 setDataRat(data || []);
 
 
+
 const keuangan =
 await getRingkasanRat();
 
 
-console.log("DATA RAT :", keuangan);
-
-
-setRingkasan(keuangan);
-const dataSHU =
-await getPembagianSHUAnggota(
-  Number(keuangan?.shuBersih || 0) * 0.50
+console.log(
+"DATA RAT :",
+keuangan
 );
 
 
-setShuAnggota(dataSHU || []);
+setRingkasan(
+keuangan
+);
+
+
+
+const dataSHU =
+await getPembagianSHUAnggota(
+Number(
+keuangan?.shuBersih || 0
+) * 0.50
+);
+
+
+
+setShuAnggota(
+dataSHU || []
+);
+
+
 
 }catch(err){
 
-console.error("ERROR RAT :", err);
+console.error(
+"ERROR RAT :",
+err
+);
+
+}
+
+}
+
+
+
+
+
+// ============================
+// SIMPAN SHU ANGGOTA
+// ============================
+
+async function simpanPembagianSHU(){
+
+try{
+
+
+const totalSHU =
+
+Number(
+ringkasan?.shuBersih || 0
+)
+*
+0.50;
+
+
+
+const dataSHU =
+
+await getPembagianSHUAnggota(
+totalSHU
+);
+
+
+
+await simpanSHUAnggota(
+
+tahun,
+
+dataSHU
+
+);
+
+
+
+alert(
+"Pembagian SHU anggota berhasil disimpan"
+);
+
+
+
+}catch(error){
+
+console.error(
+error
+);
+
+
+
+alert(
+"Gagal menyimpan SHU anggota"
+);
+
 
 }
 
@@ -1288,6 +1376,30 @@ shadow-lg
 
 >
 📄 Download PDF RAT
+</button>
+<button
+
+onClick={simpanPembagianSHU}
+
+className="
+mt-8
+ml-3
+px-8
+py-3
+rounded-xl
+
+bg-gradient-to-r
+from-green-600
+to-emerald-500
+
+text-white
+font-bold
+
+shadow-lg
+"
+
+>
+💰 Simpan Pembagian SHU Anggota
 </button>
 <div
 className="

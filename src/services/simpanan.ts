@@ -159,7 +159,15 @@ export async function getPortalAnggota(
   kode_warga:string,
   nama:string
 ){
+  console.log("MASUK GET PORTAL ANGGOTA");
+console.log("=== CEK SESSION PORTAL ===");
 
+const {data:session}=await supabase.auth.getSession();
+
+console.log(
+"SESSION SUPABASE:",
+session
+);
 const {data:warga,error:wargaError}=await supabase
 .from("warga")
 .select(`
@@ -211,7 +219,36 @@ throw simpananError;
 
 }
 
+const {data:shu,error:shuError}=await supabase
+.from("shu_anggota")
+.select(`
+shu,
+tahun
+`)
+.eq(
+"warga_id",
+warga.id
+)
+.order(
+"tahun",
+{
+ascending:false
+}
+)
+.limit(1)
+.maybeSingle();
 
+console.log("CEK WARGA ID :", warga.id);
+console.log("CEK DATA SHU :", shu);
+console.log("CEK ERROR SHU :", shuError);
+if(shuError){
+
+console.log(
+"SHU ERROR:",
+shuError
+);
+
+}
 
 let pokok=0;
 let wajib=0;
@@ -240,24 +277,57 @@ item.simpanan_sukarela || 0
 });
 
 
-
+console.log("HASIL PORTAL FINAL",{
+    warga,
+    simpanan,
+    shu
+});
 return {
 
 id:warga.id,
 
-kode_warga:warga.kode_warga,
-
 nama:warga.nama,
 
-pokok,
+kode_warga:warga.kode_warga,
 
-wajib,
 
-sukarela,
+pokok:
+simpanan?.reduce(
+(a,b)=>
+a+
+Number(b.simpanan_pokok||0)
+,0
+)
+||0,
 
-shu:""
+
+wajib:
+simpanan?.reduce(
+(a,b)=>
+a+
+Number(b.simpanan_wajib||0)
+,0
+)
+||0,
+
+
+sukarela:
+simpanan?.reduce(
+(a,b)=>
+a+
+Number(b.simpanan_sukarela||0)
+,0
+)
+||0,
+
+
+shu:
+shu?.shu || 0,
+
+
+tahunSHU:
+shu?.tahun || null
+
 
 };
-
-
 }

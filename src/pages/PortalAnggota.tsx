@@ -38,7 +38,9 @@ wajib:data.wajib,
 
 sukarela:data.sukarela,
 
-shu:""
+shu:data.shu,
+
+tahunSHU:data.tahunSHU
 
 });
 
@@ -252,8 +254,24 @@ infoAnggota?.sukarela || 0
 
 <p>
 SHU :
-{infoAnggota?.shu || "-"}
+Rp {
+Number(
+infoAnggota?.shu || 0
+)
+.toLocaleString("id-ID")
+}
 </p>
+
+
+{
+infoAnggota?.tahunSHU &&
+
+<p>
+Tahun SHU :
+{infoAnggota.tahunSHU}
+</p>
+
+}
 
 
 </div>
