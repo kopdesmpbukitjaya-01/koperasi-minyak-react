@@ -124,12 +124,13 @@ keuangan?.shuBersih || 0
 );
 
 
-
 // SHU ANGGOTA
+const totalSHUAnggota = totalSHU;
+
+
 const dataSHU =
 await getPembagianSHUAnggota(
-totalSHU,
-tahun
+totalSHUAnggota
 );
 
 setShuAnggota(
@@ -233,10 +234,8 @@ alokasi?.jasa_anggota || 0
 
 
 const dataSHU =
-
 await getPembagianSHUAnggota(
-  totalSHUAnggota,
-  tahun
+  totalSHUAnggota
 );
 console.log(
 "TOTAL JASA ANGGOTA SEHARUSNYA",
