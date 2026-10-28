@@ -2,7 +2,8 @@ import { supabase } from "../lib/supabase";
 
 
 export async function getPembagianSHUAnggota(
-totalSHUAnggota:number
+totalSHUAnggota:number,
+tahun:number
 ){
 
 
@@ -23,7 +24,15 @@ no_kk
 if(error)
 throw error;
 
+const {data:alokasi,error:alokasiError}=await supabase
+.from("alokasi_shu")
+.select("*")
+.eq("tahun",tahun)
+.single();
 
+
+if(alokasiError)
+throw alokasiError;
 
 const {data:simpanan}=await supabase
 .from("simpanan_anggota")
@@ -105,7 +114,10 @@ totalSimpanan
 ?
 (simpananAnggota/totalSimpanan)
 *
-(totalSHUAnggota*0.4)
+(
+totalSHUAnggota *
+(Number(alokasi.jasa_anggota)/100)
+)
 :
 0;
 
@@ -116,7 +128,10 @@ totalTransaksi
 ?
 (transaksiAnggota/totalTransaksi)
 *
-(totalSHUAnggota*0.6)
+(
+totalSHUAnggota *
+(Number(alokasi.jasa_anggota)/100)
+)
 :
 0;
 

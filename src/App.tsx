@@ -17,6 +17,7 @@ import Pengeluaran from "./pages/Pengeluaran";
 import Rat from "./pages/Rat";
 import Backup from "./pages/Backup";
 import PortalAnggota from "./pages/PortalAnggota";
+import AlokasiSHU from "./pages/AlokasiSHU";
 
 export default function App() {
 
@@ -34,6 +35,12 @@ export default function App() {
     </ProtectedRoute>
   }
   
+/>
+<Route
+path="/alokasi-shu"
+element={
+<AlokasiSHU/>
+}
 />
 <Route
   path="/rat"

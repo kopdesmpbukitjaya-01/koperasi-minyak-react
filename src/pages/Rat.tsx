@@ -19,6 +19,9 @@ import {
   getPembagianSHUAnggota,
   simpanSHUAnggota
 } from "../services/shu_anggota";
+import {
+  getAlokasiSHU
+} from "../services/alokasi_shu";
 
 const IDENTITAS_KOPERASI = {
   badanHukum:
@@ -99,9 +102,10 @@ keuangan
 
 const dataSHU =
 await getPembagianSHUAnggota(
-Number(
-keuangan?.shuBersih || 0
-) * 0.50
+  Number(
+    keuangan?.shuBersih || 0
+  ),
+  tahun
 );
 
 
@@ -136,20 +140,30 @@ async function simpanPembagianSHU(){
 try{
 
 
+const alokasi =
+await getAlokasiSHU(tahun);
+
+
 const totalSHU =
 
 Number(
 ringkasan?.shuBersih || 0
 )
 *
-0.50;
+(
+Number(
+alokasi?.jasa_anggota || 0
+)
+/100
+);
 
 
 
 const dataSHU =
 
 await getPembagianSHUAnggota(
-totalSHU
+  totalSHU,
+  tahun
 );
 
 
@@ -756,6 +770,10 @@ Number(ringkasan?.shuBersih || 0);
 
 
 
+const alokasi =
+await getAlokasiSHU(tahun);
+
+
 const alokasiSHU = [
 
 [
@@ -763,33 +781,49 @@ const alokasiSHU = [
 shu
 ],
 
-[
-"Cadangan Koperasi 25%",
-shu * 0.25
-],
 
 [
-"Bagian Anggota 50%",
-shu * 0.50
+`Cadangan Koperasi ${alokasi?.cadangan || 0}%`,
+shu * Number(alokasi?.cadangan || 0) / 100
 ],
 
-[
-"Dana Pengurus dan Pengawas 5%",
-shu * 0.05
-],
 
 [
-"Dana Pendidikan 5%",
-shu * 0.05
+`Jasa Anggota ${alokasi?.jasa_anggota || 0}%`,
+shu * Number(alokasi?.jasa_anggota || 0) / 100
 ],
 
+
 [
-"Dana Sosial 5%",
-shu * 0.05
+`Jasa Pengurus ${alokasi?.jasa_pengurus || 0}%`,
+shu * Number(alokasi?.jasa_pengurus || 0) / 100
+],
+
+
+[
+`Jasa Pengawas ${alokasi?.jasa_pengawas || 0}%`,
+shu * Number(alokasi?.jasa_pengawas || 0) / 100
+],
+
+
+[
+`Dana Pendidikan ${alokasi?.dana_pendidikan || 0}%`,
+shu * Number(alokasi?.dana_pendidikan || 0) / 100
+],
+
+
+[
+`Dana Sosial ${alokasi?.dana_sosial || 0}%`,
+shu * Number(alokasi?.dana_sosial || 0) / 100
+],
+
+
+[
+`Dana Pembangunan ${alokasi?.dana_pembangunan || 0}%`,
+shu * Number(alokasi?.dana_pembangunan || 0) / 100
 ]
 
 ];
-
 
 
 

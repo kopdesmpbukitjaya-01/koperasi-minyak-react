@@ -695,28 +695,6 @@ Kelola data warga Pertashop KDMP Bukit Jaya
 </div>
 
 
-<button
-
-onClick={()=>navigate("/dashboard")}
-
-className="
-px-6
-py-3
-rounded-xl
-font-bold
-text-white
-bg-gradient-to-r
-from-blue-600
-to-cyan-600
-shadow-[0_0_25px_rgba(34,211,238,0.7)]
-hover:scale-105
-transition
-"
-
->
-← Dashboard
-</button>
-
 
 </div>
 </div>
@@ -923,17 +901,30 @@ focus:border-red-400
 
                 <option value="Anggota" className="bg-slate-900 text-white">
 
-                  🟢 Anggota
+  🟢 Anggota
 
-                </option>
+</option>
 
 
+<option value="Pengurus" className="bg-slate-900 text-white">
 
-                <option value="Non-Anggota" className="bg-slate-900 text-white">
+  🔵 Pengurus
 
-                  ⚪ Non-Anggota
+</option>
 
-                </option>
+
+<option value="Pengawas" className="bg-slate-900 text-white">
+
+  🟣 Pengawas
+
+</option>
+
+
+<option value="Non-Anggota" className="bg-slate-900 text-white">
+
+  ⚪ Non-Anggota
+
+</option>
 
 
               </select>

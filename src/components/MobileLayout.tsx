@@ -300,6 +300,11 @@ icon="🏛️"
 text="RAT"
 onClick={()=>navigate("/rat")}
 />
+<Menu
+icon="🏛️"
+text="RAT"
+onClick={()=>navigate("/rat")}
+/>
 
       </nav>
 
