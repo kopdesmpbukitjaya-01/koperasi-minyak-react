@@ -44,6 +44,11 @@ export default function Sidebar() {
       path: "/anggota",
     },
     {
+  title: "Profil Koperasi",
+  icon: "🏢",
+  path: "/profil-koperasi",
+},
+    {
       title: "Laporan PDF",
       icon: "📄",
       path: "/laporan",

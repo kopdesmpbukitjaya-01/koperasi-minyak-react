@@ -6,22 +6,34 @@ import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import logo from "../assets/logo_transparan.png";
 import Layout from "../components/Layout";
+
 import {
   addLaporanRat,
   getLaporanRat,
   updateLaporanRat,
   deleteLaporanRat,
 } from "../services/rat";
+
 import {
   getRingkasanRat
 } from "../services/rat_keuangan";
+
 import {
   getPembagianSHUAnggota,
   simpanSHUAnggota
 } from "../services/shu_anggota";
+
+import {
+  getPembagianSHUPengurus,
+  getPembagianSHUPengawas
+} from "../services/shu_pengurus";
+
 import {
   getAlokasiSHU
 } from "../services/alokasi_shu";
+import {
+simpanSHUStruktur
+} from "../services/shu_struktur";
 
 const IDENTITAS_KOPERASI = {
   badanHukum:
@@ -62,6 +74,9 @@ const [editId,setEditId] = useState<number | null>(null);
 const [ringkasan,setRingkasan]=useState<any>(null);
 
 const [shuAnggota,setShuAnggota]=useState<any[]>([]);
+const [shuPengurus,setShuPengurus]=useState<any[]>([]);
+
+const [shuPengawas,setShuPengawas]=useState<any[]>([]);
 const [tahunSHU, setTahunSHU] = useState("");
 const [tampilkanSHU, setTampilkanSHU] = useState(false);
 
@@ -77,10 +92,13 @@ async function loadData(){
 
 try{
 
+
 const data =
 await getLaporanRat();
 
-setDataRat(data || []);
+setDataRat(
+data || []
+);
 
 
 
@@ -100,18 +118,66 @@ keuangan
 
 
 
-const dataSHU =
-await getPembagianSHUAnggota(
-  Number(
-    keuangan?.shuBersih || 0
-  ),
-  tahun
+const totalSHU =
+Number(
+keuangan?.shuBersih || 0
 );
 
 
 
+// SHU ANGGOTA
+const dataSHU =
+await getPembagianSHUAnggota(
+totalSHU,
+tahun
+);
+
 setShuAnggota(
 dataSHU || []
+);
+
+
+
+// SHU PENGURUS
+const dataPengurus =
+await getPembagianSHUPengurus(
+totalSHU,
+tahun
+);
+
+setShuPengurus(
+dataPengurus || []
+);
+
+
+console.log(
+"SHU PENGURUS:",
+dataPengurus
+);
+
+
+
+// SHU PENGAWAS
+const dataPengawas =
+await getPembagianSHUPengawas(
+totalSHU,
+tahun
+);
+await simpanSHUStruktur(
+[
+...dataPengurus,
+...dataPengawas
+],
+tahun
+);
+setShuPengawas(
+dataPengawas || []
+);
+
+
+console.log(
+"SHU PENGAWAS:",
+dataPengawas
 );
 
 
@@ -145,11 +211,18 @@ await getAlokasiSHU(tahun);
 
 
 const totalSHU =
-
 Number(
 ringkasan?.shuBersih || 0
+);
+const totalSHUAnggota =
+totalSHU *
+(
+Number(
+alokasi?.jasa_anggota || 0
 )
-*
+/100
+);
+
 (
 Number(
 alokasi?.jasa_anggota || 0
@@ -162,10 +235,13 @@ alokasi?.jasa_anggota || 0
 const dataSHU =
 
 await getPembagianSHUAnggota(
-  totalSHU,
+  totalSHUAnggota,
   tahun
 );
-
+console.log(
+"TOTAL JASA ANGGOTA SEHARUSNYA",
+totalSHU * Number(alokasi.jasa_anggota)/100
+);
 
 
 await simpanSHUAnggota(
@@ -176,7 +252,28 @@ dataSHU
 
 );
 
+const dataPengurus =
+await getPembagianSHUPengurus(
+totalSHU,
+tahun
+);
 
+
+const dataPengawas =
+await getPembagianSHUPengawas(
+totalSHU,
+tahun
+);
+
+
+
+await simpanSHUStruktur(
+[
+...dataPengurus,
+...dataPengawas
+],
+tahun
+);
 
 alert(
 "Pembagian SHU anggota berhasil disimpan"
@@ -184,16 +281,16 @@ alert(
 
 
 
-}catch(error){
+}catch(error:any){
 
 console.error(
+"ERROR SIMPAN SHU:",
 error
 );
 
 
-
 alert(
-"Gagal menyimpan SHU anggota"
+error.message || "Gagal menyimpan SHU anggota"
 );
 
 
@@ -772,7 +869,22 @@ Number(ringkasan?.shuBersih || 0);
 
 const alokasi =
 await getAlokasiSHU(tahun);
+const totalAlokasiSHU =
+Number(alokasi?.cadangan || 0) +
+Number(alokasi?.jasa_anggota || 0) +
+Number(alokasi?.jasa_pengurus || 0) +
+Number(alokasi?.jasa_pengawas || 0) +
+Number(alokasi?.dana_pendidikan || 0) +
+Number(alokasi?.dana_sosial || 0) +
+Number(alokasi?.dana_pembangunan || 0);
+if(totalAlokasiSHU !== 100){
 
+console.error(
+"TOTAL ALOKASI SHU TIDAK 100%",
+totalAlokasiSHU
+);
+
+}
 
 const alokasiSHU = [
 
@@ -1019,8 +1131,38 @@ total+
 Number(item.shu||0)
 
 ,0);
+const totalSHUPengurus =
+shuPengurus.reduce(
+(a,b)=>
+a + Number(b.shu || 0),
+0
+);
 
 
+const totalSHUPengawas =
+shuPengawas.reduce(
+(a,b)=>
+a + Number(b.shu || 0),
+0
+);
+console.log(
+"VALIDASI SHU",
+{
+SHU_Bersih:ringkasan?.shuBersih,
+
+Anggota:totalSHUAnggota,
+
+Pengurus:totalSHUPengurus,
+
+Pengawas:totalSHUPengawas,
+
+Total:
+totalSHUAnggota+
+totalSHUPengurus+
+totalSHUPengawas
+
+}
+);
 
 const posisiTotal =
 ((doc as any)
@@ -1163,7 +1305,133 @@ bendahara1 || "-",
 tandaTanganY + 45
 );
 
+// ===============================
+// HALAMAN PEMBAGIAN SHU PENGURUS
+// ===============================
 
+doc.addPage();
+
+
+doc.setFontSize(14);
+
+doc.setFont(
+"helvetica",
+"bold"
+);
+
+
+doc.text(
+"PEMBAGIAN SISA HASIL USAHA (SHU) PENGURUS",
+105,
+30,
+{
+align:"center"
+}
+);
+
+
+autoTable(doc,{
+
+startY:45,
+
+head:[
+[
+"No",
+"Nama",
+"Jabatan",
+"SHU Diterima"
+]
+],
+
+
+body:
+
+shuPengurus.map(
+(item:any,index:number)=>
+[
+index+1,
+item.nama,
+item.jabatan || "-",
+"Rp "+
+Number(item.shu)
+.toLocaleString("id-ID")
+]
+),
+
+
+theme:"grid",
+
+styles:{
+fontSize:10
+}
+
+});
+// ===============================
+// HALAMAN PEMBAGIAN SHU PENGAWAS
+// ===============================
+
+doc.addPage();
+
+
+doc.setFontSize(14);
+
+doc.setFont(
+"helvetica",
+"bold"
+);
+
+
+doc.text(
+"PEMBAGIAN SISA HASIL USAHA (SHU) PENGAWAS",
+105,
+30,
+{
+align:"center"
+}
+);
+
+
+
+autoTable(doc,{
+
+startY:45,
+
+
+head:[
+[
+"No",
+"Nama",
+"Jabatan",
+"SHU Diterima"
+]
+],
+
+
+
+body:
+
+shuPengawas.map(
+(item:any,index:number)=>
+[
+index+1,
+item.nama,
+item.jabatan || "-",
+"Rp "+
+Number(item.shu)
+.toLocaleString("id-ID")
+]
+),
+
+
+theme:"grid",
+
+
+styles:{
+fontSize:10
+}
+
+
+});
 // ===============================
 // SIMPAN PDF
 // ===============================
@@ -1642,6 +1910,9 @@ tampilkanSHU && tahunSHU && (
             <th className="p-3 text-left">
               SHU Diterima
             </th>
+            <th>
+Status
+</th>
 
           </tr>
 
@@ -1650,65 +1921,340 @@ tampilkanSHU && tahunSHU && (
 
         <tbody>
 
-          {
-            shuAnggota.map(
-              (item:any,index:number)=>(
+{
+shuAnggota.map(
+(item:any,index:number)=>(
 
-                <tr
-                  key={index}
-                  className="
-                  border-b
-                  border-white/10
-                  "
-                >
+<tr
+key={index}
+className="
+border-b
+border-white/10
+"
+>
 
-                  <td className="p-3">
-                    {index+1}
-                  </td>
-
-
-                  <td className="p-3">
-                    {item.nama}
-                  </td>
+<td className="p-3">
+{index+1}
+</td>
 
 
-                  <td className="p-3">
-                    Rp {Number(item.simpanan)
-                    .toLocaleString("id-ID")}
-                  </td>
+<td className="p-3">
+{item.nama}
+</td>
 
 
-                  <td className="p-3">
-                    Rp {Number(item.transaksi)
-                    .toLocaleString("id-ID")}
-                  </td>
+<td className="p-3">
+Rp {Number(item.simpanan)
+.toLocaleString("id-ID")}
+</td>
 
 
-                  <td
-                    className="
-                    p-3
-                    font-bold
-                    text-green-400
-                    "
-                  >
-                    Rp {Number(item.shu)
-                    .toLocaleString("id-ID")}
-                  </td>
+<td className="p-3">
+Rp {Number(item.transaksi)
+.toLocaleString("id-ID")}
+</td>
 
 
-                </tr>
+<td
+className="
+p-3
+font-bold
+text-green-400
+"
+>
+Rp {Number(item.shu)
+.toLocaleString("id-ID")}
+</td>
 
-              )
-            )
-          }
 
-        </tbody>
+<td className="p-3">
 
+<span
+className={`
+px-3
+py-1
+rounded-full
+text-xs
+font-black
+
+${
+item.status === "Pengurus"
+
+?
+
+"bg-green-500/20 text-green-400 border border-green-400"
+
+:
+
+item.status === "Pengawas"
+
+?
+
+"bg-yellow-500/20 text-yellow-400 border border-yellow-400"
+
+:
+
+"bg-blue-500/20 text-blue-400 border border-blue-400"
+
+}
+
+`}
+>
+
+{item.status.toUpperCase()}
+
+</span>
+
+</td>
+
+
+</tr>
+
+)
+)
+}
+
+</tbody>
 
       </table>
 
     </div>
+    {/* ==========================
+PEMBAGIAN SHU PENGURUS
+========================== */}
 
+<div className="mt-10">
+
+<h2 className="
+text-2xl
+font-black
+text-white
+mb-4
+">
+👔 Pembagian SHU Pengurus
+</h2>
+
+
+<div className="overflow-auto">
+
+<table className="w-full text-sm">
+
+<thead>
+
+<tr className="bg-black/30 text-white">
+
+<th className="p-3 text-left">
+No
+</th>
+
+<th className="p-3 text-left">
+Nama
+</th>
+
+<th className="p-3 text-left">
+Jabatan
+</th>
+
+<th className="p-3 text-left">
+SHU Diterima
+</th>
+
+</tr>
+
+</thead>
+
+
+<tbody>
+
+{
+shuPengurus.map(
+(item:any,index:number)=>(
+
+<tr
+key={index}
+className="
+border-b
+border-white/10
+text-white
+"
+>
+
+<td className="p-3">
+{index+1}
+</td>
+
+
+<td className="p-3">
+{item.nama}
+</td>
+
+
+<td className="p-3 uppercase">
+{item.jabatan}
+</td>
+
+
+<td className="
+p-3
+font-bold
+text-green-400
+">
+
+Rp {Number(item.shu)
+.toLocaleString("id-ID")}
+
+</td>
+
+
+</tr>
+
+)
+)
+}
+
+
+</tbody>
+
+
+</table>
+
+</div>
+
+</div>
+{/* ===========================
+    PEMBAGIAN SHU PENGAWAS
+=========================== */}
+
+<div className="
+mt-10
+rounded-3xl
+p-6
+bg-white/5
+border
+border-white/10
+">
+
+
+<h3 className="
+text-2xl
+font-black
+text-yellow-400
+mb-5
+">
+🛡️ Pembagian SHU Pengawas
+</h3>
+
+
+<table className="w-full text-sm">
+
+<thead>
+
+<tr className="bg-black/30">
+
+<th className="p-3">
+No
+</th>
+
+<th className="p-3 text-left">
+Nama
+</th>
+
+<th className="p-3 text-left">
+Jabatan
+</th>
+
+<th className="p-3 text-left">
+Status
+</th>
+
+<th className="p-3 text-left">
+SHU Diterima
+</th>
+
+</tr>
+
+</thead>
+
+
+<tbody>
+
+{
+shuPengawas.map(
+(item:any,index:number)=>(
+
+<tr
+key={index}
+className="
+border-b
+border-white/10
+"
+>
+
+<td className="p-3">
+{index+1}
+</td>
+
+
+<td className="p-3">
+{item.nama}
+</td>
+
+
+<td className="p-3">
+{item.jabatan}
+</td>
+
+
+<td className="p-3">
+
+<span
+className="
+px-3
+py-1
+rounded-full
+text-xs
+font-black
+bg-yellow-500/20
+text-yellow-400
+border
+border-yellow-400
+"
+>
+
+{item.kategori.toUpperCase()}
+
+</span>
+
+</td>
+
+
+<td className="
+p-3
+font-bold
+text-green-400
+">
+
+Rp {Number(item.shu)
+.toLocaleString("id-ID")}
+
+</td>
+
+
+</tr>
+
+)
+
+)
+
+}
+
+</tbody>
+
+
+</table>
+
+
+</div>
 
   </div>
 

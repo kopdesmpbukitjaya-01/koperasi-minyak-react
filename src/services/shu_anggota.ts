@@ -12,11 +12,16 @@ const {data:anggota,error}=await supabase
 .select(`
 id,
 nama,
-no_kk
+no_kk,
+status
 `)
-.eq(
+.in(
 "status",
-"Anggota"
+[
+"Anggota",
+"Pengurus",
+"Pengawas"
+]
 );
 
 
@@ -109,15 +114,28 @@ Number(b.total||0)
 
 
 
+const totalJasaAnggota =
+totalSHUAnggota *
+(Number(alokasi.jasa_anggota)/100);
+
+
+const bagianSimpanan =
+totalJasaAnggota *
+0.5;
+
+
+const bagianTransaksi =
+totalJasaAnggota *
+0.5;
+
+
+
 const jasaModal =
 totalSimpanan
 ?
 (simpananAnggota/totalSimpanan)
 *
-(
-totalSHUAnggota *
-(Number(alokasi.jasa_anggota)/100)
-)
+bagianSimpanan
 :
 0;
 
@@ -128,10 +146,7 @@ totalTransaksi
 ?
 (transaksiAnggota/totalTransaksi)
 *
-(
-totalSHUAnggota *
-(Number(alokasi.jasa_anggota)/100)
-)
+bagianTransaksi
 :
 0;
 
@@ -142,6 +157,8 @@ return {
 id:item.id,
 
 nama:item.nama,
+
+status:item.status,
 
 simpanan:simpananAnggota,
 

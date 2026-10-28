@@ -7,7 +7,14 @@ export async function getAnggotaKoperasi() {
   const { data, error } = await supabase
     .from("warga")
     .select("*")
-    .eq("status", "Anggota")
+    .in(
+  "status",
+  [
+    "Anggota",
+    "Pengurus",
+    "Pengawas"
+  ]
+)
     .order("nama", {
       ascending: true,
     });

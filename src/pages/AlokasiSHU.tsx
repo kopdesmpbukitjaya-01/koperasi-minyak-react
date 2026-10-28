@@ -1,17 +1,28 @@
 import { useState } from "react";
 import Layout from "../components/Layout";
-import { supabase } from "../lib/supabase";
+
 import { useEffect } from "react";
 import {
 getAlokasiSHU,
 simpanAlokasiSHU
 } from "../services/alokasi_shu";
+function rupiah(value:number){
 
+return new Intl.NumberFormat(
+"id-ID",
+{
+style:"currency",
+currency:"IDR",
+maximumFractionDigits:0
+}
+).format(value);
+
+}
 export default function AlokasiSHU(){
 
 
 const [tahun,setTahun]=useState(2026);
-
+const [totalSHU,setTotalSHU]=useState(0);
 
 const [cadangan,setCadangan]=useState(25);
 const [jasaAnggota,setJasaAnggota]=useState(40);
@@ -31,7 +42,30 @@ pendidikan+
 sosial+
 pembangunan;
 
+const nominalSHU = {
 
+cadangan:
+(totalSHU * cadangan) / 100,
+
+jasaAnggota:
+(totalSHU * jasaAnggota) / 100,
+
+jasaPengurus:
+(totalSHU * jasaPengurus) / 100,
+
+jasaPengawas:
+(totalSHU * jasaPengawas) / 100,
+
+pendidikan:
+(totalSHU * pendidikan) / 100,
+
+sosial:
+(totalSHU * sosial) / 100,
+
+pembangunan:
+(totalSHU * pembangunan) / 100,
+
+};
 
 useEffect(()=>{
 
@@ -50,6 +84,10 @@ const data = await getAlokasiSHU(tahun);
 
 if(data){
 
+setTotalSHU(
+Number(data.total_shu)
+);
+
 setCadangan(Number(data.cadangan));
 setJasaAnggota(Number(data.jasa_anggota));
 setJasaPengurus(Number(data.jasa_pengurus));
@@ -59,7 +97,6 @@ setSosial(Number(data.dana_sosial));
 setPembangunan(Number(data.dana_pembangunan));
 
 }
-
 }catch(err){
 
 console.log(err);
@@ -69,61 +106,6 @@ console.log(err);
 }
 
 
-async function simpan(){
-
-
-if(total!==100){
-
-alert(
-"Total alokasi harus 100%"
-);
-
-return;
-
-}
-
-
-
-const {error}=await supabase
-.from("alokasi_shu")
-.insert({
-
-tahun,
-
-cadangan,
-
-jasa_anggota:jasaAnggota,
-
-jasa_pengurus:jasaPengurus,
-
-jasa_pengawas:jasaPengawas,
-
-dana_pendidikan:pendidikan,
-
-dana_sosial:sosial,
-
-dana_pembangunan:pembangunan
-
-});
-
-
-
-if(error){
-
-alert(error.message);
-
-return;
-
-}
-
-
-
-alert(
-"Alokasi SHU berhasil disimpan"
-);
-
-
-}
 
 
 
@@ -230,7 +212,39 @@ text-white
 
 </div>
 
+<div className="mb-6">
 
+<label className="text-white font-semibold">
+Total SHU Koperasi
+</label>
+
+<input
+
+type="number"
+
+value={totalSHU}
+
+onChange={(e)=>
+setTotalSHU(
+Number(e.target.value)
+)
+}
+
+className="
+block
+mt-2
+w-60
+p-3
+rounded-xl
+bg-black/40
+border
+border-white/20
+text-white
+"
+
+/>
+
+</div>
 
 
 <FormSHU
@@ -287,10 +301,13 @@ setValue={setPembangunan}
 
 onClick={async()=>{
 
+try{
 
 await simpanAlokasiSHU({
 
 tahun,
+
+total_shu: totalSHU,
 
 cadangan,
 
@@ -310,8 +327,26 @@ dana_pembangunan:pembangunan
 
 
 alert(
-"Alokasi SHU berhasil disimpan"
+"✅ Alokasi SHU berhasil disimpan"
 );
+
+
+}catch(error:any){
+
+console.error(
+"ERROR SIMPAN ALOKASI SHU:",
+error
+);
+
+
+alert(
+"Gagal simpan: "
++
+error.message
+);
+
+
+}
 
 
 }}
@@ -328,6 +363,7 @@ from-red-600
 to-purple-600
 shadow-lg
 "
+
 >
 
 💾 Simpan Alokasi SHU
@@ -365,31 +401,62 @@ total===100
 
 
 </div>
-
-
-
-<button
-
-onClick={simpan}
-
+<div
 className="
-mt-6
-px-8
-py-3
-rounded-xl
-bg-gradient-to-r
-from-green-600
-to-emerald-500
-text-white
-font-bold
-shadow-lg
+mt-8
+grid
+md:grid-cols-2
+gap-4
 "
-
 >
 
-💾 Simpan Alokasi SHU
 
-</button>
+<CardSHU
+label="Cadangan"
+value={nominalSHU.cadangan}
+/>
+
+
+<CardSHU
+label="Jasa Anggota"
+value={nominalSHU.jasaAnggota}
+/>
+
+
+<CardSHU
+label="Jasa Pengurus"
+value={nominalSHU.jasaPengurus}
+/>
+
+
+<CardSHU
+label="Jasa Pengawas"
+value={nominalSHU.jasaPengawas}
+/>
+
+
+<CardSHU
+label="Dana Pendidikan"
+value={nominalSHU.pendidikan}
+/>
+
+
+<CardSHU
+label="Dana Sosial"
+value={nominalSHU.sosial}
+/>
+
+
+<CardSHU
+label="Dana Pembangunan"
+value={nominalSHU.pembangunan}
+/>
+
+
+</div>
+
+
+
 
 
 
@@ -471,6 +538,45 @@ text-center
 
 </div>
 
+
+);
+
+}
+function CardSHU({
+label,
+value
+}:any){
+
+return (
+
+<div
+className="
+p-5
+rounded-2xl
+bg-white/5
+border
+border-white/10
+text-white
+"
+>
+
+<p className="text-gray-300">
+{label}
+</p>
+
+<p
+className="
+text-xl
+font-black
+text-green-400
+"
+>
+
+{rupiah(value)}
+
+</p>
+
+</div>
 
 );
 

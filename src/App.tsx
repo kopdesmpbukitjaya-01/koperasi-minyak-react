@@ -18,7 +18,7 @@ import Rat from "./pages/Rat";
 import Backup from "./pages/Backup";
 import PortalAnggota from "./pages/PortalAnggota";
 import AlokasiSHU from "./pages/AlokasiSHU";
-
+import ProfilKoperasi from "./pages/ProfilKoperasi";
 export default function App() {
 
   return (
@@ -202,7 +202,14 @@ element={
           }
         />
 
-
+<Route
+  path="/profil-koperasi"
+  element={
+    <ProtectedRoute>
+      <ProfilKoperasi />
+    </ProtectedRoute>
+  }
+/>
       </Routes>
 
 
