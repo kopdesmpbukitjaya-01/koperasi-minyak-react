@@ -79,7 +79,7 @@ const [shuPengurus,setShuPengurus]=useState<any[]>([]);
 const [shuPengawas,setShuPengawas]=useState<any[]>([]);
 const [tahunSHU, setTahunSHU] = useState("");
 const [tampilkanSHU, setTampilkanSHU] = useState(false);
-
+const [savingSHU,setSavingSHU] = useState(false);
 useEffect(()=>{
 
 loadData();
@@ -206,6 +206,8 @@ async function simpanPembagianSHU(){
 
 try{
 
+setSavingSHU(true);
+
 
 const alokasi =
 await getAlokasiSHU(tahun);
@@ -280,18 +282,13 @@ alert(
 
 
 
-}catch(error:any){
+}catch(error){
 
-console.error(
-"ERROR SIMPAN SHU:",
-error
-);
+console.error(error);
 
+}finally{
 
-alert(
-error.message || "Gagal menyimpan SHU anggota"
-);
-
+setSavingSHU(false);
 
 }
 
@@ -1727,6 +1724,8 @@ shadow-lg
 </button>
 <button
 
+disabled={savingSHU}
+
 onClick={simpanPembagianSHU}
 
 className="
@@ -1744,10 +1743,19 @@ text-white
 font-bold
 
 shadow-lg
+
+disabled:opacity-50
 "
 
 >
-💰 Simpan Pembagian SHU Anggota
+{
+savingSHU
+?
+"⏳ Menyimpan SHU..."
+:
+"💰 Simpan Pembagian SHU Anggota"
+}
+
 </button>
 <div
 className="
