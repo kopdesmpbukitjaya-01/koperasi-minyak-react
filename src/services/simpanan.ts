@@ -426,25 +426,34 @@ if(
 struktur.kategori==="Pengurus"
 ){
 
-
-}
+shuPengurus =
+Number(
+struktur.shu || 0
+);
 
 console.log(
 "SET SHU PENGURUS:",
 shuPengurus
 );
 
+}
+
+
 if(
 struktur.kategori==="Pengawas"
 ){
 
+shuPengawas =
+Number(
+struktur.shu || 0
+);
 
-
-}
 console.log(
 "SET SHU PENGAWAS:",
 shuPengawas
 );
+
+}
 
 
 }
