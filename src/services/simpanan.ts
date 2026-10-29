@@ -314,26 +314,10 @@ shuData.shu_jasa || 0
 );
 
 
-
 shuSimpanan =
 Number(
 shuData.shu_simpanan || 0
 );
-
-
-
-shuPengurus =
-Number(
-shuData.shu_pengurus || 0
-);
-
-
-
-shuPengawas =
-Number(
-shuData.shu_pengawas || 0
-);
-
 
 
 tahunSHU =
@@ -442,10 +426,6 @@ if(
 struktur.kategori==="Pengurus"
 ){
 
-shuPengurus =
-Number(
-struktur.shu || 0
-);
 
 }
 
@@ -458,10 +438,7 @@ if(
 struktur.kategori==="Pengawas"
 ){
 
-shuPengawas =
-Number(
-struktur.shu || 0
-);
+
 
 }
 console.log(
