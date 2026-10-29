@@ -1,10 +1,12 @@
 import { useState } from "react";
 import Layout from "../components/Layout";
-
+import { supabase } from "../lib/supabase";
 import { useEffect } from "react";
 import {
 getAlokasiSHU,
-simpanAlokasiSHU
+simpanAlokasiSHU,
+resetPembagianSHU,
+resetAlokasiSHU as resetAlokasiDatabase
 } from "../services/alokasi_shu";
 function rupiah(value:number){
 
@@ -106,7 +108,60 @@ console.log(err);
 }
 
 
+async function handleResetAlokasiSHU(){
 
+const yakin = confirm(
+"Reset Alokasi SHU tahun "+tahun+"?\n\nSemua persentase akan dikembalikan menjadi 0."
+);
+
+if(!yakin) return;
+
+
+
+try{
+
+// hapus hasil pembagian SHU lama
+await resetPembagianSHU(tahun);
+
+
+// reset persentase alokasi SHU
+await resetAlokasiDatabase(tahun);
+
+
+// reset tampilan input
+
+setTotalSHU(0);
+
+setCadangan(0);
+setJasaAnggota(0);
+setJasaPengurus(0);
+setJasaPengawas(0);
+setPendidikan(0);
+setSosial(0);
+setPembangunan(0);
+
+
+alert(
+"✅ Alokasi SHU berhasil direset"
+);
+
+
+}catch(error:any){
+
+console.error(
+"ERROR RESET ALOKASI SHU:",
+error
+);
+
+
+alert(
+"Gagal reset: "+error.message
+);
+
+
+}
+
+}
 
 
 return (
@@ -303,6 +358,15 @@ onClick={async()=>{
 
 try{
 
+const session =
+await supabase.auth.getSession();
+
+console.log(
+"SESSION RESET",
+session.data.session?.user
+);
+
+
 await simpanAlokasiSHU({
 
 tahun,
@@ -324,8 +388,6 @@ dana_sosial:sosial,
 dana_pembangunan:pembangunan
 
 });
-
-
 alert(
 "✅ Alokasi SHU berhasil disimpan"
 );
@@ -369,7 +431,30 @@ shadow-lg
 💾 Simpan Alokasi SHU
 
 </button>
+<button
+onClick={handleResetAlokasiSHU}
+className="
+mt-6
+ml-3
+px-6
+py-3
+rounded-xl
+font-bold
+text-white
 
+bg-gradient-to-r
+from-gray-600
+to-gray-800
+
+shadow-lg
+
+"
+
+>
+
+🔄 Reset Alokasi SHU
+
+</button>
 <div
 className="
 mt-8
