@@ -166,39 +166,54 @@ export async function getPortalAnggota(
   kode_warga:string,
   nama:string
 ){
-  console.log("MASUK GET PORTAL ANGGOTA");
-console.log("=== CEK SESSION PORTAL ===");
 
-const {data:session}=await supabase.auth.getSession();
+console.log("MASUK GET PORTAL ANGGOTA");
 
-console.log(
-"SESSION SUPABASE:",
-session
-);
+
 const {data:warga,error:wargaError}=await supabase
 .from("warga")
 .select(`
 id,
 nama,
 kode_warga,
-no_kk
+no_kk,
+status
 `)
-.eq("kode_warga",kode_warga)
-.ilike("nama",nama)
-.eq("status","Anggota")
+.eq(
+"kode_warga",
+kode_warga
+)
+.ilike(
+"nama",
+`%${nama}%`
+)
+.in(
+"status",
+[
+"Anggota",
+"Pengurus",
+"Pengawas"
+]
+)
 .single();
+
 
 
 if(wargaError){
 
 console.error(
-"WARGA ERROR:",
+"WARGA ERROR",
 wargaError
 );
 
 throw wargaError;
 
 }
+
+
+// ===============================
+// SIMPANAN
+// ===============================
 
 
 const {data:simpanan,error:simpananError}=await supabase
@@ -215,22 +230,46 @@ warga.id
 
 
 
-if(simpananError){
-
-console.error(
-"SIMPNAN ERROR:",
-simpananError
-);
-
+if(simpananError)
 throw simpananError;
 
-}
 
-const {data:shu,error:shuError}=await supabase
+
+let pokok=0;
+let wajib=0;
+let sukarela=0;
+
+
+
+simpanan?.forEach((item:any)=>{
+
+pokok += Number(item.simpanan_pokok || 0);
+
+wajib += Number(item.simpanan_wajib || 0);
+
+sukarela += Number(item.simpanan_sukarela || 0);
+
+});
+
+
+
+// ===============================
+// SHU ANGGOTA
+// ===============================
+let shuJasa = 0;
+let shuSimpanan = 0;
+let shuPengurus = 0;
+let shuPengawas = 0;
+let tahunSHU = null;
+
+const {data:shuAnggotaData,error:shuAnggotaError}=await supabase
 .from("shu_anggota")
 .select(`
 shu,
-tahun
+shu_jasa,
+shu_simpanan,
+tahun,
+warga_id
 `)
 .eq(
 "warga_id",
@@ -242,53 +281,228 @@ warga.id
 ascending:false
 }
 )
-.limit(1)
-.maybeSingle();
+.limit(1);
 
-console.log("CEK WARGA ID :", warga.id);
-console.log("CEK DATA SHU :", shu);
-console.log("CEK ERROR SHU :", shuError);
-if(shuError){
 
 console.log(
-"SHU ERROR:",
-shuError
+"DATA SHU ANGGOTA:",
+shuAnggotaData
+);
+
+
+
+console.log(
+"ERROR SHU ANGGOTA:",
+shuAnggotaError
+);
+
+
+
+if(
+shuAnggotaData &&
+shuAnggotaData.length > 0
+){
+
+
+const shuData = shuAnggotaData[0];
+
+
+
+shuJasa =
+Number(
+shuData.shu_jasa || 0
+);
+
+
+
+shuSimpanan =
+Number(
+shuData.shu_simpanan || 0
+);
+
+
+
+shuPengurus =
+Number(
+shuData.shu_pengurus || 0
+);
+
+
+
+shuPengawas =
+Number(
+shuData.shu_pengawas || 0
+);
+
+
+
+tahunSHU =
+shuData.tahun;
+
+
+}
+console.log(
+"CEK DETAIL SHU PORTAL:",
+{
+nama:warga.nama,
+shuJasa,
+shuSimpanan,
+shuPengurus,
+shuPengawas,
+tahunSHU
+}
+);
+// ===============================
+// SHU PENGURUS / PENGAWAS
+// ===============================
+
+
+console.log(
+"CEK STATUS STRUKTUR:",
+{
+nama:warga.nama,
+status:warga.status
+}
+);
+
+
+if(
+warga.status==="Pengurus" ||
+warga.status==="Pengawas"
+){
+
+
+const {data:shuStrukturData,error:shuStrukturError}=await supabase
+.from("shu_pengurus_pengawas")
+.select(`
+kategori,
+jabatan,
+shu,
+tahun,
+nama
+`)
+.eq(
+"nama",
+warga.nama
+)
+.eq(
+"tahun",
+2026
+)
+.order(
+"id",
+{
+ascending:false
+}
+)
+.limit(1);
+
+
+
+console.log(
+"DATA SHU STRUKTUR:",
+shuStrukturData
+);
+console.log(
+"CEK JUMLAH STRUKTUR:",
+shuStrukturData?.length
+);
+
+
+if(shuStrukturError){
+
+console.log(
+"ERROR SHU STRUKTUR:",
+shuStrukturError
 );
 
 }
 
-let pokok=0;
-let wajib=0;
-let sukarela=0;
+
+
+if(
+shuStrukturData &&
+shuStrukturData.length > 0
+){
+
+
+const struktur =
+shuStrukturData[0];
 
 
 
-simpanan?.forEach((item:any)=>{
-
-
-pokok += Number(
-item.simpanan_pokok || 0
+console.log(
+"STRUKTUR TERPILIH:",
+struktur
 );
 
 
-wajib += Number(
-item.simpanan_wajib || 0
+
+if(
+struktur.kategori==="Pengurus"
+){
+
+shuPengurus =
+Number(
+struktur.shu || 0
+);
+
+}
+
+console.log(
+"SET SHU PENGURUS:",
+shuPengurus
+);
+
+if(
+struktur.kategori==="Pengawas"
+){
+
+shuPengawas =
+Number(
+struktur.shu || 0
+);
+
+}
+console.log(
+"SET SHU PENGAWAS:",
+shuPengawas
 );
 
 
-sukarela += Number(
-item.simpanan_sukarela || 0
+}
+
+
+
+}
+
+
+
+
+// ===============================
+// TOTAL SHU
+// ===============================
+
+const totalSHU =
+shuJasa
++
+shuSimpanan
++
+shuPengurus
++
+shuPengawas;
+
+console.log(
+"CEK SEBELUM RETURN:",
+{
+nama:warga.nama,
+shuJasa,
+shuSimpanan,
+shuPengurus,
+shuPengawas,
+totalSHU
+}
 );
-
-
-});
-
-
-console.log("HASIL PORTAL FINAL",{
-    warga,
-    simpanan,
-    shu
-});
 return {
 
 id:warga.id,
@@ -297,44 +511,26 @@ nama:warga.nama,
 
 kode_warga:warga.kode_warga,
 
+status:warga.status,
 
-pokok:
-simpanan?.reduce(
-(a,b)=>
-a+
-Number(b.simpanan_pokok||0)
-,0
-)
-||0,
+pokok,
 
+wajib,
 
-wajib:
-simpanan?.reduce(
-(a,b)=>
-a+
-Number(b.simpanan_wajib||0)
-,0
-)
-||0,
+sukarela,
 
+shu_jasa:shuJasa,
 
-sukarela:
-simpanan?.reduce(
-(a,b)=>
-a+
-Number(b.simpanan_sukarela||0)
-,0
-)
-||0,
+shu_simpanan:shuSimpanan,
 
+shu_pengurus:shuPengurus,
 
-shu:
-shu?.shu || 0,
+shu_pengawas:shuPengawas,
 
+total_shu:totalSHU,
 
-tahunSHU:
-shu?.tahun || null
-
+tahunSHU
 
 };
+
 }

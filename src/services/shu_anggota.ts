@@ -121,7 +121,16 @@ export async function getPembagianSHUAnggota(
     bagianSimpanan
     :
     0;
-
+console.log(
+"CEK SHU SIMPANAN:",
+{
+nama:item.nama,
+simpananAnggota,
+totalSimpanan,
+bagianSimpanan,
+jasaModal
+}
+);
 
 
     const jasaUsaha =
@@ -133,24 +142,35 @@ export async function getPembagianSHUAnggota(
     :
     0;
 
-
+console.log(
+"CEK DATA SEBELUM SIMPAN SHU:",
+{
+nama:item.nama,
+shu_jasa:jasaUsaha,
+shu_simpanan:jasaModal,
+shu:jasaModal+jasaUsaha
+}
+);
 
     return {
 
-      id:item.id,
+id:item.id,
 
-      nama:item.nama,
+nama:item.nama,
 
-      status:item.status,
+status:item.status,
 
-      simpanan:simpananAnggota,
+simpanan:simpananAnggota,
 
-      transaksi:transaksiAnggota,
+transaksi:transaksiAnggota,
 
-      shu:
-      jasaModal+jasaUsaha
+shu_jasa:jasaUsaha,
 
-    };
+shu_simpanan:jasaModal,
+
+shu:jasaModal+jasaUsaha
+
+};
 
 
   });
@@ -162,33 +182,81 @@ export async function getPembagianSHUAnggota(
 
 
 export async function simpanSHUAnggota(
-tahun:number,
-data:any[]
+  tahun:number,
+  data:any[]
 ){
 
-const insertData = data.map((item:any)=>({
+  console.log(
+    "MASUK SIMPAN SHU ANGGOTA"
+  );
+
+
+  console.log(
+    "TAHUN:",
+    tahun
+  );
+
+
+  console.log(
+    "DATA YANG AKAN INSERT:",
+    data
+  );
+
+
+  const insertData = data.map((item:any)=>({
 
 warga_id:item.id,
+
 tahun,
-shu:Number(item.shu||0)
+
+shu_jasa:
+Number(item.shu_jasa || 0),
+
+shu_simpanan:
+Number(item.shu_simpanan || 0),
+
+shu:
+Number(item.shu || 0)
 
 }));
 
 
-const {error}=await supabase
-.from("shu_anggota")
-.upsert(
-insertData,
-{
-onConflict:"warga_id,tahun"
-}
+  console.log(
+    "HASIL MAP INSERT:",
+    insertData
+  );
+
+
+
+  const {data:hasil,error}=await supabase
+  .from("shu_anggota")
+  .upsert(
+    insertData,
+    {
+      onConflict:"warga_id,tahun"
+    }
+  )
+  .select();
+
+
+
+console.log(
+  "HASIL INSERT:",
+  hasil
 );
 
 
-if(error)
-throw error;
+console.log(
+  "ERROR INSERT:",
+  error
+);
 
 
-return true;
+  if(error)
+  throw error;
+
+
+  return true;
 
 }
+

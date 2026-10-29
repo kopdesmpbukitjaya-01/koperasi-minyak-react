@@ -134,6 +134,10 @@ const dataSHU =
 await getPembagianSHUAnggota(
   totalSHUAnggota
 );
+console.log(
+"DATA SHU SEBELUM SIMPAN:",
+dataSHU
+);
 setShuAnggota(
 dataSHU || []
 );
@@ -245,14 +249,26 @@ console.log(
 totalSHU * Number(alokasi.jasa_anggota)/100
 );
 
-
-await simpanSHUAnggota(
-
-tahun,
-
+console.log(
+"DATA SHU ANGGOTA:",
 dataSHU
-
 );
+console.log("SEBELUM SIMPAN SHU ANGGOTA");
+console.log(
+"JUMLAH DATA SHU:",
+dataSHU.length
+);
+
+console.log(
+"CONTOH DATA SHU:",
+dataSHU[0]
+);
+await simpanSHUAnggota(
+tahun,
+dataSHU
+);
+
+console.log("SELESAI SIMPAN SHU ANGGOTA");
 
 const dataPengurus =
 await getPembagianSHUPengurus(
