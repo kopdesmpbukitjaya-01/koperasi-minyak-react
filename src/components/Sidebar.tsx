@@ -9,6 +9,11 @@ export default function Sidebar() {
 
   const menus = [
     {
+  title: "Profil Koperasi",
+  icon: "🏢",
+  path: "/profil-koperasi",
+},
+    {
       title: "Dashboard",
       icon: "🏠",
       path: "/dashboard",
@@ -43,11 +48,7 @@ export default function Sidebar() {
       icon: "🤝",
       path: "/anggota",
     },
-    {
-  title: "Profil Koperasi",
-  icon: "🏢",
-  path: "/profil-koperasi",
-},
+  
     {
       title: "Laporan PDF",
       icon: "📄",
@@ -57,6 +58,11 @@ export default function Sidebar() {
   title: "Laporan RAT",
   icon: "🏛️",
   path: "/rat",
+},
+{
+  title: "Alokasi SHU",
+  icon: "💰",
+  path: "/alokasi-shu",
 },
 {
   title: "Backup Data",
