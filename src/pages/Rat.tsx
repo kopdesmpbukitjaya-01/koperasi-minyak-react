@@ -125,14 +125,15 @@ keuangan?.shuBersih || 0
 
 
 // SHU ANGGOTA
-const totalSHUAnggota = totalSHU;
+const totalSHUAnggota =
+totalSHU *
+0.5;
 
 
 const dataSHU =
 await getPembagianSHUAnggota(
-totalSHUAnggota
+  totalSHUAnggota
 );
-
 setShuAnggota(
 dataSHU || []
 );
@@ -1118,7 +1119,11 @@ fontStyle:"bold"
 
 // TOTAL SHU ANGGOTA
 
-
+console.log(
+"JUMLAH DATA SHU PDF",
+shuAnggota.length,
+shuAnggota
+);
 const totalSHUAnggota = shuAnggota.reduce(
 
 (total,item)=>
