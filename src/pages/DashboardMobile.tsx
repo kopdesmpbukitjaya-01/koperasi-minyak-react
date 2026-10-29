@@ -225,7 +225,26 @@ grid-cols-2
 gap-4
 "
 >
+<Menu
 
+icon="🏢"
+
+title="Profil Koperasi"
+
+click={()=>navigate("/profil-koperasi")}
+
+/>
+
+
+<Menu
+
+icon="💳"
+
+title="Cek Rekening"
+
+click={()=>navigate("/portal-anggota")}
+
+/>
 
 <Menu
 

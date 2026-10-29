@@ -189,7 +189,22 @@ element={
             </ProtectedRoute>
           }
         />
-
+<Route
+ path="/profil-koperasi"
+ element={
+   <ProtectedRoute>
+     <ProfilKoperasi/>
+   </ProtectedRoute>
+ }
+/>
+<Route
+ path="/portal-anggota"
+ element={
+   <ProtectedRoute>
+     <PortalAnggota />
+   </ProtectedRoute>
+ }
+/>
 
         {/* CETAK ID CARD WARGA */}
 

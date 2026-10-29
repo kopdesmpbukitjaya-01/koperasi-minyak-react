@@ -224,7 +224,49 @@ md:hidden
 mb-5
 "
 >
+<button
+onClick={()=>navigate("/profil-koperasi")}
+className="
+rounded-2xl
+p-5
+bg-gradient-to-br
+from-indigo-500
+to-blue-700
+shadow-lg
+font-bold
+"
+>
 
+<div className="text-8xl mb-2">
+🏢
+</div>
+
+Profil Koperasi
+
+</button>
+
+
+
+<button
+onClick={()=>navigate("/portal-anggota")}
+className="
+rounded-2xl
+p-5
+bg-gradient-to-br
+from-cyan-500
+to-blue-700
+shadow-lg
+font-bold
+"
+>
+
+<div className="text-8xl mb-2">
+💳
+</div>
+
+Cek Rekening
+
+</button>
 
 <button
 onClick={()=>navigate("/warga")}
@@ -332,7 +374,7 @@ font-bold
 >
 
 <div className="text-8xl mb-2">
-👥
+🧑‍🤝‍🧑
 </div>
 
 Anggota Koperasi
