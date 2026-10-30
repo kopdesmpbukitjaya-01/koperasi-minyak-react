@@ -12,7 +12,14 @@ export async function getJumlahAnggota() {
       count: "exact",
       head: true
     })
-    .eq("status", "Anggota");
+    .in(
+      "status",
+      [
+        "Anggota",
+        "Pengurus",
+        "Pengawas"
+      ]
+    );
 
 
   if (error) {
@@ -29,12 +36,15 @@ export async function getJumlahAnggota() {
   }
 
 
+  console.log(
+    "TOTAL ANGGOTA KOPERASI:",
+    count
+  );
+
+
   return count || 0;
 
 }
-
-
-
 // ===============================
 // REKAP PENJUALAN BBM PER PERIODE
 // ===============================
@@ -57,8 +67,8 @@ export async function getRekapPenjualanBBM() {
       )
     `)
     .order("id", {
-      ascending: true
-    });
+ ascending:false
+})
 
 
 

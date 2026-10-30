@@ -61,7 +61,7 @@ export default function Sidebar() {
 },
 {
   title: "Alokasi SHU",
-  icon: "💰",
+  icon: "💵",
   path: "/alokasi-shu",
 },
 {

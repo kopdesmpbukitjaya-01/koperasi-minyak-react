@@ -43,9 +43,24 @@ console.log("CEK JUMLAH ANGGOTA");
 const anggota =
 await getJumlahAnggota();
 
+
 console.log(
-"JUMLAH ANGGOTA :",
+"======================"
+);
+
+console.log(
+"HASIL SERVICE ANGGOTA:",
 anggota
+);
+
+console.log(
+"TIPE DATA:",
+typeof anggota
+);
+
+
+setJumlahAnggota(
+anggota || 0
 );
 
 
@@ -63,6 +78,13 @@ data
 
 
 console.log("CEK LABA");
+console.log(
+"CEK PERIODE 29 OKTOBER:",
+data.filter(
+(item:any)=>
+item.periode === "29 October 2026"
+)
+);
 
 const laba =
 await getLabaBersih();
@@ -487,8 +509,16 @@ border-white/10
 
 
 <span>
-
+<div>
 {item.jenis || "-"}
+</div>
+
+<div className="
+text-xs
+text-gray-400
+">
+{item.periode || "-"}
+</div>
 
 </span>
 

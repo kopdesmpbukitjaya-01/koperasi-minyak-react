@@ -72,7 +72,11 @@ export default function PublicDashboard() {
 
 
       const anggota =
-        await getJumlahAnggota();
+ await getJumlahAnggota();
+
+setJumlahAnggota(
+ anggota || 0
+);
 
 
 

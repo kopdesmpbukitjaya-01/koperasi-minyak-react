@@ -335,7 +335,26 @@ Pembelian BBM
 
 </button>
 
+<button
+onClick={()=>navigate("/alokasi-shu")}
+className="
+rounded-2xl
+p-5
+bg-gradient-to-br
+from-emerald-500
+to-green-700
+shadow-lg
+font-bold
+"
+>
 
+<div className="text-8xl mb-2">
+💵
+</div>
+
+Alokasi SHU
+
+</button>
 
 <button
 onClick={()=>navigate("/laporan")}

@@ -1,6 +1,7 @@
 import { supabase } from "../lib/supabase";
 
 export async function getDashboardBBM() {
+
   const { data, error } = await supabase
     .from("transaksi")
     .select(`
@@ -14,25 +15,46 @@ export async function getDashboardBBM() {
       )
     `);
 
+
   if (error) throw error;
 
-  const hasil: any = {};
 
-  data.forEach((t: any) => {
-    const key = `${t.periode.nama_periode}-${t.jenis_bbm.nama}`;
+  console.log(
+    "DATA TRANSAKSI DASHBOARD ADMIN:",
+    data
+  );
 
-    if (!hasil[key]) {
-      hasil[key] = {
-        periode: t.periode.nama_periode,
-        jenis_bbm: t.jenis_bbm.nama,
-        jumlah_kk: 0,
-        liter: 0,
+
+  const hasil:any = {};
+
+
+  data.forEach((t:any)=>{
+
+    const key =
+    `${t.periode.nama_periode}-${t.jenis_bbm.nama}`;
+
+
+    if(!hasil[key]){
+
+      hasil[key]={
+        periode:t.periode.nama_periode,
+        jenis_bbm:t.jenis_bbm.nama,
+        jumlah_kk:0,
+        liter:0
       };
+
     }
 
+
     hasil[key].jumlah_kk++;
+
     hasil[key].liter += Number(t.liter);
+
   });
 
+
   return Object.values(hasil);
+
 }
+
+
