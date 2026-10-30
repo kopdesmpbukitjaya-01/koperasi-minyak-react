@@ -256,7 +256,15 @@ click={()=>navigate("/warga")}
 
 />
 
+<Menu
 
+icon="💵"
+
+title="Alokasi SHU"
+
+click={()=>navigate("/alokasi-shu")}
+
+/>
 
 <Menu
 

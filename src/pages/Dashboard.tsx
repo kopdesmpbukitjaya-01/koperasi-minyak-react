@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { getDashboardBBM } from "../services/dashboard";
+import {
+ getRekapPenjualanBBM
+} from "../services/dashboardPublic";
 import { getPeriode } from "../services/periode";
 
 import banner from "../assets/banner.png";
@@ -66,8 +68,11 @@ async function loadDataBBM(){
 try{
 
 const data =
-await getDashboardBBM();
-
+await getRekapPenjualanBBM();
+console.log(
+  "CEK DASHBOARD ADMIN BBM:",
+  data
+);
 
 setDataBBM(data);
 
@@ -578,7 +583,7 @@ duration-300
 
 <td className="p-3 font-bold">
 
-{item.jenis_bbm}
+{item.jenis}
 
 </td>
 
@@ -597,7 +602,7 @@ text-blue-300
 font-bold
 ">
 
-{item.liter}
+{item.terjual}
 
 </td>
 

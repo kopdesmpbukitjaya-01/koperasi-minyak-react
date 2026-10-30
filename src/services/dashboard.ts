@@ -19,10 +19,7 @@ export async function getDashboardBBM() {
   if (error) throw error;
 
 
-  console.log(
-    "DATA TRANSAKSI DASHBOARD ADMIN:",
-    data
-  );
+
 
 
   const hasil:any = {};
