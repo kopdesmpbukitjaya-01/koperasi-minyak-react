@@ -3,7 +3,50 @@ import {
   simpanSemuaWargaOffline,
   ambilSemuaWargaOffline,
 } from "./offline_db";
+export async function uploadFotoWarga(
+file: File,
+kodeWarga:string
+){
 
+const ext =
+file.name.split(".").pop();
+
+
+const fileName =
+`${kodeWarga}-${Date.now()}.${ext}`;
+
+
+
+const {error:uploadError}=await supabase
+.storage
+.from("foto-warga")
+.upload(
+fileName,
+file,
+{
+cacheControl:"3600",
+upsert:true
+}
+);
+
+
+
+if(uploadError)
+throw uploadError;
+
+
+
+const {data}=supabase
+.storage
+.from("foto-warga")
+.getPublicUrl(fileName);
+
+
+
+return data.publicUrl;
+
+
+}
 export async function getWarga() {
   try {
     const { data, error } = await supabase
@@ -83,7 +126,8 @@ export async function addWarga(
   nama: string,
   status: string,
   alamat: string,
-  no_hp: string
+  no_hp: string,
+  foto: string = ""
 ) {
   const namaNormal = nama.trim().toLowerCase();
   const noKKNormal = no_kk.trim();
@@ -109,14 +153,15 @@ export async function addWarga(
   const { error } = await supabase
     .from("warga")
     .insert([
-      {
-        no_kk: noKKNormal,
-        nama: nama.trim(),
-        status,
-        alamat,
-        no_hp,
-      },
-    ]);
+  {
+    no_kk: noKKNormal,
+    nama: nama.trim(),
+    status,
+    alamat,
+    no_hp,
+    foto,
+  },
+]);
 
   if (error) throw error;
 }
@@ -127,10 +172,13 @@ export async function updateWarga(
   nama: string,
   status: string,
   alamat: string,
-  no_hp: string
+  no_hp: string,
+  foto: string = ""
 ) {
+
   const namaNormal = nama.trim().toLowerCase();
   const noKKNormal = no_kk.trim();
+
 
   // Cek apakah Nama + No. KK sudah dimiliki warga lain
   const { data: wargaSudahAda, error: cekError } = await supabase
@@ -141,27 +189,52 @@ export async function updateWarga(
     .neq("id", id)
     .limit(1);
 
+
   if (cekError) throw cekError;
 
-  // Jangan izinkan edit yang menghasilkan duplikat
+
   if (wargaSudahAda && wargaSudahAda.length > 0) {
+
     throw new Error(
       `Data tidak dapat diupdate. Nama dan No. KK tersebut sudah digunakan oleh ${wargaSudahAda[0].kode_warga}.`
     );
+
   }
 
+
+
+  const updateData:any = {
+
+    no_kk: noKKNormal,
+    nama: nama.trim(),
+    status,
+    alamat,
+    no_hp,
+
+  };
+
+
+  // hanya update foto jika upload foto baru
+  if(foto){
+
+    updateData.foto = foto;
+
+  }
+
+
+
   const { error } = await supabase
+
     .from("warga")
-    .update({
-      no_kk: noKKNormal,
-      nama: nama.trim(),
-      status,
-      alamat,
-      no_hp,
-    })
+
+    .update(updateData)
+
     .eq("id", id);
 
-  if (error) throw error;
+
+
+  if(error) throw error;
+
 }
 
 export async function deleteWarga(id: number) {

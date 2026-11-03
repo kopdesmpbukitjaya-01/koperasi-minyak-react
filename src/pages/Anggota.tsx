@@ -5,6 +5,8 @@ import Layout from "../components/Layout";
 import {
   getAnggotaKoperasi,
   addSimpanan,
+  updateSimpanan,
+  deleteSimpanan,
   getSimpananAnggota,
   getRekapSemuaAnggota,
 } from "../services/simpanan";
@@ -21,7 +23,7 @@ const isAndroidApp =
   const [anggota, setAnggota] = useState<any[]>([]);
 
   const [wargaId, setWargaId] = useState("");
-
+const [editId, setEditId] = useState<number | null>(null);
 
 
   const [tanggalSetor, setTanggalSetor] = useState(
@@ -371,22 +373,42 @@ useState(false);
 
 
 
-    try{
+    try {
+
+  if (editId) {
+
+  await updateSimpanan(
+
+    editId,
+
+    tanggalSetor,
+
+    Number(pokok || 0),
+
+    Number(wajib || 0),
+
+    Number(sukarela || 0)
+
+  );
 
 
-      await addSimpanan(
+} else {
 
-        Number(wargaId),
+  await addSimpanan(
 
-        tanggalSetor,
+    Number(wargaId),
 
-        Number(pokok || 0),
+    tanggalSetor,
 
-        Number(wajib || 0),
+    Number(pokok || 0),
 
-        Number(sukarela || 0)
+    Number(wajib || 0),
 
-      );
+    Number(sukarela || 0)
+
+  );
+
+}
 
 
 
@@ -412,6 +434,7 @@ useState(false);
       setWajib("");
 
       setSukarela("");
+      setEditId(null);
 
 
 
@@ -430,8 +453,6 @@ useState(false);
 
 
   }
-
-
 
 
 
@@ -884,7 +905,7 @@ useState(false);
 
       >
 
-        💾 SIMPAN
+        {editId ? "✏️ UPDATE" : "💾 SIMPAN"}
 
 
       </button>
@@ -1173,6 +1194,16 @@ useState(false);
               >
                 Total
               </th>
+              
+<th
+  className="
+  px-4
+  py-3
+  text-center
+  "
+>
+  Aksi
+</th>
 
 
             </tr>
@@ -1195,7 +1226,7 @@ useState(false);
 
 
                 <td
-                  colSpan={5}
+  colSpan={6}
                   className="
                   text-center
                   py-8
@@ -1330,7 +1361,120 @@ useState(false);
 
                   </td>
 
+<td
+className="
+px-4
+py-4
+text-center
+"
+>
 
+<button
+
+onClick={()=>{
+
+  setEditId(item.id);
+
+  setTanggalSetor(
+    item.tanggal_setor
+  );
+
+  setPokok(
+    String(item.simpanan_pokok || 0)
+  );
+
+  setWajib(
+    String(item.simpanan_wajib || 0)
+  );
+
+  setSukarela(
+    String(item.simpanan_sukarela || 0)
+  );
+
+
+  window.scrollTo({
+    top:0,
+    behavior:"smooth"
+  });
+
+}}
+
+className="
+bg-blue-600
+text-white
+px-3
+py-1
+rounded-lg
+font-bold
+text-sm
+"
+>
+✏️ Edit
+</button>
+<button
+
+onClick={async()=>{
+
+  const yakin = confirm(
+    "Hapus data simpanan ini?"
+  );
+
+
+  if(!yakin) return;
+
+
+  try {
+
+
+    await deleteSimpanan(
+      item.id
+    );
+
+
+    await loadRekapSimpanan(
+      Number(wargaId)
+    );
+
+
+    await loadRekapSemua();
+
+
+    alert(
+      "Data simpanan berhasil dihapus"
+    );
+
+
+  } catch(error){
+
+
+    console.error(error);
+
+
+    alert(
+      "Gagal menghapus data"
+    );
+
+
+  }
+
+
+}}
+
+className="
+bg-red-600
+text-white
+px-3
+py-1
+rounded-lg
+font-bold
+text-sm
+ml-2
+"
+
+>
+🗑️ Hapus
+</button>
+</td>
 
                 </tr>
 
@@ -1823,7 +1967,6 @@ shadow-lg
 
 
                   </td>
-
 
 
                 </tr>

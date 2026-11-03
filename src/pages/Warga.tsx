@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import type { ChangeEvent } from "react";
 
 import IdCard from "../components/IdCard";
 import { useNavigate } from "react-router-dom";
@@ -10,6 +11,7 @@ import {
   addWarga,
   updateWarga,
   deleteWarga,
+  uploadFotoWarga,
 } from "../services/warga";
 
 export default function Warga() {
@@ -28,6 +30,9 @@ export default function Warga() {
   const [alamat, setAlamat] = useState("Bukit Jaya");
 
   const [noHp, setNoHp] = useState("");
+  const [foto, setFoto] = useState<File | null>(null);
+
+const [fotoPreview, setFotoPreview] = useState("");
 
   const [saving, setSaving] = useState(false);
 
@@ -59,7 +64,29 @@ export default function Warga() {
 
 
 
+// =====================================
+// HANDLE FOTO
+// =====================================
 
+function handleFoto(
+  e: ChangeEvent<HTMLInputElement>
+){
+
+  const file =
+    e.target.files?.[0];
+
+
+  if(!file) return;
+
+
+  setFoto(file);
+
+
+  setFotoPreview(
+    URL.createObjectURL(file)
+  );
+
+}
 
   // =====================================
   // FORMAT NAMA OTOMATIS
@@ -246,60 +273,94 @@ export default function Warga() {
       if(editId === null){
 
 
-        await addWarga(
-
-          noKK,
-
-          namaFormatted,
-
-          status,
-
-          alamat,
-
-          noHp
-
-        );
+  let fotoUrl = "";
 
 
+  if(foto){
 
-        alert(
-          "Data berhasil ditambahkan"
-        );
+    fotoUrl =
+      await uploadFotoWarga(
+        foto,
+        noKK
+      );
+
+  }
 
 
 
-      } else {
+  await addWarga(
+
+    noKK,
+
+    namaFormatted,
+
+    status,
+
+    alamat,
+
+    noHp,
+
+    fotoUrl
+
+  );
+
+
+  alert(
+    "Data berhasil ditambahkan"
+  );
 
 
 
-        await updateWarga(
-
-          editId,
-
-          noKK,
-
-          namaFormatted,
-
-          status,
-
-          alamat,
-
-          noHp
-
-        );
+} else {
 
 
 
-        alert(
-          "Data berhasil diupdate"
-        );
+  let fotoUrl = "";
 
 
 
-        setEditId(null);
+  if(foto){
+
+    fotoUrl =
+      await uploadFotoWarga(
+        foto,
+        noKK
+      );
+
+  }
 
 
-      }
+
+  await updateWarga(
+
+    editId,
+
+    noKK,
+
+    namaFormatted,
+
+    status,
+
+    alamat,
+
+    noHp,
+
+    fotoUrl
+
+  );
+
+
+
+  alert(
+    "Data berhasil diupdate"
+  );
+
+
+
+  setEditId(null);
+
+
+}
 
 
 
@@ -476,40 +537,42 @@ export default function Warga() {
 
 
   const jumlahAnggota =
-    list.filter(
+  list.filter(
+    (w) => {
 
-      (w)=>
-
+      const status =
         String(w.status ?? "")
+        .trim()
+        .toLowerCase();
 
-          .trim()
+      return (
+        status === "anggota" ||
+        status === "pengurus" ||
+        status === "pengawas"
+      );
 
-          .toLowerCase()
-
-          === "anggota"
-
-    ).length;
+    }
+  ).length;
 
 
 
 
-  const jumlahNonAnggota =
-    list.filter(
 
-      (w)=>
+const jumlahNonAnggota =
+  list.filter(
+    (w)=>
+      String(w.status ?? "")
+        .trim()
+        .toLowerCase()
+        === "non-anggota"
+  ).length;
 
-        String(w.status ?? "")
 
-          .trim()
-
-          .toLowerCase()
-
-          === "non-anggota"
-
-    ).length;
 
 const totalWarga =
-  jumlahAnggota + jumlahNonAnggota;
+  jumlahAnggota +
+  jumlahNonAnggota;
+
 
 
 const persentaseAnggota =
@@ -849,7 +912,74 @@ focus:border-red-400
 
             </div>
 
+{/* FOTO PROFIL */}
 
+<div className="mt-5">
+
+
+<label className="
+block
+text-sm
+font-semibold
+text-white
+mb-2
+">
+Foto Profil
+</label>
+
+
+
+<input
+
+type="file"
+
+accept="image/*"
+
+onChange={handleFoto}
+
+className="
+w-full
+rounded-xl
+border
+border-white/20
+bg-black/30
+text-white
+px-4
+py-3
+"
+/>
+
+
+
+{
+fotoPreview && (
+
+<div className="mt-4 flex justify-center">
+
+<img
+
+src={fotoPreview}
+
+className="
+w-32
+h-32
+rounded-full
+object-cover
+border-4
+border-purple-500
+shadow-lg
+"
+
+/>
+
+</div>
+
+)
+
+}
+
+
+</div>
 
 
 

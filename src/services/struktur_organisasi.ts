@@ -18,7 +18,9 @@ const {data,error}=await supabase
   warga (
     nama,
     no_kk,
-    kode_warga
+    kode_warga,
+    foto,
+    jabatan
   )
 `)
 .eq("tahun",tahun)

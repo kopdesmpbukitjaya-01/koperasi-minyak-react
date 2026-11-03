@@ -1,12 +1,12 @@
 import { useState } from "react";
-
+import { useNavigate } from "react-router-dom";
 import {
   getPortalAnggota
 } from "../services/simpanan";
 
 
 export default function PortalAnggota(){
-
+const navigate = useNavigate();
 const [idAnggota,setIdAnggota] = useState("");
 const [nama,setNama] = useState("");
 const [infoAnggota,setInfoAnggota] = useState<any>(null);
@@ -30,7 +30,10 @@ nama.trim()
 
 
 setInfoAnggota(data);
-
+console.log(
+  "DATA ANGGOTA PORTAL:",
+  data
+);
 
 }
 
@@ -231,7 +234,40 @@ Status :
 {infoAnggota?.status || "-"}
 </p>
 
+<button
 
+onClick={()=>{
+
+  navigate(
+    "/print-id-card-saya",
+    {
+      state:{
+        anggota: infoAnggota
+      }
+    }
+  );
+
+}}
+
+className="
+mt-4
+px-6
+py-3
+rounded-xl
+font-bold
+text-white
+bg-gradient-to-r
+from-cyan-500
+to-blue-600
+shadow-lg
+hover:scale-105
+transition
+"
+
+>
+🎫 Download ID Card
+
+</button>
 
 <hr className="border-white/10"/>
 
@@ -286,7 +322,162 @@ infoAnggota?.sukarela || 0
 </p>
 
 
+{/* ============================
+    RIWAYAT SIMPANAN
+============================ */}
 
+<h3
+className="
+mt-8
+text-xl
+font-bold
+text-cyan-400
+"
+>
+📜 Riwayat Simpanan
+</h3>
+
+<div className="overflow-x-auto mt-4">
+
+<table
+className="
+w-full
+text-sm
+border
+border-white/10
+"
+>
+
+<thead>
+
+<tr
+className="
+bg-white/10
+"
+>
+
+<th className="p-2">
+Tanggal
+</th>
+
+<th className="p-2 text-right">
+Pokok
+</th>
+
+<th className="p-2 text-right">
+Wajib
+</th>
+
+<th className="p-2 text-right">
+Sukarela
+</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+{
+infoAnggota?.riwayat?.length
+?
+
+infoAnggota.riwayat.map(
+(item:any,index:number)=>(
+
+<tr
+key={index}
+className="
+border-t
+border-white/10
+"
+>
+
+<td className="p-2">
+
+{
+item.tanggal_setor
+?
+
+new Date(item.tanggal_setor)
+.toLocaleDateString("id-ID")
+
+:
+
+"-"
+}
+
+</td>
+
+<td className="p-2 text-right">
+
+Rp {
+
+Number(
+item.simpanan_pokok || 0
+)
+.toLocaleString("id-ID")
+
+}
+
+</td>
+
+<td className="p-2 text-right">
+
+Rp {
+
+Number(
+item.simpanan_wajib || 0
+)
+.toLocaleString("id-ID")
+
+}
+
+</td>
+
+<td className="p-2 text-right">
+
+Rp {
+
+Number(
+item.simpanan_sukarela || 0
+)
+.toLocaleString("id-ID")
+
+}
+
+</td>
+
+</tr>
+
+))
+
+:
+
+<tr>
+
+<td
+colSpan={4}
+className="
+text-center
+p-4
+text-gray-400
+"
+>
+
+Belum ada riwayat simpanan
+
+</td>
+
+</tr>
+
+}
+
+</tbody>
+
+</table>
+
+</div>
 
 
 <hr className="border-white/10"/>

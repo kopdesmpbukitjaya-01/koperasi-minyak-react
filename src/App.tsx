@@ -11,6 +11,7 @@ import PembelianBBM from "./pages/PembelianBBM";
 import Laporan from "./pages/Laporan";
 import PrintLaporan from "./pages/PrintLaporan";
 import PrintIdCard from "./pages/PrintIdCard";
+import PrintIdCardSaya from "./pages/PrintIdCardSaya";
 import Anggota from "./pages/Anggota";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Pengeluaran from "./pages/Pengeluaran";
@@ -205,7 +206,12 @@ element={
    </ProtectedRoute>
  }
 />
-
+<Route
+  path="/print-id-card-saya"
+  element={
+    <PrintIdCardSaya />
+  }
+/>
         {/* CETAK ID CARD WARGA */}
 
         <Route

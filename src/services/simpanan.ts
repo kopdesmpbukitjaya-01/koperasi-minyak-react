@@ -219,6 +219,7 @@ throw wargaError;
 const {data:simpanan,error:simpananError}=await supabase
 .from("simpanan_anggota")
 .select(`
+tanggal_setor,
 simpanan_pokok,
 simpanan_wajib,
 simpanan_sukarela
@@ -226,6 +227,12 @@ simpanan_sukarela
 .eq(
 "warga_id",
 warga.id
+)
+.order(
+"tanggal_setor",
+{
+ascending:false
+}
 );
 
 
@@ -498,6 +505,7 @@ nama:warga.nama,
 kode_warga:warga.kode_warga,
 
 status:warga.status,
+riwayat: simpanan,
 
 pokok,
 
