@@ -1,4 +1,19 @@
 import { supabase } from "../lib/supabase";
+import { getLabaBersih } from "./dashboardPublic";
+
+
+// ============================
+// TOTAL SHU OTOMATIS DARI LABA
+// ============================
+
+export async function getTotalSHUKoperasi(){
+
+  const laba =
+    await getLabaBersih();
+
+  return laba;
+
+}
 
 
 export async function getAlokasiSHU(

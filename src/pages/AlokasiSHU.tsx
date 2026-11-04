@@ -6,7 +6,8 @@ import {
 getAlokasiSHU,
 simpanAlokasiSHU,
 resetPembagianSHU,
-resetAlokasiSHU as resetAlokasiDatabase
+resetAlokasiSHU as resetAlokasiDatabase,
+getTotalSHUKoperasi
 } from "../services/alokasi_shu";
 function rupiah(value:number){
 
@@ -72,11 +73,19 @@ pembangunan:
 useEffect(()=>{
 
 loadAlokasi();
+loadTotalSHU();
 
 },[]);
 
 
+async function loadTotalSHU(){
 
+  const total =
+    await getTotalSHUKoperasi();
+
+  setTotalSHU(total);
+
+}
 async function loadAlokasi(){
 
 try{

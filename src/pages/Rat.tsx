@@ -6,7 +6,7 @@ import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import logo from "../assets/logo_transparan.png";
 import Layout from "../components/Layout";
-
+import { supabase } from "../lib/supabase";
 import {
   addLaporanRat,
   getLaporanRat,
@@ -27,13 +27,13 @@ import {
   getPembagianSHUPengurus,
   getPembagianSHUPengawas
 } from "../services/shu_pengurus";
-
+import {
+  simpanSHUStruktur
+} from "../services/shu_struktur";
 import {
   getAlokasiSHU
 } from "../services/alokasi_shu";
-import {
-simpanSHUStruktur
-} from "../services/shu_struktur";
+
 
 const IDENTITAS_KOPERASI = {
   badanHukum:
@@ -80,6 +80,7 @@ const [shuPengawas,setShuPengawas]=useState<any[]>([]);
 const [tahunSHU, setTahunSHU] = useState("");
 const [tampilkanSHU, setTampilkanSHU] = useState(false);
 const [savingSHU,setSavingSHU] = useState(false);
+const [statusSHU,setStatusSHU] = useState(false);
 useEffect(()=>{
 
 loadData();
@@ -169,17 +170,11 @@ await getPembagianSHUPengawas(
 totalSHU,
 tahun
 );
-await simpanSHUStruktur(
-[
-...dataPengurus,
-...dataPengawas
-],
-tahun
-);
+
+
 setShuPengawas(
 dataPengawas || []
 );
-
 
 console.log(
 "SHU PENGAWAS:",
@@ -201,7 +196,11 @@ err
 
 
 
+useEffect(()=>{
 
+cekStatusSHU();
+
+},[tahunSHU]);
 
 // ============================
 // SIMPAN SHU ANGGOTA
@@ -284,7 +283,6 @@ tahun
 );
 
 
-
 await simpanSHUStruktur(
 [
 ...dataPengurus,
@@ -292,7 +290,6 @@ await simpanSHUStruktur(
 ],
 tahun
 );
-
 alert(
 "Pembagian SHU anggota berhasil disimpan"
 );
@@ -311,7 +308,37 @@ setSavingSHU(false);
 
 }
 
+async function cekStatusSHU(){
+if(!tahunSHU)
+return;
+const {data,error}=await supabase
+.from("shu_anggota")
+.select("id")
+.eq(
+"tahun",
+Number(tahunSHU)
+)
+.limit(1);
 
+
+if(error){
+
+console.error(
+"CEK STATUS SHU ERROR:",
+error
+);
+
+return;
+
+}
+
+
+setStatusSHU(
+(data?.length || 0) > 0
+);
+
+
+}
 async function simpanRat(){
 
 try{
@@ -1743,6 +1770,43 @@ shadow-lg
 >
 📄 Download PDF RAT
 </button>
+<div
+className="
+mt-5
+p-4
+rounded-xl
+bg-black/30
+border
+border-white/10
+"
+>
+
+<h3 className="font-bold text-lg">
+Status Pembagian SHU
+</h3>
+
+
+<p
+className={
+statusSHU
+?
+"text-green-400 font-bold"
+:
+"text-yellow-400 font-bold"
+}
+>
+
+{
+statusSHU
+?
+`✅ Sudah Disimpan RAT Tahun ${tahunSHU}`
+:
+"⚠️ Belum Disimpan"
+}
+
+</p>
+
+</div>
 <button
 
 disabled={savingSHU}
@@ -1778,6 +1842,57 @@ savingSHU
 }
 
 </button>
+
+
+<button
+
+
+className="
+mt-3
+ml-3
+px-8
+py-3
+rounded-xl
+
+bg-gradient-to-r
+from-blue-600
+to-purple-600
+
+text-white
+font-bold
+
+shadow-lg
+"
+
+>
+🔄 Generate Ulang SHU
+</button>
+
+
+<div
+className="
+mt-4
+p-4
+rounded-xl
+bg-green-500/10
+border
+border-green-400/30
+text-green-300
+font-bold
+"
+>
+
+{
+statusSHU
+?
+`✅ Sudah Disimpan RAT Tahun ${tahunSHU}`
+:
+`⚠️ Belum Ada Pembagian SHU Tahun ${tahunSHU}`
+}
+
+</div>
+
+
 <div
 className="
 mt-6
