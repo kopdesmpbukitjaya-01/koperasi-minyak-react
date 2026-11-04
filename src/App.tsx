@@ -191,12 +191,10 @@ element={
           }
         />
 <Route
- path="/profil-koperasi"
- element={
-   <ProtectedRoute>
-     <ProfilKoperasi/>
-   </ProtectedRoute>
- }
+  path="/profil-koperasi"
+  element={
+    <ProfilKoperasi />
+  }
 />
 <Route
  path="/portal-anggota"
@@ -223,14 +221,7 @@ element={
           }
         />
 
-<Route
-  path="/profil-koperasi"
-  element={
-    <ProtectedRoute>
-      <ProfilKoperasi />
-    </ProtectedRoute>
-  }
-/>
+
       </Routes>
 
 

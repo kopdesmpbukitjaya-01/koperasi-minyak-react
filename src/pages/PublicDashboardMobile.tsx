@@ -287,75 +287,240 @@ rounded-3xl
 
 </div>
 
-{/* PORTAL ANGGOTA */}
+{/* MENU CEPAT MOBILE */}
 
-<button
-  onClick={() => navigate("/portal-anggota")}
-  className="
-  w-full
-  rounded-3xl
-  p-5
-  bg-gradient-to-r
-  from-red-600
-  via-purple-600
-  to-blue-600
-  text-white
-  font-black
-  text-lg
-  shadow-[0_0_30px_rgba(139,92,246,.45)]
-  border
-  border-white/20
-  "
+<div
+className="
+grid
+grid-cols-2
+gap-4
+mt-6
+"
 >
-
-  💳 Portal Anggota
-
-  <div
-    className="
-    text-sm
-    font-normal
-    text-white/80
-    mt-1
-    "
-  >
-    Cek Simpanan & Informasi SHU
-  </div>
-
-
-</button>
-
-
-
-
-
-{/* LOGIN */}
+{/* PROFIL KOPERASI */}
 
 <button
 
-onClick={()=>navigate("/login")}
+onClick={() => navigate("/profil-koperasi")}
 
 className="
-w-full
-py-4
-rounded-2xl
-font-black
-text-lg
-
-bg-gradient-to-r
-from-red-600
-to-purple-700
-
-shadow-[0_0_25px_rgba(239,68,68,.5)]
-
+aspect-square
+rounded-3xl
+p-5
+bg-gradient-to-br
+from-emerald-600
+via-teal-600
+to-cyan-800
+border
+border-white/20
+shadow-[0_0_35px_rgba(20,184,166,.5)]
+flex
+flex-col
+items-center
+justify-center
+text-white
 active:scale-95
 transition
 "
 
 >
 
-🔐 LOGIN ADMIN
+<div
+className="
+text-5xl
+mb-3
+"
+>
+🏢
+</div>
+
+
+<div
+className="
+font-black
+text-lg
+"
+>
+Profil
+</div>
+
+
+<div
+className="
+font-black
+text-lg
+"
+>
+Koperasi
+</div>
+
+
+<p
+className="
+text-xs
+text-white/70
+mt-2
+text-center
+"
+>
+Informasi KDMP Bukit Jaya
+</p>
+
 
 </button>
+
+{/* PORTAL ANGGOTA */}
+
+<button
+
+onClick={() => navigate("/portal-anggota")}
+
+className="
+aspect-square
+rounded-3xl
+p-5
+bg-gradient-to-br
+from-purple-600
+via-blue-600
+to-indigo-800
+border
+border-white/20
+shadow-[0_0_35px_rgba(139,92,246,.6)]
+flex
+flex-col
+items-center
+justify-center
+text-white
+active:scale-95
+transition
+"
+
+>
+
+<div
+className="
+text-5xl
+mb-3
+"
+>
+💳
+</div>
+
+
+<h3
+className="
+font-black
+text-xl
+"
+>
+Portal
+</h3>
+
+
+<h3
+className="
+font-black
+text-xl
+"
+>
+Anggota
+</h3>
+
+
+<p
+className="
+text-xs
+text-white/70
+text-center
+mt-2
+"
+>
+Cek Simpanan & SHU
+</p>
+
+
+</button>
+
+
+
+
+{/* LOGIN ADMIN */}
+
+<button
+
+onClick={()=>navigate("/login")}
+
+className="
+aspect-square
+rounded-3xl
+p-5
+bg-gradient-to-br
+from-red-600
+via-red-700
+to-purple-900
+border
+border-white/20
+shadow-[0_0_35px_rgba(239,68,68,.6)]
+flex
+flex-col
+items-center
+justify-center
+text-white
+active:scale-95
+transition
+"
+
+>
+
+<div
+className="
+text-5xl
+mb-3
+"
+>
+🔐
+</div>
+
+
+<h3
+className="
+font-black
+text-xl
+"
+>
+Login
+</h3>
+
+
+<h3
+className="
+font-black
+text-xl
+"
+>
+Admin
+</h3>
+
+
+<p
+className="
+text-xs
+text-white/70
+text-center
+mt-2
+"
+>
+Kelola Sistem KDMP
+</p>
+
+
+</button>
+
+
+
+</div>
+
+
 
 
 
