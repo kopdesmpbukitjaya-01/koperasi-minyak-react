@@ -372,7 +372,7 @@ shu,
 tahun,
 nama
 `)
-.eq(
+.ilike(
 "nama",
 warga.nama
 )
@@ -393,6 +393,20 @@ ascending:false
 console.log(
 "DATA SHU STRUKTUR:",
 shuStrukturData
+);
+
+console.log(
+"CARI NAMA:",
+warga.nama
+);
+console.log(
+"KODE WARGA:",
+warga.kode_warga
+);
+
+console.log(
+"STATUS:",
+warga.status
 );
 console.log(
 "CEK JUMLAH STRUKTUR:",
