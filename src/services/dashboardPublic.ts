@@ -212,35 +212,134 @@ export async function getLabaBersih() {
 
 
   // Ambil transaksi BBM yang sudah terjual
-  const { data: transaksi, error: transaksiError } =
-    await supabase
-      .from("transaksi")
-      .select(`
-        liter,
-        total,
-        jenis_bbm_id
-      `);
+let semuaTransaksi:any[] = [];
+
+let offset = 0;
+const limit = 1000;
+
+while (true) {
+
+  const {
+    data,
+    error
+  } = await supabase
+    .from("transaksi")
+    .select(`
+      tanggal,
+      liter,
+      total,
+      jenis_bbm_id
+    `)
+    .range(offset, offset + limit - 1);
 
 
-  if (transaksiError)
-    throw transaksiError;
+  if (error)
+    throw error;
 
 
+  if (!data || data.length === 0)
+    break;
+
+
+  semuaTransaksi.push(...data);
+
+
+  if (data.length < limit)
+    break;
+
+
+  offset += limit;
+
+}
+
+
+const transaksi = semuaTransaksi;
+
+
+console.log(
+  "TOTAL TRANSAKSI SEMUA:",
+  transaksi.length
+);
+    console.log(
+  "JUMLAH TRANSAKSI DARI SUPABASE:",
+  transaksi?.length
+);
+
+
+const cekPertalite =
+(transaksi || [])
+.filter(
+(item:any)=>item.jenis_bbm_id === 3
+)
+.reduce(
+(sum:number,item:any)=>
+sum + Number(item.liter || 0),
+0
+);
+
+
+console.log(
+  "PERTALITE DARI SERVICE:",
+  cekPertalite
+);
+console.log(
+  "TOTAL DATA TRANSAKSI:",
+  transaksi?.length
+);
+
+
+console.log(
+  "TOTAL LITER PERTALITE:",
+  (transaksi || [])
+    .filter(
+      (item:any)=> item.jenis_bbm_id === 3
+    )
+    .reduce(
+      (sum:number,item:any)=>
+        sum + Number(item.liter || 0),
+      0
+    )
+);
+
+
+
+
+console.log(
+  "========================================"
+);
 
   // Ambil harga modal berdasarkan jenis BBM
-  const { data: pembelian, error: pembelianError } =
-    await supabase
-      .from("pembelian_bbm")
-      .select(`
-        jenis_bbm_id,
-        harga_modal_per_liter
-      `);
+  const {
+  data: pembelian,
+  error: pembelianError
+} =
+  await supabase
+    .from("pembelian_bbm")
+    .select(`
+      tanggal_pembelian,
+      jenis_bbm_id,
+      harga_modal_per_liter
+    `);
+
+
+if (pembelianError)
+  throw pembelianError;
 
 
   if (pembelianError)
     throw pembelianError;
 
+console.log(
+  "========== CEK MODAL BBM =========="
+);
 
+console.table(
+  pembelian
+);
+
+console.log(
+  "=================================="
+);
 
   let totalPenjualan = 0;
   let totalModalTerjual = 0;
@@ -250,31 +349,55 @@ export async function getLabaBersih() {
   (transaksi || []).forEach((trx:any)=>{
 
 
-    const liter =
-      Number(trx.liter || 0);
 
 
-    totalPenjualan +=
-      Number(trx.total || 0);
+const liter =
+Number(trx.liter || 0);
+
+
+totalPenjualan +=
+Number(trx.total || 0);
+
+
 
 
 
     const modal =
-      pembelian?.find(
-        (item:any)=>
-          item.jenis_bbm_id === trx.jenis_bbm_id
-      );
+pembelian
+?.filter(
+(item:any)=>
+item.jenis_bbm_id === trx.jenis_bbm_id &&
+new Date(item.tanggal_pembelian) <=
+new Date(trx.tanggal)
+)
+.sort(
+(a:any,b:any)=>
+new Date(b.tanggal_pembelian).getTime()
+-
+new Date(a.tanggal_pembelian).getTime()
+)[0];
+
+    const modalTerpakai =
+  liter *
+  Number(
+    modal?.harga_modal_per_liter || 0
+  );
 
 
-    totalModalTerjual +=
-      liter *
-      Number(
-        modal?.harga_modal_per_liter || 0
-      );
+console.log(
+  "DETAIL HITUNG MODAL",
+  {
+    tanggal: trx.tanggal,
+    jenis: trx.jenis_bbm_id,
+    liter: liter,
+    hargaModal: modal?.harga_modal_per_liter,
+    totalModal: modalTerpakai
+  }
+);
 
 
+totalModalTerjual += modalTerpakai;
   });
-
 
 
   // Ambil pengeluaran koperasi
@@ -300,12 +423,47 @@ export async function getLabaBersih() {
         0
       );
 
+console.log(
+"TOTAL LITER TERJUAL:",
+(transaksi || [])
+.reduce(
+(sum:any,item:any)=>
+sum + Number(item.liter || 0),
+0
+)
+);
 
 
-  const labaUsaha =
-    totalPenjualan -
-    totalModalTerjual -
-    totalPengeluaran;
+const labaUsaha =
+  totalPenjualan -
+  totalModalTerjual -
+  totalPengeluaran;
+
+
+console.log(
+  "TOTAL PENJUALAN:",
+  totalPenjualan
+);
+
+
+console.log(
+  "TOTAL MODAL TERJUAL:",
+  totalModalTerjual
+);
+
+
+console.log(
+  "TOTAL PENGELUARAN:",
+  totalPengeluaran
+);
+
+
+console.log(
+  "LABA BERSIH:",
+  labaUsaha
+);
+
+
 
 return labaUsaha;
 
