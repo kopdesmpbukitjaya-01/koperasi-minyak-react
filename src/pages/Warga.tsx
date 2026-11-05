@@ -58,9 +58,16 @@ const [fotoPreview, setFotoPreview] = useState("");
 
     const data = await getWarga();
 
+
+    console.log(
+  "DATA WARGA TEST DETAIL:",
+  data.slice(0,10)
+);
+
+
     setList(data);
 
-  }
+}
 
 
 

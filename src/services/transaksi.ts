@@ -578,3 +578,259 @@ export async function getRekapLiterPeriode() {
     return rekap;
   }
 }
+// =====================================================
+// RIWAYAT TRANSAKSI ANGGOTA
+// =====================================================
+
+export async function getRiwayatTransaksiAnggota(
+  kodeWarga: string
+) {
+
+  try {
+
+    // cari warga
+    const { data: warga, error: wargaError } =
+      await supabase
+        .from("warga")
+        .select(`
+          id,
+          kode_warga,
+          nama
+        `)
+        .eq("kode_warga", kodeWarga)
+        
+        .single();
+
+
+    if (wargaError)
+      throw wargaError;
+
+
+
+    // ambil transaksi warga
+
+    const { data, error } =
+await supabase
+.from("transaksi")
+.select(`
+  id,
+  tanggal,
+  liter,
+  harga,
+  total,
+  jenis_bbm(
+    nama,
+    harga
+  )
+`)
+.eq(
+ "warga_id",
+ warga.id
+)
+.order(
+ "tanggal",
+ {
+   ascending:false
+ }
+);
+
+
+    if(error)
+      throw error;
+
+
+
+    return {
+
+      warga,
+
+      transaksi:data ?? [],
+
+
+      totalLiter:
+        (data ?? [])
+        .reduce(
+          (a,b)=>
+            a + Number(b.liter || 0),
+          0
+        ),
+
+
+      totalNominal:
+        (data ?? [])
+        .reduce(
+          (a,b)=>
+            a + Number(b.total || 0),
+          0
+        )
+
+    };
+
+
+  } catch(error){
+
+    console.error(
+      "Gagal mengambil riwayat transaksi anggota",
+      error
+    );
+
+
+    throw error;
+
+  }
+
+}
+// =====================================================
+// CEK RIWAYAT TRANSAKSI ANGGOTA
+// =====================================================
+
+export async function cekTransaksiAnggota(
+  kodeWarga: string
+) {
+  try {
+
+
+    // 1. Cari data warga
+   const { data: warga, error: wargaError } =
+  await supabase
+    .from("warga")
+    .select(`
+      id,
+      kode_warga,
+      nama
+    `)
+    .eq("kode_warga", kodeWarga)
+    .single();
+
+
+    if (wargaError) {
+      throw wargaError;
+    }
+
+
+
+    // 2. Ambil transaksi warga tersebut
+
+    const { data, error } =
+      await supabase
+        .from("transaksi")
+        .select(`
+          id,
+          tanggal,
+          liter,
+          harga,
+          total,
+
+          jenis_bbm:jenis_bbm_id (
+  nama,
+  harga
+)
+        `)
+        .eq(
+          "warga_id",
+          warga.id
+        )
+        .order(
+          "tanggal",
+          {
+            ascending:false
+          }
+        );
+
+
+    if(error) {
+      throw error;
+    }
+
+console.log(
+  "HASIL TRANSAKSI ANGGOTA:",
+  data
+);
+
+    const transaksi = data ?? [];
+
+console.log(
+ "CEK JENIS BBM TRANSAKSI:",
+ transaksi
+);
+
+    return {
+
+
+      ditemukan:
+        transaksi.length > 0,
+
+
+      nama:
+        warga.nama,
+
+
+      kode_warga:
+        warga.kode_warga,
+
+
+      jumlahTransaksi:
+        transaksi.length,
+
+
+      totalLiter:
+        transaksi.reduce(
+          (total,item)=>
+            total + Number(item.liter || 0),
+          0
+        ),
+
+
+
+      totalNominal:
+        transaksi.reduce(
+          (total,item)=>
+            total + Number(item.total || 0),
+          0
+        ),
+
+
+
+      riwayat:
+
+        transaksi.map(item=>({
+
+          tanggal:
+            item.tanggal,
+
+
+     jenis:
+(item.jenis_bbm as any)?.nama ||
+(item.jenis_bbm as any)?.[0]?.nama ||
+"-",
+
+          liter:
+            Number(item.liter || 0),
+
+
+          harga:
+            Number(item.harga || 0),
+
+
+          total:
+            Number(item.total || 0)
+
+        }))
+
+    };
+
+
+  } catch(error){
+
+
+    console.error(
+      "Gagal cek transaksi anggota:",
+      error
+    );
+
+
+    throw error;
+
+  }
+
+}

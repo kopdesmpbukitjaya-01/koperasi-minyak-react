@@ -4,12 +4,17 @@ import {
   getPortalAnggota
 } from "../services/simpanan";
 
+import {
+  cekTransaksiAnggota
+} from "../services/transaksi";
+
 
 export default function PortalAnggota(){
 const navigate = useNavigate();
 const [idAnggota,setIdAnggota] = useState("");
 const [nama,setNama] = useState("");
 const [infoAnggota,setInfoAnggota] = useState<any>(null);
+const [infoTransaksi,setInfoTransaksi] = useState<any>(null);
 const [loading,setLoading] = useState(false);
 
 
@@ -30,6 +35,19 @@ nama.trim()
 
 
 setInfoAnggota(data);
+const transaksi =
+await cekTransaksiAnggota(
+  idAnggota.trim()
+);
+
+
+setInfoTransaksi(transaksi);
+
+
+console.log(
+  "DATA TRANSAKSI ANGGOTA:",
+  transaksi
+);
 console.log(
   "DATA ANGGOTA PORTAL:",
   data
@@ -181,7 +199,108 @@ loading
 
 </button>
 
+{
+infoTransaksi && (
 
+<div
+className="
+mt-6
+rounded-2xl
+p-5
+bg-white/5
+border
+border-blue-500/30
+"
+>
+
+<h2
+className="
+text-xl
+font-bold
+text-blue-300
+"
+>
+⛽ Riwayat Transaksi BBM
+</h2>
+
+
+<p className="mt-3">
+Total Pengambilan:
+{" "}
+{infoTransaksi.totalLiter}
+ Liter
+</p>
+
+
+<p>
+Total Transaksi:
+{" "}
+Rp {infoTransaksi.totalNominal?.toLocaleString("id-ID")}
+</p>
+
+
+<div className="mt-4 space-y-3">
+
+{
+infoTransaksi.riwayat?.map(
+(item:any,index:number)=>(
+
+<div
+key={index}
+className="
+p-3
+rounded-xl
+bg-black/20
+border
+border-white/10
+"
+>
+
+<p>
+Tanggal:
+{" "}
+{item.tanggal}
+</p>
+
+
+<p>
+BBM:
+{" "}
+{item.jenis}
+</p>
+
+
+<p>
+Liter:
+{" "}
+{item.liter} L
+</p>
+
+
+<p>
+Total:
+{" "}
+Rp {item.total.toLocaleString("id-ID")}
+</p>
+
+
+</div>
+
+)
+
+)
+
+}
+
+
+</div>
+
+
+</div>
+
+)
+
+}
 </div>
 
 
