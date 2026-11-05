@@ -717,19 +717,11 @@ font-bold
         </div>
 
         <div className="mt-5 text-gray-300">
-          Kode :
-          <span className="text-green-300 font-bold ml-2">
-            {item.warga?.kode_warga}
-          </span>
-        </div>
-
-        <div className="text-gray-400 text-base
-font-bold mt-2">
-          No. KK : {item.warga?.no_kk}
-        </div>
-
+         <div className="text-gray-400 text-base font-bold mt-2">
+  Masa Jabatan : 2025 - 2028
+</div>
       </div>
-
+</div>
     ))
   }
 
@@ -827,16 +819,10 @@ font-bold
 
           <div className="mt-4 text-base
 font-bold text-gray-300">
-            Kode :
-            <span className="text-green-300 font-bold ml-1">
-              {item.warga?.kode_warga}
-            </span>
-          </div>
-
-          <div className="text-xs text-gray-400 mt-2">
-            KK : {item.warga?.no_kk}
-          </div>
-
+            <div className="text-gray-400 text-base font-bold mt-2">
+  Masa Jabatan : 2025 - 2028
+</div>
+</div>
         </div>
 
       ))
@@ -953,16 +939,10 @@ font-bold
 
           <div className="mt-4 text-base
 font-bold text-gray-300">
-            Kode :
-            <span className="text-green-300 font-bold ml-1">
-              {item.warga?.kode_warga}
-            </span>
-          </div>
-
-          <div className="text-xs text-gray-400 mt-2">
-            KK : {item.warga?.no_kk}
-          </div>
-
+            <div className="text-gray-400 text-base font-bold mt-2">
+  Masa Jabatan : 2025 - 2028
+</div>
+</div>
         </div>
 
       ))
