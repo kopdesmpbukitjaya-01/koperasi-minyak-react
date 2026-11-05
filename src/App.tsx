@@ -21,7 +21,7 @@ import PortalAnggota from "./pages/PortalAnggota";
 import AlokasiSHU from "./pages/AlokasiSHU";
 import ProfilKoperasi from "./pages/ProfilKoperasi";
 import InformasiBBM from "./pages/InformasiBBM";
-import TestCekTransaksi from "./pages/TestCekTransaksi";
+
 export default function App() {
 
   return (
@@ -30,10 +30,7 @@ export default function App() {
 <AndroidBackHandler />
 
       <Routes>
-        <Route
- path="/test-transaksi"
- element={<TestCekTransaksi />}
-/>
+        
         <Route
   path="/pengeluaran"
   element={
