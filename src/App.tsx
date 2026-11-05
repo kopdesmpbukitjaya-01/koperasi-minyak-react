@@ -205,14 +205,7 @@ element={
    <InformasiBBM />
  }
 />
-<Route
- path="/portal-anggota"
- element={
-   <ProtectedRoute>
-     <PortalAnggota />
-   </ProtectedRoute>
- }
-/>
+
 <Route
   path="/print-id-card-saya"
   element={
