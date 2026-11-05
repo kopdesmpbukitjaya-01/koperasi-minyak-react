@@ -20,6 +20,7 @@ import Backup from "./pages/Backup";
 import PortalAnggota from "./pages/PortalAnggota";
 import AlokasiSHU from "./pages/AlokasiSHU";
 import ProfilKoperasi from "./pages/ProfilKoperasi";
+import InformasiBBM from "./pages/InformasiBBM";
 export default function App() {
 
   return (
@@ -195,6 +196,12 @@ element={
   element={
     <ProfilKoperasi />
   }
+/>
+<Route
+ path="/informasi-bbm"
+ element={
+   <InformasiBBM />
+ }
 />
 <Route
  path="/portal-anggota"

@@ -442,7 +442,77 @@ Cek Simpanan & SHU
 </button>
 
 
+{/* INFORMASI BBM */}
 
+<button
+
+onClick={()=>navigate("/informasi-bbm")}
+
+className="
+aspect-square
+rounded-3xl
+p-5
+bg-gradient-to-br
+from-orange-500
+via-red-500
+to-red-800
+border
+border-white/20
+shadow-[0_0_35px_rgba(249,115,22,.6)]
+flex
+flex-col
+items-center
+justify-center
+text-white
+active:scale-95
+transition
+"
+
+>
+
+<div
+className="
+text-5xl
+mb-3
+"
+>
+⛽
+</div>
+
+
+<h3
+className="
+font-black
+text-xl
+"
+>
+Informasi
+</h3>
+
+
+<h3
+className="
+font-black
+text-xl
+"
+>
+BBM
+</h3>
+
+
+<p
+className="
+text-xs
+text-white/70
+text-center
+mt-2
+"
+>
+Stok & Riwayat BBM
+</p>
+
+
+</button>
 
 {/* LOGIN ADMIN */}
 
@@ -615,103 +685,6 @@ Rp {labaBersih.toLocaleString("id-ID")}
 
 
 </div>
-
-
-
-
-
-
-
-{/* INFO */}
-
-<div
-
-className="
-rounded-3xl
-p-5
-
-bg-white/5
-
-border
-border-white/10
-"
-
->
-
-
-<h2 className="
-font-black
-text-lg
-mb-3
-"
->
-
-⛽ Informasi BBM
-
-</h2>
-
-
-{
-
-rekap.map(
-
-(item,index)=>(
-
-
-<div
-
-key={index}
-
-className="
-flex
-justify-between
-py-3
-border-b
-border-white/10
-"
-
->
-
-
-<span>
-<div>
-{item.jenis || "-"}
-</div>
-
-<div className="
-text-xs
-text-gray-400
-">
-{item.periode || "-"}
-</div>
-
-</span>
-
-
-<span
-className="
-font-bold
-text-blue-300
-"
->
-
-{item.terjual || 0} L
-
-</span>
-
-
-</div>
-
-
-)
-
-)
-
-}
-
-
-</div>
-
 
 
 

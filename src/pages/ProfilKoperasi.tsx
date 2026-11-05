@@ -224,9 +224,9 @@ text-gray-300
 "
 >
 
-Koperasi Desa Merah Putih
+NIK: 6.207.040.100.001
 <br/>
-Bukit Jaya Kecamatan Bulik Timur
+NIB: 1909250155569
 
 </p>
 
@@ -379,7 +379,71 @@ mt-1
 </p>
 
 </div>
+<div
+className="
+rounded-xl
+p-4
+bg-white/5
+border
+border-white/10
+"
+>
 
+<p
+className="
+text-xs
+text-gray-400
+"
+>
+🏛 Legalitas Koperasi
+</p>
+
+
+<p
+className="
+text-white
+font-semibold
+mt-2
+"
+>
+Nomor Badan Hukum
+</p>
+
+
+<p
+className="
+text-blue-300
+font-bold
+text-sm
+"
+>
+{profil.nomor_badan_hukum || "-"}
+</p>
+
+
+
+<p
+className="
+text-white
+font-semibold
+mt-3
+"
+>
+Tahun Berdiri
+</p>
+
+
+<p
+className="
+text-blue-300
+font-bold
+"
+>
+{profil.tahun_berdiri || "-"}
+</p>
+
+
+</div>
 
 </div>
 
