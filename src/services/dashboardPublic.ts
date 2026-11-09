@@ -465,7 +465,14 @@ console.log(
 
 
 
-return labaUsaha;
+return {
+  totalPenjualan,
+  totalModalTerjual,
+  totalPengeluaran,
+  labaKotor:
+    totalPenjualan - totalModalTerjual,
+  labaBersih: labaUsaha
+};
 
 }
 
