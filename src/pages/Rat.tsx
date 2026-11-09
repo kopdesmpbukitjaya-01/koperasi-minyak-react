@@ -31,7 +31,8 @@ import {
   simpanSHUStruktur
 } from "../services/shu_struktur";
 import {
-  getAlokasiSHU
+getAlokasiSHU,
+resetPembagianSHU
 } from "../services/alokasi_shu";
 
 
@@ -119,21 +120,38 @@ keuangan
 
 
 
+const alokasi =
+await getAlokasiSHU(tahun);
+
+
 const totalSHU =
 Number(
-keuangan?.shuBersih || 0
+alokasi?.total_shu || 0
 );
 
 
 // SHU ANGGOTA
 const totalSHUAnggota =
 totalSHU *
-0.5;
+(
+ Number(alokasi?.shu_anggota || 0)
+/100
+);
 
 
 const dataSHU =
 await getPembagianSHUAnggota(
-  totalSHUAnggota
+  totalSHUAnggota,
+  Number(alokasi?.shu_simpanan || 0),
+  Number(alokasi?.shu_jasa || 0),
+  tahun
+);
+console.log(
+ "TOTAL CEK SHU ANGGOTA",
+ dataSHU.reduce(
+  (a:any,b:any)=>a + Number(b.shu || 0),
+  0
+ )
 );
 console.log(
 "DATA SHU SEBELUM SIMPAN:",
@@ -216,36 +234,61 @@ setSavingSHU(true);
 const alokasi =
 await getAlokasiSHU(tahun);
 
+console.log(
+"DATA ALOKASI SHU:",
+alokasi
+);
+
 
 const totalSHU =
 Number(
-ringkasan?.shuBersih || 0
+alokasi?.total_shu || 0
 );
 const totalSHUAnggota =
 totalSHU *
 (
 Number(
-alokasi?.jasa_anggota || 0
-)
-/100
-);
-
-(
-Number(
-alokasi?.jasa_anggota || 0
+alokasi?.shu_anggota || 0
 )
 /100
 );
 
 
+console.log(
+"TOTAL SHU KOPERASI",
+totalSHU
+);
 
-const dataSHU =
-await getPembagianSHUAnggota(
-  totalSHUAnggota
+
+console.log(
+"ALOKASI SHU ANGGOTA %",
+alokasi?.shu_anggota
+);
+
+
+console.log(
+"TOTAL SHU ANGGOTA MASUK SERVICE",
+totalSHUAnggota
 );
 console.log(
-"TOTAL JASA ANGGOTA SEHARUSNYA",
-totalSHU * Number(alokasi.jasa_anggota)/100
+"SHU SIMPANAN %",
+alokasi?.shu_simpanan
+);
+
+console.log(
+"SHU JASA %",
+alokasi?.shu_jasa
+);
+const dataSHU =
+await getPembagianSHUAnggota(
+  totalSHUAnggota,
+  Number(alokasi?.shu_simpanan || 0),
+  Number(alokasi?.shu_jasa || 0),
+  tahun
+);
+console.log(
+"TOTAL SHU ANGGOTA SEHARUSNYA",
+totalSHU * Number(alokasi.shu_anggota)/100
 );
 
 console.log(
@@ -262,10 +305,23 @@ console.log(
 "CONTOH DATA SHU:",
 dataSHU[0]
 );
-await simpanSHUAnggota(
-tahun,
-dataSHU
+console.log(
+ "DATA SHU SEBELUM INSERT",
+ dataSHU
 );
+
+console.log(
+ "JUMLAH DATA SHU",
+ dataSHU.length
+);
+console.log("=== MULAI SIMPAN ANGGOTA ===");
+
+await simpanSHUAnggota(
+ tahun,
+ dataSHU
+);
+
+console.log("=== SELESAI SIMPAN ANGGOTA ===");
 
 console.log("SELESAI SIMPAN SHU ANGGOTA");
 
@@ -307,7 +363,62 @@ setSavingSHU(false);
 }
 
 }
+async function generateUlangSHU(){
 
+try{
+
+const yakin = confirm(
+"Generate ulang SHU tahun "+tahunSHU+"?"
+);
+
+
+if(!yakin)
+return;
+
+
+setSavingSHU(true);
+
+
+// hapus hasil pembagian lama
+await resetPembagianSHU(
+Number(tahunSHU)
+);
+
+
+// hitung ulang
+await simpanPembagianSHU();
+
+
+await cekStatusSHU();
+
+
+alert(
+"✅ Generate ulang SHU berhasil"
+);
+
+
+}catch(error:any){
+
+console.error(
+"GENERATE ULANG ERROR:",
+error
+);
+
+
+alert(
+"Gagal generate ulang SHU : "
++
+error.message
+);
+
+
+}finally{
+
+setSavingSHU(false);
+
+}
+
+}
 async function cekStatusSHU(){
 if(!tahunSHU)
 return;
@@ -619,6 +730,14 @@ doc.line(
 200,
 47
 );
+const alokasi =
+await getAlokasiSHU(tahun);
+
+
+const shu =
+Number(
+alokasi?.total_shu || 0
+);
 
 
 // GARIS KOP
@@ -839,7 +958,7 @@ ringkasan?.omzetPenjualan || 0
 [
 "SHU Bersih",
 `Rp ${Number(
-ringkasan?.shuBersih || 0
+alokasi?.total_shu || 0
 ).toLocaleString("id-ID")}`
 ],
 
@@ -902,21 +1021,37 @@ posisiY += 10;
 
 
 
-const shu =
-Number(ringkasan?.shuBersih || 0);
+// ============================
+// DATA ALOKASI SHU RAT
+// ============================
 
 
 
-const alokasi =
-await getAlokasiSHU(tahun);
+
 const totalAlokasiSHU =
 Number(alokasi?.cadangan || 0) +
-Number(alokasi?.jasa_anggota || 0) +
-Number(alokasi?.jasa_pengurus || 0) +
-Number(alokasi?.jasa_pengawas || 0) +
+Number(alokasi?.shu_anggota || 0) +
+Number(alokasi?.shu_pengurus || 0) +
+Number(alokasi?.shu_pengawas || 0) +
 Number(alokasi?.dana_pendidikan || 0) +
 Number(alokasi?.dana_sosial || 0) +
 Number(alokasi?.dana_pembangunan || 0);
+
+
+
+console.log(
+"TOTAL SHU RAT",
+shu
+);
+
+
+console.log(
+"TOTAL PERSENTASE ALOKASI",
+totalAlokasiSHU
+);
+
+
+
 if(totalAlokasiSHU !== 100){
 
 console.error(
@@ -941,20 +1076,20 @@ shu * Number(alokasi?.cadangan || 0) / 100
 
 
 [
-`Jasa Anggota ${alokasi?.jasa_anggota || 0}%`,
-shu * Number(alokasi?.jasa_anggota || 0) / 100
+`SHU Anggota ${alokasi?.shu_anggota || 0}%`,
+shu * Number(alokasi?.shu_anggota || 0) / 100
 ],
 
 
 [
-`Jasa Pengurus ${alokasi?.jasa_pengurus || 0}%`,
-shu * Number(alokasi?.jasa_pengurus || 0) / 100
+`SHU Pengurus ${alokasi?.shu_pengurus || 0}%`,
+shu * Number(alokasi?.shu_pengurus || 0) / 100
 ],
 
 
 [
-`Jasa Pengawas ${alokasi?.jasa_pengawas || 0}%`,
-shu * Number(alokasi?.jasa_pengawas || 0) / 100
+`SHU Pengawas ${alokasi?.shu_pengawas || 0}%`,
+shu * Number(alokasi?.shu_pengawas || 0) / 100
 ],
 
 
@@ -1192,7 +1327,7 @@ a + Number(b.shu || 0),
 console.log(
 "VALIDASI SHU",
 {
-SHU_Bersih:ringkasan?.shuBersih,
+SHU_Bersih:alokasi?.total_shu,
 
 Anggota:totalSHUAnggota,
 
@@ -1575,7 +1710,6 @@ Pengelolaan Rapat Anggota Tahunan
 
 
 
-
 <div
 className="
 rounded-3xl
@@ -1844,8 +1978,10 @@ savingSHU
 </button>
 
 
+
 <button
 
+onClick={generateUlangSHU}
 
 className="
 mt-3
@@ -2051,8 +2187,16 @@ tampilkanSHU && tahunSHU && (
             </th>
 
             <th className="p-3 text-left">
-              SHU Diterima
-            </th>
+  SHU Simpanan
+</th>
+
+<th className="p-3 text-left">
+  SHU Jasa
+</th>
+
+<th className="p-3 text-left">
+  SHU Diterima
+</th>
             <th>
 Status
 </th>
@@ -2062,7 +2206,7 @@ Status
         </thead>
 
 
-        <tbody>
+   <tbody>   
 
 {
 shuAnggota.map(
@@ -2101,12 +2245,40 @@ Rp {Number(item.transaksi)
 <td
 className="
 p-3
+text-cyan-300
+"
+>
+Rp {Number(item.shu_simpanan || 0)
+.toLocaleString("id-ID")}
+</td>
+
+
+<td
+className="
+p-3
+text-purple-300
+"
+>
+Rp {Number(item.shu_jasa || 0)
+.toLocaleString("id-ID")}
+</td>
+
+
+<td
+className="
+p-3
 font-bold
 text-green-400
 "
 >
-Rp {Number(item.shu)
-.toLocaleString("id-ID")}
+Rp {
+(
+Number(item.shu_simpanan || 0)
++
+Number(item.shu_jasa || 0)
+)
+.toLocaleString("id-ID")
+}
 </td>
 
 
@@ -2157,12 +2329,107 @@ item.status === "Pengawas"
 )
 }
 
+
+{/* ===========================
+   TOTAL REKAP SHU ANGGOTA
+=========================== */}
+
+<tr
+className="
+bg-black/40
+font-black
+text-yellow-400
+"
+>
+
+<td
+colSpan={2}
+className="p-4 text-center"
+>
+TOTAL
+</td>
+
+
+<td className="p-4">
+Rp {
+shuAnggota
+.reduce(
+(a:any,b:any)=>
+a + Number(b.simpanan || 0),
+0
+)
+.toLocaleString("id-ID")
+}
+</td>
+
+
+<td className="p-4">
+Rp {
+shuAnggota
+.reduce(
+(a:any,b:any)=>
+a + Number(b.transaksi || 0),
+0
+)
+.toLocaleString("id-ID")
+}
+</td>
+
+
+<td className="p-4">
+Rp {
+shuAnggota
+.reduce(
+(a:any,b:any)=>
+a + Number(b.shu_simpanan || 0),
+0
+)
+.toLocaleString("id-ID")
+}
+</td>
+
+
+<td className="p-4">
+Rp {
+shuAnggota
+.reduce(
+(a:any,b:any)=>
+a + Number(b.shu_jasa || 0),
+0
+)
+.toLocaleString("id-ID")
+}
+</td>
+
+
+<td className="
+p-4
+text-green-400
+text-lg
+"
+>
+Rp {
+shuAnggota
+.reduce(
+(a:any,b:any)=>
+a + Number(b.shu || 0),
+0
+)
+.toLocaleString("id-ID")
+}
+</td>
+
+
+<td></td>
+
+</tr>
+
 </tbody>
 
-      </table>
+</table>
 
-    </div>
-    {/* ==========================
+</div>
+{/* ==========================
 PEMBAGIAN SHU PENGURUS
 ========================== */}
 
@@ -2181,6 +2448,7 @@ mb-4
 <div className="overflow-auto">
 
 <table className="w-full text-sm">
+
 
 <thead>
 
@@ -2208,6 +2476,7 @@ SHU Diterima
 
 
 <tbody>
+
 
 {
 shuPengurus.map(
@@ -2268,25 +2537,27 @@ Rp {Number(item.shu)
     PEMBAGIAN SHU PENGAWAS
 =========================== */}
 
-<div className="
+<div
+className="
 mt-10
 rounded-3xl
 p-6
 bg-white/5
 border
 border-white/10
-">
+"
+>
 
-
-<h3 className="
+<h3
+className="
 text-2xl
 font-black
 text-yellow-400
 mb-5
-">
+"
+>
 🛡️ Pembagian SHU Pengawas
 </h3>
-
 
 <table className="w-full text-sm">
 
@@ -2318,7 +2589,6 @@ SHU Diterima
 
 </thead>
 
-
 <tbody>
 
 {
@@ -2337,16 +2607,13 @@ border-white/10
 {index+1}
 </td>
 
-
 <td className="p-3">
 {item.nama}
 </td>
 
-
 <td className="p-3">
 {item.jabatan}
 </td>
-
 
 <td className="p-3">
 
@@ -2370,40 +2637,34 @@ border-yellow-400
 
 </td>
 
-
-<td className="
+<td
+className="
 p-3
 font-bold
 text-green-400
-">
+"
+>
 
-Rp {Number(item.shu)
-.toLocaleString("id-ID")}
+Rp {Number(item.shu).toLocaleString("id-ID")}
 
 </td>
-
 
 </tr>
 
 )
-
 )
-
 }
 
 </tbody>
 
-
 </table>
 
-
 </div>
-
-  </div>
-
+</div>
 )
-
 }
+
+
 <div
 className="
 rounded-3xl
@@ -2504,7 +2765,6 @@ font-bold
 
 
 </div>
-
 
 
 </Layout>

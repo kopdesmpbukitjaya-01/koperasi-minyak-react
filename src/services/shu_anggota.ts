@@ -2,16 +2,17 @@ import { supabase } from "../lib/supabase";
 
 
 export async function getPembagianSHUAnggota(
-  totalSHUAnggota:number
+  totalSHUAnggota:number,
+  shuSimpananPersen:number,
+  shuJasaPersen:number,
+  tahun:number
 ){
-
 
   const {data:anggota,error}=await supabase
   .from("warga")
   .select(`
     id,
     nama,
-    no_kk,
     status
   `)
   .in(
@@ -27,6 +28,7 @@ export async function getPembagianSHUAnggota(
   if(error) throw error;
 
 
+
   const {data:simpanan}=await supabase
   .from("simpanan_anggota")
   .select(`
@@ -39,12 +41,76 @@ export async function getPembagianSHUAnggota(
 
 
   const {data:transaksi}=await supabase
-  .from("transaksi")
-  .select(`
-    warga_id,
-    total
-  `);
+.from("transaksi")
+.select(`
+  id,
+  warga_id,
+  total,
+  tanggal,
+  warga(
+    id,
+    nama,
+    status
+  )
+`)
+.gte(
+  "tanggal",
+  `${tahun}-01-01`
+)
+.lte(
+  "tanggal",
+  `${tahun}-12-31`
+)
+.order(
+  "tanggal",
+  {
+    ascending:false
+  }
+);
+const transaksiAnggotaKoperasi =
+transaksi?.filter(
+(t:any)=>
+[
+"Anggota",
+"Pengurus",
+"Pengawas"
+]
+.includes(
+t.warga?.status
+)
+)
+|| [];
 
+
+const totalTransaksiAnggota =
+transaksiAnggotaKoperasi.reduce(
+(sum:any,t:any)=>
+sum + Number(t.total || 0),
+0
+);
+
+
+console.log(
+"JUMLAH TRANSAKSI SEMUA",
+transaksi?.length
+);
+
+
+console.log(
+"JUMLAH TRANSAKSI ANGGOTA KOPERASI",
+transaksiAnggotaKoperasi.length
+);
+
+
+console.log(
+"TOTAL TRANSAKSI ANGGOTA KOPERASI",
+totalTransaksiAnggota
+);
+  /*
+  ==========================
+  TOTAL GLOBAL
+  ==========================
+  */
 
 
   const totalSimpanan =
@@ -59,100 +125,204 @@ export async function getPembagianSHUAnggota(
 
 
 
-  const totalTransaksi =
-  transaksi?.reduce(
-    (a,b)=>
-      a+
-      Number(b.total||0)
-    ,0
-  ) || 0;
+  
 
 
 
-  const bagianSimpanan =
-  totalSHUAnggota * 0.5;
+ /*
+==========================
+ALOKASI SHU
+SAMA DENGAN PORTAL
+==========================
+*/
 
 
-  const bagianTransaksi =
-  totalSHUAnggota * 0.5;
-
-
-
-  return anggota?.map((item:any)=>{
-
-
-    const simpananAnggota =
-    simpanan
-    ?.filter(
-      (s:any)=>
-      s.warga_id===item.id
-    )
-    .reduce(
-      (a,b)=>
-        a+
-        Number(b.simpanan_pokok||0)+
-        Number(b.simpanan_wajib||0)+
-        Number(b.simpanan_sukarela||0)
-      ,0
-    ) || 0;
+// TOTAL TRANSAKSI SELURUH ANGGOTA
+const totalTransaksi =
+transaksi?.reduce(
+(a,b)=>
+a + Number(b.total || 0),
+0
+) || 0;
 
 
 
-    const transaksiAnggota =
-    transaksi
-    ?.filter(
-      (t:any)=>
-      t.warga_id===item.id
-    )
-    .reduce(
-      (a,b)=>
-        a+
-        Number(b.total||0)
-      ,0
-    ) || 0;
 
-
-
-    const jasaModal =
-    totalSimpanan
-    ?
-    (simpananAnggota/totalSimpanan)
-    *
-    bagianSimpanan
-    :
-    0;
 console.log(
-"CEK SHU SIMPANAN:",
-{
-nama:item.nama,
-simpananAnggota,
-totalSimpanan,
-bagianSimpanan,
-jasaModal
-}
+"TOTAL TRANSAKSI SEMUA",
+totalTransaksi
 );
 
 
-    const jasaUsaha =
-    totalTransaksi
-    ?
-    (transaksiAnggota/totalTransaksi)
-    *
-    bagianTransaksi
-    :
-    0;
-
 console.log(
-"CEK DATA SEBELUM SIMPAN SHU:",
-{
-nama:item.nama,
-shu_jasa:jasaUsaha,
-shu_simpanan:jasaModal,
-shu:jasaModal+jasaUsaha
-}
+"TOTAL TRANSAKSI ANGGOTA",
+totalTransaksiAnggota
 );
 
-    return {
+
+console.log(
+"SELISIH TRANSAKSI",
+totalTransaksi-totalTransaksiAnggota
+);
+
+// SHU SIMPANAN 50%
+const jasaSimpananTotal =
+(
+totalSHUAnggota *
+shuSimpananPersen /
+100
+);
+
+
+
+// SHU JASA 50%
+const jasaUsahaTotal =
+(
+totalSHUAnggota *
+shuJasaPersen /
+100
+);
+
+
+
+// ==========================
+// DEBUG GLOBAL
+// ==========================
+
+console.log(
+"JUMLAH DATA TRANSAKSI",
+transaksi?.length
+);
+
+
+console.log(
+"CONTOH TRANSAKSI",
+transaksi?.[0]
+);
+
+
+console.log(
+"TOTAL TRANSAKSI KOPERASI",
+totalTransaksi
+);
+
+
+console.log(
+"TOTAL SIMPANAN KOPERASI",
+totalSimpanan
+);
+
+
+console.log(
+"SHU SIMPANAN TERSEDIA",
+jasaSimpananTotal
+);
+
+
+console.log(
+"SHU JASA TERSEDIA",
+jasaUsahaTotal
+);
+
+
+// ==========================
+// PEMBAGIAN PER ANGGOTA
+// ==========================
+
+return anggota?.map((item:any)=>{
+
+
+const simpananAnggota =
+simpanan
+?.filter(
+(s:any)=>
+Number(s.warga_id) === Number(item.id)
+)
+.reduce(
+(a,s)=>
+a+
+Number(s.simpanan_pokok || 0)+
+Number(s.simpanan_wajib || 0)+
+Number(s.simpanan_sukarela || 0),
+0
+)
+||0;
+
+
+
+const transaksiAnggota =
+transaksi
+?.filter(
+(t:any)=>
+Number(t.warga_id) === Number(item.id)
+)
+.reduce(
+(sum:any,t:any)=>
+sum + Number(t.total || 0),
+0
+)
+||0;
+
+
+
+if(item.id === 235){
+
+console.log(
+"=== CEK RAT IQOM ==="
+);
+
+console.log(
+transaksi?.filter(
+(t:any)=>
+Number(t.warga_id)===235
+)
+);
+
+
+console.log(
+"TOTAL TRANSAKSI IQOM",
+transaksiAnggota
+);
+
+}
+
+
+
+// ==========================
+// SHU SIMPANAN
+// ==========================
+
+const shuSimpanan =
+totalSimpanan > 0
+?
+(
+simpananAnggota /
+totalSimpanan
+)
+*
+jasaSimpananTotal
+:
+0;
+
+
+
+
+// ==========================
+// SHU JASA
+// ==========================
+
+const shuJasa =
+totalTransaksiAnggota
+?
+(transaksiAnggota / totalTransaksiAnggota)
+*
+jasaUsahaTotal
+:
+0;
+
+
+
+return {
 
 id:item.id,
 
@@ -164,23 +334,19 @@ simpanan:simpananAnggota,
 
 transaksi:transaksiAnggota,
 
-shu_jasa:jasaUsaha,
+shu_simpanan:shuSimpanan,
 
-shu_simpanan:jasaModal,
+shu_jasa:shuJasa,
 
-shu:jasaModal+jasaUsaha
+shu:
+shuSimpanan + shuJasa
 
 };
 
 
-  });
-
+});
 
 }
-
-
-
-
 export async function simpanSHUAnggota(
   tahun:number,
   data:any[]
@@ -202,7 +368,34 @@ export async function simpanSHUAnggota(
     data
   );
 
+console.log(
+  "TOTAL SHU SIMPANAN ANGGOTA",
+  data.reduce(
+    (a:any,b:any)=>
+    a + Number(b.shu_simpanan || 0),
+    0
+  )
+);
 
+
+console.log(
+  "TOTAL SHU JASA ANGGOTA",
+  data.reduce(
+    (a:any,b:any)=>
+    a + Number(b.shu_jasa || 0),
+    0
+  )
+);
+
+
+console.log(
+  "TOTAL SHU DITERIMA ANGGOTA",
+  data.reduce(
+    (a:any,b:any)=>
+    a + Number(b.shu || 0),
+    0
+  )
+);
   const insertData = data.map((item:any)=>({
 
 warga_id:item.id,
@@ -259,4 +452,3 @@ console.log(
   return true;
 
 }
-

@@ -58,7 +58,7 @@ item.kategori==="Pengurus"
 const totalJasaPengurus =
 totalSHU *
 (
-Number(alokasi.jasa_pengurus)
+Number(alokasi.shu_pengurus)
 /100
 );
 
@@ -154,7 +154,7 @@ item.kategori==="Pengawas"
 const totalJasaPengawas =
 totalSHU *
 (
-Number(alokasi.jasa_pengawas)
+Number(alokasi.shu_pengawas)
 /100
 );
 

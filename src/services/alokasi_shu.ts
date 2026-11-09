@@ -6,12 +6,27 @@ import { getLabaBersih } from "./dashboardPublic";
 // TOTAL SHU OTOMATIS DARI LABA
 // ============================
 
-export async function getTotalSHUKoperasi(){
+export async function getTotalSHUKoperasi(
+tahun:number
+){
 
-  const laba =
-    await getLabaBersih();
+const {data,error}=await supabase
+.from("alokasi_shu")
+.select("total_shu")
+.eq(
+"tahun",
+tahun
+)
+.single();
 
-  return laba;
+
+if(error)
+throw error;
+
+
+return Number(
+data?.total_shu || 0
+);
 
 }
 
@@ -116,11 +131,11 @@ const {error}=await supabase
 
 cadangan:0,
 
-jasa_anggota:0,
+shu_anggota:0,
 
-jasa_pengurus:0,
+shu_pengurus:0,
 
-jasa_pengawas:0,
+shu_pengawas:0,
 
 dana_pendidikan:0,
 

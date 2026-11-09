@@ -19,9 +19,13 @@ count:"exact",
 head:true
 }
 )
-.eq(
+.in(
 "status",
-"Anggota"
+[
+"Anggota",
+"Pengurus",
+"Pengawas"
+]
 );
 
 
@@ -109,8 +113,16 @@ await supabase
 .from("pembelian_bbm")
 .select(`
 jenis_bbm_id,
-harga_modal_per_liter
-`);
+harga_modal_per_liter,
+jumlah_liter,
+tanggal_pembelian
+`)
+.order(
+"tanggal_pembelian",
+{
+ ascending:false
+}
+);
 
 
 if(pembelianError)
@@ -119,25 +131,22 @@ throw pembelianError;
 
 
 let omzetPenjualan = 0;
-let totalModalBBM = 0;
+let modalBBM = 0;
 
 
 
 for(const item of transaksi || []){
 
 
-omzetPenjualan += Number(
-item.total || 0
-);
-
-
-
 const modal =
-dataPembelian?.find(
+dataPembelian
+?.filter(
 (p:any)=>
-p.jenis_bbm_id === item.jenis_bbm_id
-);
-
+Number(p.jenis_bbm_id)
+===
+Number(item.jenis_bbm_id)
+)
+[0];
 
 
 const hargaModal =
@@ -145,9 +154,45 @@ Number(
 modal?.harga_modal_per_liter || 0
 );
 
+console.log(
+"CEK MODAL BBM",
+{
+jenis:item.jenis_bbm_id,
+modal,
+hargaModal
+}
+);
+
+const hargaJual =
+Number(
+item.total || 0
+)
+/
+Number(
+item.liter || 1
+);
+
+console.log(
+"DETAIL LABA BBM",
+{
+bbm:item.jenis_bbm_id,
+liter:item.liter,
+total:item.total,
+hargaJual,
+hargaModal,
+laba:
+Number(item.liter) *
+(hargaJual-hargaModal)
+}
+);
+
+omzetPenjualan += Number(
+item.total || 0
+);
 
 
-totalModalBBM +=
+
+modalBBM +=
 
 Number(item.liter || 0)
 
@@ -162,7 +207,22 @@ hargaModal;
 
 
 const labaKotor =
-omzetPenjualan - totalModalBBM;
+omzetPenjualan -
+modalBBM;
+(
+dataPembelian?.reduce(
+(total,item)=>{
+
+return total +
+(
+Number(item.harga_modal_per_liter || 0)
+*
+Number(item.jumlah_liter || 0)
+);
+
+},0
+) || 0
+);
 
 
 
@@ -206,10 +266,19 @@ item.jumlah || 0
 
 const shuBersih =
 labaKotor - totalPengeluaran;
-
+console.log(
+"DEBUG RAT KEUANGAN",
+{
+ omzetPenjualan,
+ modalBBM,
+ totalPengeluaran,
+ transaksi,
+ dataPembelian
+}
+);
 
 console.log("OMZET :", omzetPenjualan);
-console.log("MODAL BBM :", totalModalBBM);
+console.log("MODAL BBM :", modalBBM);
 console.log("PENGELUARAN :", totalPengeluaran);
 console.log("LABA KOTOR :", labaKotor);
 console.log("SHU BERSIH :", shuBersih);
@@ -240,7 +309,8 @@ totalSukarela,
 
 omzetPenjualan,
 
-totalModalBBM,
+modalBBM,
+
 
 labaKotor,
 

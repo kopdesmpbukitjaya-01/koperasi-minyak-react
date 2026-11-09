@@ -21,7 +21,7 @@ import PortalAnggota from "./pages/PortalAnggota";
 import AlokasiSHU from "./pages/AlokasiSHU";
 import ProfilKoperasi from "./pages/ProfilKoperasi";
 import InformasiBBM from "./pages/InformasiBBM";
-
+import LabaKoperasi from "./pages/LabaKoperasi";
 export default function App() {
 
   return (
@@ -38,7 +38,14 @@ export default function App() {
       <Pengeluaran />
     </ProtectedRoute>
   }
-  
+  />
+  <Route
+path="/laba-koperasi"
+element={
+<ProtectedRoute>
+<LabaKoperasi />
+</ProtectedRoute>
+}
 />
 <Route
 path="/alokasi-shu"

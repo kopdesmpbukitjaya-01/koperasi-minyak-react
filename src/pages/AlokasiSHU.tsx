@@ -2,13 +2,14 @@ import { useState } from "react";
 import Layout from "../components/Layout";
 import { supabase } from "../lib/supabase";
 import { useEffect } from "react";
+import { getLabaKoperasi } from "../services/laba_koperasi";
 import {
 getAlokasiSHU,
 simpanAlokasiSHU,
 resetPembagianSHU,
-resetAlokasiSHU as resetAlokasiDatabase,
-getTotalSHUKoperasi
+resetAlokasiSHU as resetAlokasiDatabase
 } from "../services/alokasi_shu";
+
 function rupiah(value:number){
 
 return new Intl.NumberFormat(
@@ -23,14 +24,19 @@ maximumFractionDigits:0
 }
 export default function AlokasiSHU(){
 
-
 const [tahun,setTahun]=useState(2026);
 const [totalSHU,setTotalSHU]=useState(0);
 
 const [cadangan,setCadangan]=useState(25);
-const [jasaAnggota,setJasaAnggota]=useState(40);
-const [jasaPengurus,setJasaPengurus]=useState(10);
-const [jasaPengawas,setJasaPengawas]=useState(5);
+const [shuAnggota,setShuAnggota]=useState(60);
+
+const [shuSimpanan,setShuSimpanan]=useState(50);
+
+const [shuJasa,setShuJasa]=useState(50);
+
+const [shuPengurus,setShuPengurus]=useState(15);
+
+const [shuPengawas,setShuPengawas]=useState(2.5);
 const [pendidikan,setPendidikan]=useState(10);
 const [sosial,setSosial]=useState(5);
 const [pembangunan,setPembangunan]=useState(5);
@@ -38,9 +44,9 @@ const [pembangunan,setPembangunan]=useState(5);
 
 const total =
 cadangan+
-jasaAnggota+
-jasaPengurus+
-jasaPengawas+
+shuAnggota+
+shuPengurus+
+shuPengawas+
 pendidikan+
 sosial+
 pembangunan;
@@ -50,20 +56,44 @@ const nominalSHU = {
 cadangan:
 (totalSHU * cadangan) / 100,
 
-jasaAnggota:
-(totalSHU * jasaAnggota) / 100,
 
-jasaPengurus:
-(totalSHU * jasaPengurus) / 100,
+shuAnggota:
+(totalSHU * shuAnggota) / 100,
 
-jasaPengawas:
-(totalSHU * jasaPengawas) / 100,
+
+shuSimpanan:
+(
+(totalSHU * shuAnggota) / 100
+*
+shuSimpanan
+/100
+),
+
+
+shuJasa:
+(
+(totalSHU * shuAnggota) / 100
+*
+shuJasa
+/100
+),
+
+
+shuPengurus:
+(totalSHU * shuPengurus) / 100,
+
+
+shuPengawas:
+(totalSHU * shuPengawas) / 100,
+
 
 pendidikan:
 (totalSHU * pendidikan) / 100,
 
+
 sosial:
 (totalSHU * sosial) / 100,
+
 
 pembangunan:
 (totalSHU * pembangunan) / 100,
@@ -80,10 +110,31 @@ loadTotalSHU();
 
 async function loadTotalSHU(){
 
-  const total =
-    await getTotalSHUKoperasi();
+try{
 
-  setTotalSHU(total);
+const laba =
+await getLabaKoperasi();
+
+
+console.log(
+"SHU DARI LABA KOPERASI",
+laba.shuKoperasi
+);
+
+
+setTotalSHU(
+Number(laba.shuKoperasi || 0)
+);
+
+
+}catch(err){
+
+console.error(
+"LOAD TOTAL SHU ERROR",
+err
+);
+
+}
 
 }
 async function loadAlokasi(){
@@ -95,19 +146,61 @@ const data = await getAlokasiSHU(tahun);
 
 if(data){
 
-setTotalSHU(
-Number(data.total_shu)
+
+/*
+JANGAN SET TOTAL SHU DI SINI
+
+SHU DIAMBIL DARI LABA KOPERASI
+*/
+
+
+setCadangan(
+Number(data.cadangan || 0)
 );
 
-setCadangan(Number(data.cadangan));
-setJasaAnggota(Number(data.jasa_anggota));
-setJasaPengurus(Number(data.jasa_pengurus));
-setJasaPengawas(Number(data.jasa_pengawas));
-setPendidikan(Number(data.dana_pendidikan));
-setSosial(Number(data.dana_sosial));
-setPembangunan(Number(data.dana_pembangunan));
+
+setShuAnggota(
+Number(data.shu_anggota || 0)
+);
+
+
+setShuSimpanan(
+Number(data.shu_simpanan || 0)
+);
+
+
+setShuJasa(
+Number(data.shu_jasa || 0)
+);
+
+
+setShuPengurus(
+Number(data.shu_pengurus || 0)
+);
+
+
+setShuPengawas(
+Number(data.shu_pengawas || 0)
+);
+
+
+setPendidikan(
+Number(data.dana_pendidikan || 0)
+);
+
+
+setSosial(
+Number(data.dana_sosial || 0)
+);
+
+
+setPembangunan(
+Number(data.dana_pembangunan || 0)
+);
+
 
 }
+
 }catch(err){
 
 console.log(err);
@@ -142,9 +235,11 @@ await resetAlokasiDatabase(tahun);
 setTotalSHU(0);
 
 setCadangan(0);
-setJasaAnggota(0);
-setJasaPengurus(0);
-setJasaPengawas(0);
+setShuAnggota(0);
+setShuSimpanan(50);
+setShuJasa(50);
+setShuPengurus(0);
+setShuPengawas(0);
 setPendidikan(0);
 setSosial(0);
 setPembangunan(0);
@@ -319,23 +414,34 @@ setValue={setCadangan}
 
 
 <FormSHU
-label="Jasa Anggota (%)"
-value={jasaAnggota}
-setValue={setJasaAnggota}
+label="SHU Anggota (%)"
+value={shuAnggota}
+setValue={setShuAnggota}
+/>
+
+<FormSHU
+label="SHU Simpanan (%)"
+value={shuSimpanan}
+setValue={setShuSimpanan}
 />
 
 
 <FormSHU
-label="Jasa Pengurus (%)"
-value={jasaPengurus}
-setValue={setJasaPengurus}
+label="SHU Jasa (%)"
+value={shuJasa}
+setValue={setShuJasa}
+/>
+<FormSHU
+label="SHU Pengurus (%)"
+value={shuPengurus}
+setValue={setShuPengurus}
 />
 
 
 <FormSHU
-label="Jasa Pengawas (%)"
-value={jasaPengawas}
-setValue={setJasaPengawas}
+label="SHU Pengawas (%)"
+value={shuPengawas}
+setValue={setShuPengawas}
 />
 
 
@@ -384,13 +490,17 @@ total_shu: totalSHU,
 
 cadangan,
 
-jasa_anggota:jasaAnggota,
+shu_anggota: shuAnggota,
 
-jasa_pengurus:jasaPengurus,
+shu_simpanan: shuSimpanan,
 
-jasa_pengawas:jasaPengawas,
+shu_jasa: shuJasa,
 
-dana_pendidikan:pendidikan,
+shu_pengurus: shuPengurus,
+
+shu_pengawas: shuPengawas,
+
+dana_pendidikan: pendidikan,
 
 dana_sosial:sosial,
 
@@ -512,20 +622,29 @@ value={nominalSHU.cadangan}
 
 
 <CardSHU
-label="Jasa Anggota"
-value={nominalSHU.jasaAnggota}
+label="SHU Anggota"
+value={nominalSHU.shuAnggota}
+/>
+<CardSHU
+label="SHU Simpanan Anggota"
+value={nominalSHU.shuSimpanan}
 />
 
 
 <CardSHU
-label="Jasa Pengurus"
-value={nominalSHU.jasaPengurus}
+label="SHU Jasa Anggota"
+value={nominalSHU.shuJasa}
+/>
+
+<CardSHU
+label="SHU Pengurus"
+value={nominalSHU.shuPengurus}
 />
 
 
 <CardSHU
-label="Jasa Pengawas"
-value={nominalSHU.jasaPengawas}
+label="SHU Pengawas"
+value={nominalSHU.shuPengawas}
 />
 
 
