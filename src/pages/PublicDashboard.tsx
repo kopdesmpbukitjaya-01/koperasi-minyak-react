@@ -4,8 +4,11 @@ import logo from "../assets/logo_transparan.png";
 import {
   getJumlahAnggota,
   getRekapPenjualanBBM,
-  getLabaBersih,
 } from "../services/dashboardPublic";
+
+import {
+ getLabaDashboardBBM
+} from "../services/dashboardPublicLaba";
 
 
 
@@ -35,10 +38,7 @@ export default function PublicDashboard() {
 
 
 
-  const [
-    labaBersih,
-    setLabaBersih
-  ] = useState(0);
+  
 
 
 
@@ -93,26 +93,33 @@ setJumlahAnggota(
 
 
       const laba =
-        await getLabaBersih();
+ await getLabaDashboardBBM();
 
 
+console.log(
+  "HASIL LABA DASHBOARD PUBLIC:",
+  laba
+);
 
 
-      setJumlahAnggota(
-        anggota || 0
-      );
+setJumlahAnggota(
+  anggota || 0
+);
 
 
-
-      setRekap(
-        data || []
-      );
-
+setRekap(
+  data || []
+);
 
 
-      setLabaBersih(
-        Number(laba) || 0
-      );
+const nilaiLaba =
+ Number(laba?.labaBersih) || 0;
+
+
+console.log(
+  "NILAI YANG MASUK KARTU:",
+  nilaiLaba
+);
 
 
 
@@ -418,7 +425,7 @@ className="
 mt-8
 grid
 grid-cols-1
-md:grid-cols-3
+md:grid-cols-2
 gap-6
 "
 >
@@ -641,84 +648,7 @@ totalPertamax
 
 
 
-{/* LABA BERSIH */}
 
-
-
-<div
-className="
-bg-slate-900/80
-border
-border-green-400/30
-rounded-3xl
-p-8
-shadow-xl
-shadow-green-500/10
-"
->
-
-
-
-<div
-className="
-text-5xl
-"
->
-
-💰
-
-</div>
-
-
-
-
-<h3
-className="
-mt-5
-text-slate-400
-font-bold
-"
->
-
-Laba Bersih
-
-</h3>
-
-
-
-
-<p
-className="
-text-3xl
-font-extrabold
-text-green-400
-mt-5
-"
->
-
-Rp{" "}
-{
-labaBersih
-.toLocaleString("id-ID")
-}
-
-</p>
-
-
-
-<p
-className="
-text-slate-400
-"
->
-
-Koperasi
-
-</p>
-
-
-
-</div>
 
 
 

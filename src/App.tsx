@@ -22,6 +22,7 @@ import AlokasiSHU from "./pages/AlokasiSHU";
 import ProfilKoperasi from "./pages/ProfilKoperasi";
 import InformasiBBM from "./pages/InformasiBBM";
 import LabaKoperasi from "./pages/LabaKoperasi";
+import DashboardMobile from "./pages/DashboardMobile";
 export default function App() {
 
   return (
@@ -30,7 +31,12 @@ export default function App() {
 <AndroidBackHandler />
 
       <Routes>
-        
+        <Route
+ path="/dashboard-mobile"
+ element={
+   <DashboardMobile />
+ }
+/>
         <Route
   path="/pengeluaran"
   element={

@@ -18,8 +18,8 @@ const navigate = useNavigate();
 
 const [jumlahAnggota,setJumlahAnggota] = useState(0);
 const [rekap,setRekap] = useState<any[]>([]);
-const [labaBersih,setLabaBersih] = useState(0);
-
+const [lababersih,setLabaBersih] = useState(0);
+void lababersih;
 
 
 useEffect(()=>{
@@ -659,29 +659,8 @@ shadow-xl
 >
 
 
-<div className="text-4xl">
-
-💰
-
-</div>
 
 
-<p className="text-sm">
-
-Laba Bersih
-
-</p>
-
-
-<h2 className="
-text-2xl
-font-black
-mt-2
-">
-
-Rp {labaBersih.toLocaleString("id-ID")}
-
-</h2>
 
 
 </div>

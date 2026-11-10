@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+
 import { useNavigate } from "react-router-dom";
 
 import { getDashboardBBM } from "../services/dashboard";
@@ -81,7 +82,9 @@ space-y-5
 "
 >
 
-
+<h1 className="text-red-500 text-3xl">
+DASHBOARD MOBILE AKTIF
+</h1>
 
 {/* BANNER */}
 
@@ -165,6 +168,7 @@ className="
 grid
 grid-cols-2
 gap-4
+pb-24
 "
 >
 
@@ -223,6 +227,8 @@ className="
 grid
 grid-cols-2
 gap-4
+border-2
+border-red-500
 "
 >
 <Menu
@@ -299,7 +305,6 @@ title="Laporan"
 click={()=>navigate("/laporan")}
 
 />
-
 
 
 </div>

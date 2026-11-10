@@ -440,28 +440,7 @@ const labaUsaha =
   totalPengeluaran;
 
 
-console.log(
-  "TOTAL PENJUALAN:",
-  totalPenjualan
-);
 
-
-console.log(
-  "TOTAL MODAL TERJUAL:",
-  totalModalTerjual
-);
-
-
-console.log(
-  "TOTAL PENGELUARAN:",
-  totalPengeluaran
-);
-
-
-console.log(
-  "LABA BERSIH:",
-  labaUsaha
-);
 
 
 

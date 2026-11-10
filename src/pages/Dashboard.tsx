@@ -69,10 +69,7 @@ try{
 
 const data =
 await getRekapPenjualanBBM();
-console.log(
-  "CEK DASHBOARD ADMIN BBM:",
-  data
-);
+
 
 setDataBBM(data);
 
@@ -428,7 +425,26 @@ Pengeluaran
 
 </button>
 
+<button
+onClick={()=>navigate("/laba-koperasi")}
+className="
+rounded-2xl
+p-5
+bg-gradient-to-br
+from-blue-500
+to-indigo-700
+shadow-lg
+font-bold
+"
+>
 
+<div className="text-8xl mb-2">
+📈
+</div>
+
+Laba Koperasi
+
+</button>
 </div>
 
 

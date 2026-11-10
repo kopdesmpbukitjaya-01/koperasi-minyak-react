@@ -48,6 +48,11 @@ export default function Sidebar() {
       icon: "🤝",
       path: "/anggota",
     },
+   {
+  title:"Laba Koperasi",
+  path:"/laba-koperasi",
+  icon:"📈"
+},
   
     {
       title: "Laporan PDF",
