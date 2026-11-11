@@ -23,6 +23,7 @@ import ProfilKoperasi from "./pages/ProfilKoperasi";
 import InformasiBBM from "./pages/InformasiBBM";
 import LabaKoperasi from "./pages/LabaKoperasi";
 import DashboardMobile from "./pages/DashboardMobile";
+import PortalAnggotaMobile from "./pages/PortalAnggotaMobile";
 export default function App() {
 
   return (
@@ -89,6 +90,12 @@ element={
       <PortalAnggota />
     </PlatformLayout>
   }
+/>
+<Route
+path="/portal-mobile"
+element={
+<PortalAnggotaMobile/>
+}
 />
 
 

@@ -3,11 +3,13 @@ import { useNavigate } from "react-router-dom";
 import {
   getPortalAnggota
 } from "../services/simpanan";
+import {
+  getLabaKoperasi
+} from "../services/laba_koperasi";
 
 import {
   cekTransaksiAnggota
 } from "../services/transaksi";
-
 
 export default function PortalAnggota(){
 const navigate = useNavigate();
@@ -16,9 +18,46 @@ const [nama,setNama] = useState("");
 const [infoAnggota,setInfoAnggota] = useState<any>(null);
 const [infoTransaksi,setInfoTransaksi] = useState<any>(null);
 const [loading,setLoading] = useState(false);
+const [dataLaba,setDataLaba] = useState<any>(null);
+const [loadingLaba,setLoadingLaba] = useState(false);
+const [halaman,setHalaman] = useState<
+"menu" | "rekening" | "laba"
+>("menu");
 
+async function bukaLaporanLaba(){
 
+try{
 
+setLoadingLaba(true);
+
+const data = await getLabaKoperasi();
+
+console.log(
+"DATA LABA KOPERASI:",
+data
+);
+
+setDataLaba(data);
+
+}
+
+catch(err){
+
+console.error(err);
+
+alert(
+"Gagal mengambil laporan laba"
+);
+
+}
+
+finally{
+
+setLoadingLaba(false);
+
+}
+
+}
 async function cekInformasiAnggota(){
 
 try{
@@ -122,21 +161,179 @@ Informasi Simpanan & SHU Anggota Koperasi
 </p>
 
 
+{/* =========================
+    MENU PORTAL ANGGOTA
+========================= */}
 
-<div className="mt-6 space-y-4">
+
+
+{
+halaman === "menu" && (
+
+<div className="mt-6 space-y-5">
+
+
+{/* KARTU CEK REKENING */}
+
+<div
+className="
+rounded-2xl
+p-5
+bg-gradient-to-br
+from-blue-900/40
+to-purple-900/40
+border
+border-blue-400/30
+"
+>
+
+<h2 className="text-xl font-bold">
+🪪 Cek Rekening Anggota
+</h2>
+
+
+<p className="text-gray-400 mt-2">
+Cek simpanan, transaksi BBM, dan SHU anggota
+</p>
+
+
+<button
+
+onClick={()=>{
+setHalaman("rekening");
+}}
+
+className="
+mt-4
+w-full
+p-3
+rounded-xl
+bg-gradient-to-r
+from-blue-600
+to-purple-600
+font-bold
+"
+
+>
+
+Buka Cek Rekening
+
+</button>
+
+
+</div>
+
+
+
+
+{/* KARTU LABA */}
+
+<div
+className="
+rounded-2xl
+p-5
+bg-gradient-to-br
+from-green-900/40
+to-cyan-900/40
+border
+border-green-400/30
+"
+>
+
+<h2 className="text-xl font-bold">
+📊 Laporan Laba Koperasi
+</h2>
+
+
+<p className="text-gray-400 mt-2">
+Lihat laporan perkembangan laba koperasi
+</p>
+
+
+<button
+
+onClick={()=>{
+setHalaman("laba");
+bukaLaporanLaba();
+}}
+
+className="
+mt-4
+w-full
+p-3
+rounded-xl
+bg-gradient-to-r
+from-green-600
+to-cyan-600
+font-bold
+"
+
+>
+
+📊 Buka Laporan Laba
+
+</button>
+
+
+</div>
+
+
+</div>
+
+)
+}
+
+
+{
+halaman === "rekening" && (
+
+<div className="mt-6 space-y-6">
+
+
+<button
+onClick={()=>setHalaman("menu")}
+className="
+px-4
+py-2
+rounded-xl
+bg-gray-700
+"
+>
+⬅ Kembali
+</button>
+
+
+<div
+className="
+rounded-2xl
+p-5
+bg-black/30
+border
+border-blue-500/30
+"
+>
+
+
+<h2 className="text-2xl font-bold text-blue-300">
+🪪 Cek Rekening Anggota
+</h2>
+
+
+<p className="text-gray-400 mt-2">
+Masukkan kode anggota dan nama untuk melihat informasi rekening.
+</p>
 
 
 <input
 
 value={idAnggota}
 
-onChange={
-(e)=>setIdAnggota(e.target.value)
-}
+onChange={(e)=>setIdAnggota(e.target.value)}
 
 placeholder="Kode Anggota contoh KDMP0200"
 
 className="
+mt-5
 w-full
 p-3
 rounded-xl
@@ -146,20 +343,18 @@ border-white/20
 "
 
 />
-
 
 
 <input
 
 value={nama}
 
-onChange={
-(e)=>setNama(e.target.value)
-}
+onChange={(e)=>setNama(e.target.value)}
 
 placeholder="Nama Anggota"
 
 className="
+mt-3
 w-full
 p-3
 rounded-xl
@@ -169,7 +364,6 @@ border-white/20
 "
 
 />
-
 
 
 <button
@@ -177,6 +371,7 @@ border-white/20
 onClick={cekInformasiAnggota}
 
 className="
+mt-4
 w-full
 rounded-xl
 p-4
@@ -196,9 +391,7 @@ loading
 "🔍 Cek Informasi"
 }
 
-
 </button>
-
 {
 infoTransaksi && (
 
@@ -213,19 +406,13 @@ border-blue-500/30
 "
 >
 
-<h2
-className="
-text-xl
-font-bold
-text-blue-300
-"
->
+<h3 className="text-xl font-bold text-blue-300">
 ⛽ Riwayat Transaksi BBM
-</h2>
+</h3>
 
 
 <p className="mt-3">
-Total Pengambilan:
+Total Liter:
 {" "}
 {infoTransaksi.totalLiter}
  Liter
@@ -233,7 +420,7 @@ Total Pengambilan:
 
 
 <p>
-Total Transaksi:
+Total Nominal:
 {" "}
 Rp {infoTransaksi.totalNominal?.toLocaleString("id-ID")}
 </p>
@@ -251,36 +438,24 @@ className="
 p-3
 rounded-xl
 bg-black/20
-border
-border-white/10
 "
 >
 
 <p>
-Tanggal:
-{" "}
-{item.tanggal}
+Tanggal : {item.tanggal}
 </p>
 
-
 <p>
-BBM:
-{" "}
-{item.jenis}
+BBM : {item.jenis}
 </p>
 
-
 <p>
-Liter:
-{" "}
-{item.liter} L
+Liter : {item.liter} L
 </p>
 
-
 <p>
-Total:
-{" "}
-Rp {item.total.toLocaleString("id-ID")}
+Total :
+Rp {item.total?.toLocaleString("id-ID")}
 </p>
 
 
@@ -292,6 +467,12 @@ Rp {item.total.toLocaleString("id-ID")}
 
 }
 
+</div>
+
+</div>
+
+)
+}
 
 </div>
 
@@ -299,14 +480,12 @@ Rp {item.total.toLocaleString("id-ID")}
 </div>
 
 )
-
 }
-</div>
 
 
-
-
-
+{
+halaman === "rekening" && infoAnggota && (
+<>
 <div
 className="
 mt-8
@@ -317,7 +496,6 @@ border
 border-white/10
 "
 >
-
 
 <h2 className="text-xl font-bold">
 Informasi Rekening Anggota
@@ -761,13 +939,133 @@ Tahun SHU :
 </div>
 
 
+</>
+)
+
+}
+{
+halaman === "laba" && (
+
+<div className="mt-6 space-y-6">
+
+
+<button
+onClick={()=>setHalaman("menu")}
+className="
+px-4
+py-2
+rounded-xl
+bg-gray-700
+"
+>
+⬅ Kembali
+</button>
+
+
+<div
+className="
+rounded-2xl
+p-5
+bg-black/30
+border
+border-green-500/30
+"
+>
+
+<h2 className="text-2xl font-bold text-green-400">
+📊 Laporan Laba Koperasi
+</h2>
+
+
+{
+loadingLaba
+?
+<p className="mt-4">
+⏳ Memuat laporan...
+</p>
+
+:
+
+dataLaba &&
+
+<div className="mt-5 space-y-4">
+
+
+<div>
+Total Penjualan
+
+<h3 className="text-xl font-bold">
+Rp {Number(
+dataLaba.totalPenjualan || 0
+).toLocaleString("id-ID")}
+</h3>
+
 </div>
 
 
+<div>
+Modal Berputar
+
+<h3 className="text-xl font-bold">
+Rp {Number(
+dataLaba.totalModalBerputar || 0
+).toLocaleString("id-ID")}
+</h3>
+
+</div>
+
+
+<div>
+Laba Kotor
+
+<h3 className="text-xl font-bold text-yellow-400">
+Rp {Number(
+dataLaba.labaKotor || 0
+).toLocaleString("id-ID")}
+</h3>
+
+</div>
+
+
+<div>
+Total Pengeluaran
+
+<h3 className="text-xl font-bold text-red-400">
+Rp {Number(
+dataLaba.totalPengeluaran || 0
+).toLocaleString("id-ID")}
+</h3>
+
+</div>
+
+
+<div>
+SHU Koperasi
+
+<h3 className="text-xl font-bold text-green-400">
+Rp {Number(
+dataLaba.shuKoperasi || 0
+).toLocaleString("id-ID")}
+</h3>
+
+</div>
+
+
+</div>
+
+}
+
+
+</div>
+
+
+</div>
+
+)
+}
+</div>
 </div>
 
 
 );
-
-
 }
